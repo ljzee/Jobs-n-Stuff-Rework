@@ -1,6 +1,7 @@
 ﻿const config = require('config.json');
 const jwt = require('jsonwebtoken');
 const Role = require('_helpers/role');
+var pool = require('../database');
 
 // users hardcoded for simplicity, store in a db for production applications
 const users = [
@@ -10,8 +11,10 @@ const users = [
 
 module.exports = {
     authenticate,
+    register,
     getAll,
-    getById
+    getById,
+    getByUsernameOrEmail
 };
 
 async function authenticate({ username, password }) {
@@ -24,6 +27,20 @@ async function authenticate({ username, password }) {
             token
         };
     }
+}
+
+async function register({username, email, password, usertype}) {
+  let results;
+  try{
+    //BCRYPT HERE BEFORE INSERTING
+    results = await pool.query('INSERT INTO users(id, username, email, passhash, role) VALUES (DEFAULT, $1, $2, $3, $4) RETURNING id', [username, email, password, usertype]);
+    if(results.rows.length){
+      const token = jwt.sign({sub: results.rows[0].id, role: usertype}, config.secret);
+    }
+  }catch(error){
+    throw error;
+  }
+  return results;
 }
 
 async function getAll() {
@@ -39,3 +56,20 @@ async function getById(id) {
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
 }
+
+async function getByUsernameOrEmail({username, email}, cb){
+  let results;
+  try{
+    results = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $2', [username, email])
+  }catch(error){
+    throw error;
+  }
+  return results.rows;
+}
+/*
+db.query('SELECT NOW()', (err,res)=>{
+  if(err.error)
+  return console.log(err.error);
+  console.log(`PostgreSQL connected: ${res[0].now}`)''
+})
+*/

@@ -1,12 +1,15 @@
 import React from 'react';
 import { Router, Route, Link } from 'react-router-dom';
 
+
 import { history, Role } from '@/_helpers';
 import { authenticationService } from '@/_services';
-import { PrivateRoute } from '@/_components';
+import { PrivateRoute, Header } from '@/_components';
 import { HomePage } from '@/Pages/HomePage';
 import { AdminPage } from '@/Pages/AdminPage';
 import { LoginPage } from '@/Pages/LoginPage';
+import { SignupPage } from '@/Pages/SignupPage';
+
 
 class App extends React.Component {
     constructor(props) {
@@ -35,15 +38,7 @@ class App extends React.Component {
         return (
             <Router history={history}>
                 <div>
-                    {currentUser &&
-                        <nav className="navbar navbar-expand navbar-dark bg-dark">
-                            <div className="navbar-nav">
-                                <Link to="/" className="nav-item nav-link">Home</Link>
-                                {isAdmin && <Link to="/admin" className="nav-item nav-link">Admin</Link>}
-                                <a onClick={this.logout} className="nav-item nav-link">Logout</a>
-                            </div>
-                        </nav>
-                    }
+                    <Header/>
                     <div className="jumbotron">
                         <div className="container">
                             <div className="row">
@@ -51,6 +46,7 @@ class App extends React.Component {
                                     <PrivateRoute exact path="/" component={HomePage} />
                                     <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                                     <Route path="/login" component={LoginPage} />
+                                    <Route path='/signup' component={SignupPage} />
                                 </div>
                             </div>
                         </div>
