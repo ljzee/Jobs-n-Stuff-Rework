@@ -12,7 +12,10 @@ export const authenticationService = {
     login,
     logout,
     currentUser: currentUserSubject.asObservable(),
-    get currentUserValue () { return currentUserSubject.value }
+    get currentUserValue () { return currentUserSubject.value },
+    set newCurrentUserValue (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
 };
 
 function register(email, username, password, usertype) {
@@ -24,10 +27,10 @@ function register(email, username, password, usertype) {
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
 
-            //localStorage.setItem('currentUser', JSON.stringify(user.data));
-            //currentUserSubject.next(user.data);
+            localStorage.setItem('currentUser', JSON.stringify(user.data));
+            currentUserSubject.next(user.data);
 
-            //return user.data;
+            return user.data;
         })
         .catch((error)=>Promise.reject(error.response.data.message));
 }
@@ -40,7 +43,7 @@ function login(username, password) {
     return axios.post(`${config.apiUrl}/users/authenticate`, { 'username': username, 'password': password }, configOptions)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-
+            console.log(user);
             localStorage.setItem('currentUser', JSON.stringify(user.data));
             currentUserSubject.next(user.data);
 

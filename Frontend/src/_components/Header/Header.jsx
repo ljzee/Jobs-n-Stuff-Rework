@@ -40,7 +40,7 @@ class Header extends React.Component {
                       <Nav.Link as={Link} to="signup">Sign Up</Nav.Link>
                      </React.Fragment>;
         }else{
-          if(currentUser.role === 'User'){
+          if(currentUser.role === Role.User){
             navItems = <React.Fragment>
                         <Nav.Item>
                         <Nav.Link>Job Postings</Nav.Link>
@@ -52,7 +52,7 @@ class Header extends React.Component {
                        </React.Fragment>;
           }
 
-          if(currentUser.role === 'Admin'){
+          if(currentUser.role === Role.Admin){
             navItems = <React.Fragment>
                         <Nav.Item>
                         <Nav.Link as={Link} to="manage_users">Manage Users</Nav.Link>
@@ -62,7 +62,7 @@ class Header extends React.Component {
                        </React.Fragment>;
           }
 
-          if(currentUser.role === 'Business'){
+          if(currentUser.role === Role.Business){
             navItems = <React.Fragment>
                          <Nav.Link>Manage Postings</Nav.Link>
                          <Nav.Link>Profile</Nav.Link>
@@ -74,7 +74,7 @@ class Header extends React.Component {
         return (
             <Navbar bg="dark" variant="dark">
             <Container>
-              <Navbar.Brand>Jobs-N-Stuff</Navbar.Brand>
+              <Navbar.Brand>EmployMee</Navbar.Brand>
               <Nav className="ml-auto">
               {navItems}
               </Nav>

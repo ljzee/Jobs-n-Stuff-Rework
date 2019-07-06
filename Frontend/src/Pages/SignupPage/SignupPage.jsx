@@ -67,8 +67,8 @@ class SignupPage extends React.Component {
 
     render() {
         return (
-            <div>
-
+          <div className="row">
+            <div className="col-md-6 offset-md-3">
                 <h2>Sign Up</h2>
                 <Formik
                     initialValues={{
@@ -84,13 +84,12 @@ class SignupPage extends React.Component {
                         radioGroup: Yup.string().required("You must select an account type")
                     })}
                     onSubmit={({ email, username, password, radioGroup }, { setStatus, setSubmitting }) => {
-                      console.log(`${email} ${username} ${password} ${radioGroup}`)
                         setStatus();
                         authenticationService.register(email, username, password, radioGroup)
                             .then(
                                 user => {
-                                    //const { from } = this.props.location.state || { from: { pathname: "/" } };
-                                    //this.props.history.push(from);
+                                    const { from } = this.props.location.state || { from: { pathname: "/" } };
+                                    this.props.history.push(from);
                                 }
                             ).catch(error => {
                                   setSubmitting(false);
@@ -152,6 +151,7 @@ class SignupPage extends React.Component {
                     )}
                 />
             </div>
+          </div>
         )
     }
 }

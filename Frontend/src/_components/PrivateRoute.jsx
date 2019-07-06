@@ -11,6 +11,14 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => (
             return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
         }
 
+        if(!currentUser.hasProfile && props.location.pathname !== '/createprofile'){
+          return <Redirect to={{pathname: '/createprofile'}}/>
+        }
+
+        if(currentUser.hasProfile && props.location.pathname !== '/myprofile'){
+          return <Redirect to={{pathname: '/myprofile'}}/> //redirect to dashboard
+        }
+
         // check if route is restricted by role
         if (roles && roles.indexOf(currentUser.role) === -1) {
             // role not authorised so redirect to home page

@@ -1,0 +1,30 @@
+.profile-page{
+  width: 85%;
+}
+
+.profile-page-card{
+  margin-bottom: 20px;
+}
+
+
+.edit-button, .add-button{
+  margin-left: 10px;
+}
+
+.add-button{
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+
+.contact-info{
+  margin-top: 20px;
+}
+
+.contact-info-title{
+  margin-bottom: 20px;
+}
+
+.edit-field{
+  margin-bottom: 10px !important;
+}

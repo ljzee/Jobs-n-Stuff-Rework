@@ -13,12 +13,14 @@ router.post('/register',
             check('password').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/).withMessage('Minimum eight characters, at least one uppercase letter, one lowercase letter and one number'),
             check('usertype').not().isEmpty().withMessage('User type cannot be empty'),
             register);     // public route
+router.post('/createprofile', authorize(), createProfile);
+router.get('/profile/:id', getProfileById)
 router.get('/', authorize(Role.Admin), getAll); // admin only
 router.get('/:id', authorize(), getById);       // all authenticated users
 module.exports = router;
 
 function authenticate(req, res, next) {
-    console.log(req.body);
+    //console.log(req.body);
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));
@@ -37,20 +39,49 @@ async function register(req, res, next){
     //check if user/name already exist in DB
     //add user to DB if not exist
     const user = await userService.getByUsernameOrEmail(req.body);
+    let newUser;
     if(user.length){
       res.status(400).json({errors: 'Username or email is already taken'});
       return;
     }else{
-      const newUser = await userService.register(req.body);
-      console.log(newUser);
+      try{
+        newUser = await userService.register(req.body);
+      }catch(error){
+        res.status(500).json({errors: ['Internal Server Error']});
+      }
     }
-
-    //add user to DB if not exist
-
-    //return user information
-    res.json({message: "Everything is fine"});
+    res.json(newUser);
 }
 
+async function createProfile(req, res, next){
+  const profile = await userService.getUserProfile(req.user);
+  if(profile.length){
+    res.status(400).json({errors: 'A profile has already been created for this user'});
+    return;
+  }else{
+    try{
+      await userService.addUserProfile(req.user.sub, req.body);
+      res.sendStatus(200);
+    }catch(error){
+      res.status(500).json({errors: ['Internal Server Error']});
+
+    }
+  }
+
+}
+
+async function getProfileById(req, res, next){
+  try{
+    const profile = await userService.getUserProfile(req.params);
+    if(profile.length){
+      res.json(profile[0]);
+    }else{
+      res.status(400).json({errors: 'Profile does not exist'});
+    }
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
 /*
 userService.getByUsernameOrEmail(req.body, (err,res)=>{
   if(err.error) {
