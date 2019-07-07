@@ -17,7 +17,9 @@ module.exports = {
     getById,
     getByUsernameOrEmail,
     getUserProfile,
-    addUserProfile
+    addUserProfile,
+    addExperience,
+    deleteExperience
 };
 
 async function authenticate({ username, password }) {
@@ -47,17 +49,6 @@ async function authenticate({ username, password }) {
       throw error;
     }
 
-    /*
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-        const token = jwt.sign({ sub: user.id, role: user.role }, config.secret);
-        const { password, ...userWithoutPassword } = user;
-        return {
-            ...userWithoutPassword,
-            token
-        };
-    }
-    */
 }
 
 async function register({username, email, password, usertype}) {
@@ -82,11 +73,28 @@ async function register({username, email, password, usertype}) {
 }
 
 async function addUserProfile(id, {firstname, lastname, phonenumber, personalwebsite, githublink, bio}){
+  let results;
   try{
     results = await pool.query('INSERT INTO user_profile(id, first_name, last_name, phone_number, personal_website, github_link, bio) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [id, firstname, lastname, phonenumber, personalwebsite, githublink, bio]);
-    if(results.rows.length){
 
-    }
+  }catch(error){
+    throw error;
+  }
+}
+
+async function addExperience(id, {company, title, location, duration, description}){
+  let results;
+  try{
+    results = await pool.query('INSERT INTO user_experience(experience_id, id, company_name, title, location, duration, description) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6)', [id, company, title, location, duration, description]);
+  }catch(error){
+    throw error;
+  }
+}
+
+async function deleteExperience({id}){
+  let results;
+  try{
+    results = await pool.query('DELETE FROM user_experience WHERE experience_id = $1', [id]);
   }catch(error){
     throw error;
   }
@@ -117,14 +125,21 @@ async function getByUsernameOrEmail({username, email}, cb){
 }
 
 async function getUserProfile({id}){
-  let results;
+  console.log(id)
+  let profile, experiences;
   try{
-    results = await pool.query('SELECT email, user_profile.* FROM user_profile, users WHERE user_profile.id = users.id AND user_profile.id = $1', [id])
+    profile = await pool.query('SELECT email, user_profile.* FROM user_profile, users WHERE user_profile.id = users.id AND user_profile.id = $1', [id]);
+    experiences = await pool.query('SELECT * FROM user_experience WHERE id = $1', [id]);
   }catch(error){
     throw error;
   }
-  return results.rows;
+  if(profile.rowCount){
+    profile.rows[0].experiences = experiences.rows;
+  }
+  return profile.rows;
 }
+
+
 /*
 db.query('SELECT NOW()', (err,res)=>{
   if(err.error)

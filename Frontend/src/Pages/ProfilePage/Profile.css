@@ -1,9 +1,34 @@
 .profile-page{
   width: 85%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.profile-page-title{
+  margin-bottom: 25px;
+}
+
+.profile-image{
+  border-radius: 50%;
+  width: 60%;
+  display:block;
+  margin:20px auto 10px;
+
+}
+
+.image-picker{
+  border-style: none;
+  display: block ;
+  margin: 0 auto;
+}
+
+.card{
+  overflow:hidden;
 }
 
 .profile-page-card{
   margin-bottom: 20px;
+  border-style: none;
 }
 
 
@@ -27,4 +52,13 @@
 
 .edit-field{
   margin-bottom: 10px !important;
+}
+
+.card-button{
+  padding: 0 !important;
+  margin-left: 10px;
+}
+
+.aboutme-helper-message{
+  opacity: 0.6;
 }

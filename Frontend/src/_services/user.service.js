@@ -8,7 +8,9 @@ export const userService = {
     getAll,
     getById,
     createProfile,
-    getProfile
+    getProfile,
+    addExperience,
+    deleteExperience
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -33,6 +35,25 @@ function getProfile(){
       headers: authHeader()
   };
   return axios.get(`${config.apiUrl}/users/profile/${user.id}`, {headers: authHeader()}).then(result => result.data);
+}
+
+function addExperience(company, title, location, duration, description){
+  const configOptions = {
+      headers: authHeader()
+  };
+
+  return axios.post(`${config.apiUrl}/users/addexperience`, { 'company': company, 'title': title, 'location': location, 'duration': duration, 'description': description}, configOptions)
+      .then()
+      .catch((error)=>Promise.reject(error.response.data.message));
+}
+
+function deleteExperience(id){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/users/deleteexperience/${id}`, {}, configOptions)
+      .then()
+      .catch((error)=>Promise.reject(error.response.data.message));
 }
 
 function getAll() {

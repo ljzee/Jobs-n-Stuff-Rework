@@ -1,0 +1,13 @@
+.documents-page{
+  width: 85%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.documents-page-title{
+  margin-bottom: 25px;
+}
+
+.filter-select{
+  width: 200px;
+}

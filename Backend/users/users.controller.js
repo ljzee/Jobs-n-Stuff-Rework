@@ -14,6 +14,14 @@ router.post('/register',
             check('usertype').not().isEmpty().withMessage('User type cannot be empty'),
             register);     // public route
 router.post('/createprofile', authorize(), createProfile);
+router.post('/addexperience',
+             check('company').not().isEmpty().withMessage('Company name cannot be empty'),
+             check('title').not().isEmpty().withMessage('Title cannot be empty'),
+             check('location').not().isEmpty().withMessage('Location cannot be empty'),
+             check('duration').not().isEmpty().withMessage('Duration cannot be empty'),
+             authorize(),
+             addExperience);
+router.post('/deleteexperience/:id', authorize(), deleteExperience);
 router.get('/profile/:id', getProfileById)
 router.get('/', authorize(Role.Admin), getAll); // admin only
 router.get('/:id', authorize(), getById);       // all authenticated users
@@ -54,20 +62,53 @@ async function register(req, res, next){
 }
 
 async function createProfile(req, res, next){
-  const profile = await userService.getUserProfile(req.user);
-  if(profile.length){
-    res.status(400).json({errors: 'A profile has already been created for this user'});
-    return;
-  }else{
-    try{
-      await userService.addUserProfile(req.user.sub, req.body);
-      res.sendStatus(200);
-    }catch(error){
-      res.status(500).json({errors: ['Internal Server Error']});
-
+  try{
+    const profile = await userService.getUserProfile({id: req.user.sub});
+    if(profile.length){
+      res.status(400).json({errors: 'A profile has already been created for this user'});
+      return;
+    }else{
+        await userService.addUserProfile(req.user.sub, req.body);
+        res.sendStatus(200);
     }
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
   }
 
+}
+
+async function addExperience(req, res, next){
+  const {errors} = validationResult(req);
+  let errorMessages = errors.map(error => error.msg);
+  if(errorMessages.length) {
+    res.status(400).json({errors: errorMessages});
+    return;
+  }
+
+  try{
+    const profile = await userService.getUserProfile({id: req.user.sub});
+    if(!profile.length){
+      res.status(400).json({errors: 'Cannot add experience for a user that does not exist'});
+      return;
+    }else{
+      await userService.addExperience(req.user.sub, req.body);
+      res.sendStatus(200);
+    }
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
+  }
+}
+
+async function deleteExperience(req, res, next){
+  try{
+    await userService.deleteExperience(req.params)
+    res.sendStatus(200);
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']})
+    console.log(error);
+  }
 }
 
 async function getProfileById(req, res, next){
@@ -82,6 +123,8 @@ async function getProfileById(req, res, next){
     res.status(500).json({errors: ['Internal Server Error']});
   }
 }
+
+
 /*
 userService.getByUsernameOrEmail(req.body, (err,res)=>{
   if(err.error) {

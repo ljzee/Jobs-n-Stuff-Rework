@@ -1,9 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {Card, Button, Row, Col, Form, ListGroup, ListGroupItem, Modal} from 'react-bootstrap';
-import { Formik, Field, ErrorMessage } from 'formik';
+import { Formik, Field, ErrorMessage, Form as FForm } from 'formik';
 import * as Yup from 'yup';
 import profileicon from '../../Images/profile-icon.png'
+import {ExperienceCard} from './ExperienceCard';
+import { ImagePicker } from 'react-file-picker';
 
 import './Profile.css';
 
@@ -36,92 +38,6 @@ const experiences = [
   }
 ];
 
-class ExperienceCard extends React.Component {
-  constructor(props){
-    super(props);
-      this.state = {
-        isEditting: false,
-        company: this.props.company,
-        title: this.props.title,
-        location: this.props.location,
-        duration: this.props.duration,
-        description: this.props.description
-      }
-      this.toggleEdit = this.toggleEdit.bind(this);
-      this.handleChange = this.handleChange.bind(this);
-  }
-
-  toggleEdit(){
-    this.setState(prevState => ({
-      ...prevState,
-      isEditting: !prevState.isEditting
-    }))
-  }
-
-  handleChange(event){
-    event.persist();
-
-    this.setState(prevState => ({
-      ...prevState,
-      [event.target.name]: event.target.value
-    }))
-
-  }
-
-  render(){
-    return(
-      <ListGroupItem>
-        {!this.state.isEditting &&
-        <div>
-          <Button variant="link" className="float-right" onClick={this.toggleEdit}>Edit</Button>
-          <p><b>Company: </b>{this.state.company}</p>
-          <p><b>Title: </b>{this.state.title}</p>
-          <p><b>Location: </b>{this.state.location}</p>
-          <p><b>Duration: </b>{this.state.duration}</p>
-          <p><b>Description: </b>{this.state.description}</p>
-        </div>
-        }
-
-        {this.state.isEditting &&
-        <div>
-          <Form>
-            <Form.Group as={Row} className="edit-field">
-              <Form.Label column sm="2"><b>Company:</b></Form.Label>
-              <Col >
-                <Form.Control type="text" value={this.state.company} onChange={this.handleChange} name='company' />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="edit-field">
-              <Form.Label column sm="2"><b>Title:</b></Form.Label>
-              <Col>
-                <Form.Control type="text"  value={this.state.title} onChange={this.handleChange} name='title' />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="edit-field">
-              <Form.Label column sm="2"><b>Location:</b> </Form.Label>
-              <Col>
-                <Form.Control type="text" value={this.state.location} onChange={this.handleChange} name='location'/>
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="edit-field">
-              <Form.Label column sm="2"><b>Duration:</b> </Form.Label>
-              <Col>
-                <Form.Control type="text" value={this.state.duration} onChange={this.handleChange} name='duration'/>
-              </Col>
-            </Form.Group>
-            <Form.Group className="edit-field">
-              <Form.Label><b>Description:</b> </Form.Label>
-              <Form.Control as="textarea"  value={this.state.description} onChange={this.handleChange} name="description" rows="5"/>
-            </Form.Group>
-          </Form>
-          <Button variant="secondary" className="edit-button float-right" onClick={this.toggleEdit}>Cancel</Button>
-          <Button variant="primary" className="edit-button float-right" onClick={this.toggleEdit}>Save</Button>
-        </div>
-        }
-      </ListGroupItem>
-    )
-  }
-}
 
 class ProfilePage extends React.Component {
     constructor(props) {
@@ -146,12 +62,12 @@ class ProfilePage extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleFileSelect = this.handleFileSelect.bind(this);
         this.toggleShowModal = this.toggleShowModal.bind(this);
+        this.updateProfile = this.updateProfile.bind(this);
     }
 
     componentDidMount(){
       userService.getProfile()
       .then(profile =>{
-        console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,
@@ -160,12 +76,10 @@ class ProfilePage extends React.Component {
           email: profile.email,
           phoneNumber: profile.phone_number,
           personalWebsite: profile.personal_website,
-          githubLink: profile.github_link
+          githubLink: profile.github_link,
+          experiences: profile.experiences
         }))
-      }).catch(error =>{
-        setSubmitting(false);
-        setStatus(error);
-      });
+      })
     }
 
     toggleShowModal(){
@@ -205,40 +119,71 @@ class ProfilePage extends React.Component {
       console.log(event.target.files[0]);
     }
 
+    updateProfile(){
+      userService.getProfile()
+      .then(profile =>{
+        console.log(profile)
+        this.setState(prevState => ({
+          ...prevState,
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          aboutMe: profile.bio,
+          email: profile.email,
+          phoneNumber: profile.phone_number,
+          personalWebsite: profile.personal_website,
+          githubLink: profile.github_link,
+          experiences: profile.experiences
+        }))
+      })
+    }
+
     render() {
         return (
           <div className="profile-page mx-auto">
             <Row>
-              <Col sm={{span: 9, offset: 3}} style={{marginBottom: 0}}>
-                <h2>My Profile</h2>
+              <Col xs={12} sm={12} md={{span: 7, offset: 5}} lg={{span: 9, offset: 3}} style={{marginBottom: 0}}>
+                <h2 className="profile-page-title">My Profile</h2>
               </Col>
             </Row>
 
             <Row >
-              <Col sm={3}>
+              <Col xs={12} sm={12} md={5} lg={3}>
                 <Card >
                   <Card.Header>Profile Picture</Card.Header>
                   <Card.Body>
-                    <Card.Img variant="top" src={profileicon}/>
-                    <input style={{fontSize: 11, marginTop: 10}} type="file" onChange={this.handleFileSelect}/>
+                    <h6>Welcome back, {this.state.firstName}!</h6>
+                    <Card.Img className="profile-image" variant="top" src={profileicon}/>
+                    <ImagePicker
+                      extensions={['jpg', 'jpeg', 'png']}
+                      dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
+                      onChange={image=>{
+                        console.log("image");
+                      }}
+                      onError={error=>{
+                        console.log(error);
+                      }}
+                    >
+                      <Button variant="link" className="image-picker">Upload a photo</Button>
+                    </ImagePicker>
                     <div className="contact-info">
                       <h5 className="contact-info-title">Contact Info</h5>
                       <p><b>Email:</b><br/>{this.state.email}</p>
                       <p><b>Phone Number:</b><br/>{this.state.phoneNumber}</p>
-                      <p><b>Personal Website:</b><br/><a href=''>{this.state.personalWebsite}</a></p>
+                      <p><b>Website:</b><br/><a href=''>{this.state.personalWebsite}</a></p>
                       <p><b>Github:</b><br/><a href=''>{this.state.githubLink}</a></p>
                     </div>
                   </Card.Body>
                 </Card>
               </Col>
 
-              <Col sm={9}>
+              <Col xs={12} sm={12} md={7} lg={9}>
                 <Card className="profile-page-card">
                   <Card.Header>About Me</Card.Header>
 
                     {!this.state.editAboutMe &&
                       <Card.Body>
                         <Card.Text>
+                          {!this.state.aboutMe && <span className="aboutme-helper-message">Write a bio so employers can know you better...</span>}
                           {this.state.aboutMe}
                         </Card.Text>
                         <Button variant="link" className="float-right" onClick={this.toggleEditAboutMe}>Edit</Button>
@@ -259,17 +204,15 @@ class ProfilePage extends React.Component {
 
                 <Card className="profile-page-card">
                   <Card.Header>Experience
-                    <Button variant="outline-danger" className="add-button float-right" onClick={this.toggleShowModal}>-</Button>
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
-                    {experiences.map((experience, id) => <ExperienceCard key={id} company={experience.company} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description}/>)}
+                    {this.state.experiences.map((experience, id) => <ExperienceCard key={id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description} updateProfile={this.updateProfile}/>)}
                   </ListGroup>
                 </Card>
 
                 <Card className="profile-page-card">
                   <Card.Header>Education
-                    <Button variant="outline-danger" className="add-button float-right" onClick={this.toggleShowModal}>-</Button>
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
@@ -287,11 +230,11 @@ class ProfilePage extends React.Component {
                   <Card.Header>Contact Information</Card.Header>
                   {!this.state.editContactInformation &&
                     <Card.Body>
+                      <Button variant="link" className="float-right" onClick={this.toggleEditContactInformation}>Edit</Button>
                       <p><b>Email:</b> {this.state.email}</p>
                       <p><b>Phone Number:</b> {this.state.phoneNumber}</p>
                       <p><b>Personal Website:</b> <a href=''>{this.state.personalWebsite}</a></p>
                       <p><b>Github:</b> <a href=''>{this.state.githubLink}</a></p>
-                      <Button variant="link" className="float-right" onClick={this.toggleEditContactInformation}>Edit</Button>
                     </Card.Body>
                   }
 
@@ -326,68 +269,78 @@ class ProfilePage extends React.Component {
 
               <Modal show={this.state.showModal} onHide={this.toggleShowModal}>
                 <Modal.Header closeButton>
-                  <Modal.Title>Modal heading</Modal.Title>
+                  <Modal.Title>Add a work experience</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={this.toggleShowModal}>
-                    Close
-                  </Button>
-                  <Button variant="primary" onClick={this.toggleShowModal}>
-                    Save Changes
-                  </Button>
-                </Modal.Footer>
+                <Modal.Body>
+                <Formik
+                    initialValues={{
+                      company: '',
+                      title: '',
+                      location: '',
+                      duration: '',
+                      description: ''
+                    }}
+                    validationSchema={Yup.object().shape({
+                        company: Yup.string().required('Company is required'),
+                        title: Yup.string().required('Company is required'),
+                        location: Yup.string().required('Company is required'),
+                        duration: Yup.string().required('Company is required'),
+                        description: Yup.string()
+                    })}
+                    onSubmit={({company, title, location, duration, description}, { setStatus, setSubmitting }) => {
+                      userService.addExperience(company, title, location, duration, description).then(()=>{
+                        this.updateProfile();
+                        this.toggleShowModal();
+                      })
+                    }}
+                    render={({ values, errors, status, touched, isSubmitting }) => (
+                        <FForm>
+                            <div className="form-group">
+                                <label htmlFor="company"><b>Company:</b></label>
+                                <Field name="company" type="text" className={'form-control' + (errors.company && touched.company ? ' is-invalid' : '')} />
+                                <ErrorMessage name="company" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="title"><b>Title:</b></label>
+                                <Field name="title" type="text" className={'form-control' + (errors.title && touched.title ? ' is-invalid' : '')} />
+                                <ErrorMessage name="title" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="location"><b>Location:</b></label>
+                                <Field name="location" type="text" className={'form-control' + (errors.location && touched.location ? ' is-invalid' : '')} />
+                                <ErrorMessage name="location" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="duration"><b>Duration:</b></label>
+                                <Field name="duration" type="text" className={'form-control' + (errors.duration && touched.duration ? ' is-invalid' : '')} />
+                                <ErrorMessage name="duration" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="description"><b>Description:</b></label>
+                                <Field name="description" rows="5" component="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} />
+                                <ErrorMessage name="description" component="div" className="invalid-feedback" />
+                            </div>
+                            <br />
+                            <div className="form-group">
+                              <Button variant="secondary" className="edit-button float-right" onClick={this.toggleShowModal}>
+                                Close
+                              </Button>
+                              <Button variant="primary" className="edit-button float-right" type="submit">
+                                Add Experience
+                              </Button>
+                            </div>
+                            {status &&
+                                <div className={'alert alert-danger'}>{status.map((msg, i) => <li key={i}>{msg}</li>)}</div>
+                            }
+                        </FForm>
+                    )}
+                />
+                </Modal.Body>
+
               </Modal>
             </div>
         )
     }
 }
-/*
-<Formik
-    initialValues={{
-        email: '',
-        phonenumber: '',
-        personalwebsite: '',
-        github: ''
-    }}
-    validationSchema={Yup.object().shape({
-        email: Yup.string().email('Invalid email').required('Email is required'),
-    })}
-    render={({ values, errors, status, touched, isSubmitting }) => (
-        <Form>
-            <div className="form-group">
-                <label htmlFor="email"><b>Email:</b> </label>
-                <Field name="email" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
-                <ErrorMessage name="email" component="div" className="invalid-feedback" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="username"><b>Phone Number:</b> </label>
-                <Field name="username" type="text" className={'form-control' + (errors.username && touched.username ? ' is-invalid' : '')} />
-                <ErrorMessage name="username" component="div" className="invalid-feedback" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="personalwebsite"><b>Personal Website:</b></label>
-                <Field name="personalwebsite" type="text" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
-                <ErrorMessage name="password" component="div" className="invalid-feedback" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="github"><b>Github:</b></label>
-                <Field name="github" type="text" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
-                <ErrorMessage name="password" component="div" className="invalid-feedback" />
-            </div>
-            <br />
-            <div className="form-group">
-              <Button variant="danger" className="edit-button float-right" onClick={this.toggleEditContactInformation}>Cancel</Button>
-              <Button variant="success" className="edit-button float-right" onClick={this.toggleEditContactInformation}>Save</Button>
-                {isSubmitting &&
-                    <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                }
-            </div>
-            {status &&
-                <div className={'alert alert-danger'}>{status.map((msg, i) => <li key={i}>{msg}</li>)}</div>
-            }
-        </Form>
-    )}
-/>
-*/
+
 export { ProfilePage };
