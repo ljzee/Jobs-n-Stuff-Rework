@@ -34,7 +34,10 @@ function getProfile(){
   const configOptions = {
       headers: authHeader()
   };
-  return axios.get(`${config.apiUrl}/users/profile/${user.id}`, {headers: authHeader()}).then(result => result.data);
+  return axios.get(`${config.apiUrl}/users/profile/${user.id}`, {headers: authHeader()})
+              .then(result => result.data)
+              .catch((error) => Promise.reject(error.response.data.message))
+
 }
 
 function addExperience(company, title, location, duration, description){

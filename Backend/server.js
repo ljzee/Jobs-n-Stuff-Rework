@@ -18,6 +18,7 @@ app.use(function(req, res, next) {
 
 // api routes
 app.use('/users', require('./users/users.controller'));
+app.use('/files', require('./files/files.controller'));
 
 // global error handler
 app.use(errorHandler);

@@ -1,49 +1,15 @@
-.documents-page{
-  width: 85%;
-  padding-top: 25px;
-  padding-bottom: 25px;
-}
-
-.documents-page-title{
-  margin-bottom: 25px;
-}
-
-.filter-select{
-  width: 200px;
-}
-.modal-select{
-  display: inline-block;
-}
-
-.modal-label{
-  display: inline-block;
-  margin-right: 15px;
-  font-weight: 600;
-  width: 80px;
-}
-
-.form-options{
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.files-table{
-  margin-top: 25px;
-  background-color: white;
-  text-align: center;
-}
-
-.files input {
+.files button {
     outline: 2px dashed #92b0b3;
     outline-offset: -10px;
     -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
     transition: outline-offset .15s ease-in-out, background-color .15s linear;
-    padding: 120px 0px 120px 27%;
-    text-align: center !important;
-    margin: 15px 0 30px 0;
+    padding: 129px 0px 85px 28%;
+    text-align:left !important;
+    margin: 0;
     width: 100% !important;
+    color: #007bff
 }
-.files input:focus{     outline: 2px dashed #92b0b3;  outline-offset: -10px;
+.files button:focus{     outline: 2px dashed #92b0b3;  outline-offset: -10px;
     -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
     transition: outline-offset .15s ease-in-out, background-color .15s linear; border:1px solid #92b0b3;
  }
@@ -62,27 +28,28 @@
     background-size: 100%;
     background-repeat: no-repeat;
 }
-.color input{ background-color:#f1f1f1;}
+.color button{ background-color:#f1f1f1;}
 .files:before {
     position: absolute;
-    bottom: 10px;
-    left: 0;  pointer-events: none;
+    bottom: 0px;
+    left: 51px;  pointer-events: none;
     width: 100%;
     right: 0;
-    height: 57px;
+    height: 86px;
     content: " or drag it here. ";
-    opacity: 0.7;
     display: block;
     margin: 0 auto;
-    font-weight: 600;
-    text-transform: capitalize;
+    font-weight: 200;
     text-align: center;
 }
 
-.document-name{
-  width: 240px;
-}
 
-.document-name-input, .document-save-button{
-  padding: 0.35rem !important;
-}
+<FilePicker
+  extensions={['md']}
+>
+  <div className="form-group files color">
+    <button className="form-control">
+      Choose a file
+    </button>
+  </div>
+</FilePicker>
