@@ -1,7 +1,6 @@
 .documents-page{
   width: 85%;
-  padding-top: 25px;
-  padding-bottom: 25px;
+
 }
 
 .documents-page-title{
@@ -83,6 +82,26 @@
   width: 240px;
 }
 
+.document-button{
+  width: 65px !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .document-name-input, .document-save-button{
   padding: 0.35rem !important;
+}
+
+.btn{
+  margin-left: 10px;
+}
+
+@media all and (max-width: 750px){
+  .col_4, .col_5{
+    display:none;
+    width:0;
+    height:0;
+    opacity:0;
+    visibility: collapse;
+  }
 }

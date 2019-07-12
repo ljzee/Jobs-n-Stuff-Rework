@@ -72,12 +72,15 @@ class Header extends React.Component {
         }
 
         return (
-            <Navbar bg="dark" variant="dark">
-            <Container>
-              <Navbar.Brand>EmployMee</Navbar.Brand>
-              <Nav className="ml-auto">
-              {navItems}
-              </Nav>
+            <Navbar bg="dark" variant="dark" expand="md">
+              <Container>
+                <Navbar.Brand>EmployMee</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="ml-auto">
+                  {navItems}
+                  </Nav>
+                </Navbar.Collapse>
               </Container>
             </Navbar>
         );

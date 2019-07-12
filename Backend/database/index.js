@@ -1,4 +1,4 @@
-var {Pool} = require('pg');
+var {Pool, types} = require('pg');
 
 /*
 class Database {
@@ -41,6 +41,8 @@ class Database {
 
 module.exports = new Database();
 */
+const TYPE_DATESTAMP = 1082;
+types.setTypeParser(TYPE_DATESTAMP, date => date);
 
 module.exports = new Pool({
   user: 'postgres',

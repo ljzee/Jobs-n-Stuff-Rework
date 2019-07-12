@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Field, ErrorMessage } from 'formik';
+import { Formik, Field, ErrorMessage, Form as FForm } from 'formik';
 import {Navbar, Nav, NavDropdown, Form, FormControl, Button, Dropdown, DropdownButton, Table, Modal} from 'react-bootstrap';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
@@ -44,6 +44,15 @@ class Document extends React.Component {
     this.toggleEdit = this.toggleEdit.bind(this);
   }
 
+  componentDidUpdate(prevProps){
+    if(this.props.fileName !== prevProps.fileName){
+      this.setState(prevState => ({
+        ...prevState,
+        fileName: this.props.fileName
+      }))
+    }
+  }
+
   toggleEdit(){
     this.setState(prevState => ({
       ...prevState,
@@ -65,19 +74,56 @@ class Document extends React.Component {
         <td>{this.props.documentNo}</td>
           {this.state.editFile
             ? <td className="document-name document-name-input"><FormControl name="fileName" type="text" value={this.state.fileName} onChange={this.handleChange}/></td>
-            : <td className="document-name" ><a href="#">{this.state.fileName}</a></td>
+            : <td className="document-name" ><Button variant="link" className="card-button" onClick={()=>{
+                fileService.downloadFile(this.props.fileId)
+                           .then((res) => {
+                             const url = window.URL.createObjectURL(new Blob([res.data]));
+                             const link = document.createElement('a');
+                             link.href = url;
+                             const contentDisposition = res.headers['content-disposition'];
+                             let fileName = 'file';
+                             if (contentDisposition) {
+                                const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                                if (fileNameMatch.length === 2)
+                                    fileName = fileNameMatch[1];
+                            }
+                             link.setAttribute('download', fileName);
+                             document.body.appendChild(link);
+                             link.click();
+                              link.remove();
+                              window.URL.revokeObjectURL(url);
+                           })
+                           .catch(error=>console.log(error))
+            }}>{this.state.fileName}</Button></td>
           }
         <td>{this.props.fileType}</td>
-        <td>{`${this.props.fileSize}kb`}</td>
-        <td>{this.props.dateUploaded}</td>
+        <td className="col_4">{`${this.props.fileSize}kb`}</td>
+        <td className="col_5">{this.props.dateUploaded}</td>
         {this.state.editFile
           ?
-          <td className="document-name-input"><Button variant="primary" onClick={this.toggleEdit}>Save</Button></td>
+          <td className="document-name-input">
+            <Button variant="primary" className="document-button" onClick={()=>{
+              if(this.state.fileName !== this.props.fileName){
+                fileService.editFile(this.props.fileId, this.state.fileName)
+                           .then(()=>{
+                             this.toggleEdit();
+                             this.props.fetchUserFiles();
+                           })
+                           .catch(error=>console.log(error))
+                }else{
+                  this.toggleEdit();
+                }
+            }}>Save</Button>
+            <Button variant="secondary" className="document-button" onClick={this.toggleEdit}>Cancel</Button>
+          </td>
           :
           <td>
           <React.Fragment>
             <Button variant="link" className="card-button" onClick={this.toggleEdit}>Edit</Button>
-            <Button variant="link" className="card-button">Delete</Button>
+            <Button variant="link" className="card-button" onClick={()=>{
+
+              this.props.deleteFile(this.props.fileId);
+            }}>Delete</Button>
           </React.Fragment>
           </td>
         }
@@ -91,16 +137,27 @@ class DocumentsPage extends React.Component {
         super(props);
         this.state = {
           documentFilter: "All",
+          documentSearch: "",
           showFileUploadModal: false,
-          selectedFile: null,
-          selectedFileType: "",
-          selectedFileRename: ""
+          documents: []
         }
 
         this.toggleShowFileUploadModal = this.toggleShowFileUploadModal.bind(this);
         this.onChangeFileHandler = this.onChangeFileHandler.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
-        this.uploadFile = this.uploadFile.bind(this);
+        this.deleteFile = this.deleteFile.bind(this);
+        this.fetchUserFiles = this.fetchUserFiles.bind(this);
+    }
+
+    componentDidMount(){
+      fileService.getAllUserFiles()
+                 .then(data=>{
+                   this.setState(prevState => ({
+                     ...prevState,
+                     documents: data
+                   }))
+                 })
+                 .catch(error=>console.log(error));
     }
 
     selectOption(name, option){
@@ -133,16 +190,28 @@ class DocumentsPage extends React.Component {
       }))
     }
 
-    uploadFile(){
-      //console.log(this.state)
-      fileService.uploadFile(this.state.selectedFile, this.state.selectedFileType, this.state.selectedFileRename)
-      .then(result=>{
+    fetchUserFiles(){
+      fileService.getAllUserFiles()
+                 .then(data=>{
+                   this.setState(prevState => ({
+                     ...prevState,
+                     documents: data
+                   }))
+                 })
+                 .catch(error=>console.log(error));
+    }
+
+    deleteFile(file_id){
+      fileService.deleteFile(file_id)
+      .then(()=>{
+
+        return Promise.resolve(fileService.getAllUserFiles())
+      })
+      .then(data=>{
+
         this.setState(prevState=> ({
             ...prevState,
-            selectedFile: null,
-            selectedFileType: "",
-            selectedFileRename: "",
-            showFileUploadModal: false
+            documents: data
           }))
       })
       .catch(error=>{
@@ -155,31 +224,35 @@ class DocumentsPage extends React.Component {
           <div className="documents-page mx-auto">
           <Button variant="primary float-right" onClick={this.toggleShowFileUploadModal}>Upload Document</Button>
             <h2 className="documents-page-title">My Documents</h2>
-            <Navbar bg="white" expand="lg">
+            <Navbar bg="white">
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                 <Select className="filter-select" placeholder="Document type" options={ filterOptions } onChange={this.selectOption.bind(this, 'documentFilter')} />
                 </Nav>
                 <Form inline>
-                  <FormControl type="text" placeholder="Search Documents" className="mr-sm-2" />
+                  <FormControl name="documentSearch" type="text" placeholder="Search Documents" className="mr-sm-2" value={this.state.documentSearch} onChange={this.onChangeHandler}/>
                   <Button variant="outline-primary">Search</Button>
                 </Form>
               </Navbar.Collapse>
             </Navbar>
-            <Table className="files-table">
+            <Table responsive className="files-table">
               <thead>
                 <tr>
                   <th>No.</th>
                   <th>File Name</th>
                   <th>File Type</th>
-                  <th>File Size</th>
-                  <th>Date Uploaded</th>
+                  <th className="col_4">File Size</th>
+                  <th className="col_5">Date Uploaded</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {documents.map((document, index)=>{
-                  return (<Document key={index} documentNo={index + 1} fileName={document.fileName} fileType={document.fileType} fileSize={document.fileSize} dateUploaded={document.dateUploaded}/>)
+                {this.state.documents.map((document, index)=>{
+                  if(this.state.documentFilter === 'All' && document.file_name.toLowerCase().includes(this.state.documentSearch.toLowerCase())){
+                    return (<Document key={document.file_id} fileId={document.file_id} documentNo={index + 1} fileName={document.file_name} fileType={document.file_type} fileSize={document.file_size} dateUploaded={document.date_uploaded} deleteFile={this.deleteFile} fetchUserFiles={this.fetchUserFiles}/>)
+                  }else if(this.state.documentFilter === document.file_type && document.file_name.toLowerCase().includes(this.state.documentSearch.toLowerCase())){
+                    return (<Document key={document.file_id} fileId={document.file_id} documentNo={index + 1} fileName={document.file_name} fileType={document.file_type} fileSize={document.file_size} dateUploaded={document.date_uploaded} deleteFile={this.deleteFile} fetchUserFiles={this.fetchUserFiles}/>)
+                  }
                 })}
               </tbody>
             </Table>
@@ -189,32 +262,85 @@ class DocumentsPage extends React.Component {
                 <Modal.Title>Upload a new document</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-              <form method="post" action="#" id="#">
-                <div className="form-group files color">
-                  <input type="file" className="form-control" onChange={this.onChangeFileHandler}/>
-                </div>
-              </form>
-              <div className="form-options">
-                <span className="modal-label">File Type:</span>
-                <Select className="filter-select modal-select" placeholder="Document type" options={ filterOptions.slice(1,4) } onChange={this.selectOption.bind(this, 'selectedFileType')}/>
-              </div>
-              <div className="form-options">
-                <span className="modal-label">Rename:</span>
-                <FormControl name="selectedFileRename" className="filter-select modal-select" type="text" placeholder="Optional" value={this.state.selectedFileRename} onChange={this.onChangeHandler}/>
-              </div>
+              <Formik
+                  initialValues={{
+                    file: null,
+                    fileType: '',
+                    fileRename: ''
+                  }}
+                  validationSchema={Yup.object().shape({
+                      file: Yup.mixed().required('File is required'),
+                      fileType: Yup.string().required('File type is required'),
+                      fileRename: Yup.string()
+                  })}
+                  onSubmit={({file, fileType, fileRename}, { setStatus, setSubmitting })=>{
+                    fileService.uploadFile(file, fileType, fileRename)
+                    .then(()=>{
+                      this.toggleShowFileUploadModal()
+                      this.fetchUserFiles();
+                    })
+                    .catch(error=>{
+                      console.log(error);
+                    })
+                  }}
+                  render={({
+                    values,
+                    touched,
+                    errors,
+                    dirty,
+                    isSubmitting,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    handleReset,
+                    setFieldValue,
+                    setFieldTouched
+                  })=>(
+                    <FForm>
+                      <div className="form-group files color">
+                        <input type="file" className="form-control" onChange={(event) => {
+                          setFieldValue("file", event.currentTarget.files[0]);
+                        }}/>
+                      </div>
+                      {errors.file && touched.file && (
+                        <div
+                          style={{ color: "#dc3545",  fontSize:"80%", position: "absolute", top: "10px" }}
+                        >
+                          {errors.file}
+                        </div>
+                      )}
+                      <div className="form-options">
+                        <span className="modal-label">File Type:</span>
+                        <Select className="filter-select modal-select" placeholder="Document type" options={ filterOptions.slice(1,4) } onChange={(option)=>{
+                          setFieldValue("fileType", option.value);
+                        }} onBlur={()=>setFieldTouched('fileType', true)} />
+                        {errors.fileType && touched.fileType && (
+                          <div
+                            style={{ color: "#dc3545", marginTop: ".25rem", marginLeft: "25px", fontSize:"80%" }}
+                          >
+                            {errors.fileType}
+                          </div>
+                        )}
+                      </div>
+                      <div className="form-options" style={{marginBottom: "30px"}}>
+                        <span className="modal-label">Rename:</span>
+                        <Field name="fileRename" type="text" className={'filter-select modal-select '+'form-control'} placeholder='Optional' />
+                      </div>
+                      <Button variant="secondary" className="float-right" onClick={this.toggleShowFileUploadModal}>
+                        Close
+                      </Button>
+                      <Button variant="primary" className="float-right" type="submit">
+                        Upload
+                      </Button>
+                    </FForm>
+                  )}
+              />
               </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={this.toggleShowFileUploadModal}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={this.uploadFile}>
-                  Upload
-                </Button>
-              </Modal.Footer>
             </Modal>
           </div>
         )
     }
 }
+
 
 export { DocumentsPage };

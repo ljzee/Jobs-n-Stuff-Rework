@@ -9,8 +9,14 @@ var fs = require('fs');
 
 //const upload = multer({ dest: `public/` });
 
-router.post('/upload', uploadFile);
+router.post('/', authorize(), uploadFile);
+//router.get('/download', authorize(), downloadFile);
+router.get('/', authorize(), getAllUserFiles);
+router.delete('/:id', authorize(), deleteFile);
+router.put('/:id', authorize(), updateFile);
+router.get('/:id', authorize(), downloadFile);
 module.exports = router;
+
 
 
 var storage = multer.diskStorage({
@@ -27,20 +33,71 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage }).single('file');
 
-router.post('/upload',uploadFile);
 
 
 function uploadFile(req, res, next){
-  upload(req, res, function (err) {
-    console.log(req)
+  upload(req, res, async function (err) {
+    //console.log(req)
      if (err instanceof multer.MulterError) {
          return res.status(500).json(err);
      } else if (err) {
          return res.status(500).json(err);
      } else {
-       fileService.addFile(req.file, req.body.fileType, req.body.fileRename);
-
-        res.sendStatus(200);
+       try{
+         await fileService.addFile(req.user.sub, req.file, req.body.fileType, req.body.fileRename)
+         res.sendStatus(200);
+       }catch(error){
+         console.log(error);
+         res.status(500).json(error)
+       }
      }
   })
+}
+
+async function getAllUserFiles(req, res, next){
+    try{
+      let files = await fileService.getAllUserFiles(req.user.sub)
+      res.json(files);
+    }catch(error){
+      console.log(error);
+      res.status(500).json(error);
+    }
+}
+
+async function deleteFile(req, res, next){
+  try{
+    await fileService.deleteFile(req.user.sub, req.params.id);
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json(error);
+  }
+}
+
+async function updateFile(req, res, next){
+  try{
+    await fileService.updateFile(req.user.sub, req.params.id, req.body.fileRename);
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json(error);
+  }
+}
+
+async function downloadFile(req, res, next){
+  try{
+    let file = await fileService.getFilePath(req.user.sub, req.params.id, req.body.fileRename);
+    if(file){
+      res.download(file.file_path, file.file_name, function(err){
+        if(err){
+          console.log(err)
+        }
+      });
+    }else{
+      res.status(400).json({errors: 'File does not exist'});
+    }
+  }catch(error){
+    console.log(error);
+    res.status(500).json(error);
+  }
 }

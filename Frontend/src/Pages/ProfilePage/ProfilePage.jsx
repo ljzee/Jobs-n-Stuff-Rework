@@ -68,6 +68,7 @@ class ProfilePage extends React.Component {
     componentDidMount(){
       userService.getProfile()
       .then(profile =>{
+        //console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,
@@ -136,6 +137,8 @@ class ProfilePage extends React.Component {
         }))
       })
     }
+
+
 
     render() {
         return (
@@ -207,7 +210,7 @@ class ProfilePage extends React.Component {
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
-                    {this.state.experiences.map((experience, id) => <ExperienceCard key={id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description} updateProfile={this.updateProfile}/>)}
+                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description} updateProfile={this.updateProfile}/>)}
                   </ListGroup>
                 </Card>
 
@@ -282,9 +285,9 @@ class ProfilePage extends React.Component {
                     }}
                     validationSchema={Yup.object().shape({
                         company: Yup.string().required('Company is required'),
-                        title: Yup.string().required('Company is required'),
-                        location: Yup.string().required('Company is required'),
-                        duration: Yup.string().required('Company is required'),
+                        title: Yup.string().required('Title is required'),
+                        location: Yup.string().required('Location is required'),
+                        duration: Yup.string().required('Duration is required'),
                         description: Yup.string()
                     })}
                     onSubmit={({company, title, location, duration, description}, { setStatus, setSubmitting }) => {

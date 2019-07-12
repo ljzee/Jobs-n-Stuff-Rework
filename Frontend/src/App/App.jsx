@@ -40,20 +40,22 @@ class App extends React.Component {
         const { currentUser, isAdmin } = this.state;
         return (
             <Router history={history}>
-                <div className="body">
+                <div>
                     <Header/>
-                        <div className="container">
-                            <Switch>
-                                <PrivateRoute exact path="/" component={HomePage} />
-                                <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
-                                <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
-                                <Route path="/login" component={LoginPage} />
-                                <Route path='/signup' component={SignupPage} />
-                                <Route path='/documents' component={DocumentsPage}/>
-                                <PrivateRoute path='/myprofile'component={ProfilePage}/>
-                                <Route path='/welcomepage' component={WelcomePage}/>
-                            </Switch>
-                        </div>
+                    <div className="body">
+                      <div className="container">
+                          <Switch>
+                              <PrivateRoute exact path="/" component={HomePage} />
+                              <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
+                              <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
+                              <Route path="/login" component={LoginPage} />
+                              <Route path='/signup' component={SignupPage} />
+                              <PrivateRoute path='/documents' component={DocumentsPage}/>
+                              <PrivateRoute path='/myprofile'component={ProfilePage}/>
+                              <Route path='/welcomepage' component={WelcomePage}/>
+                          </Switch>
+                      </div>
+                    </div>
                 </div>
             </Router>
         );
