@@ -43,7 +43,7 @@ class CreateProfilePage extends React.Component {
                             .then(
                               result=>{
                                 const currentUser = authenticationService.currentUserValue;
-                                const { from } = this.props.location.state || { from: { pathname: `/myprofile` } };
+                                const { from } = this.props.location.state || { from: { pathname: `/dashboard` } };
                                 this.props.history.push(from);
                               }
                             ).catch(error =>{

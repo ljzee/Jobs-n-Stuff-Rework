@@ -45,11 +45,12 @@ class App extends React.Component {
                     <div className="body">
                       <div className="container">
                           <Switch>
-                              <PrivateRoute exact path="/" component={HomePage} />
-                              <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
-                              <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
+                              <Route exact path="/" component={WelcomePage} />
                               <Route path="/login" component={LoginPage} />
                               <Route path='/signup' component={SignupPage} />
+                              <PrivateRoute exact path="/dashboard" component={HomePage} />
+                              <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
+                              <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
                               <PrivateRoute path='/documents' component={DocumentsPage}/>
                               <PrivateRoute path='/myprofile'component={ProfilePage}/>
                               <Route path='/welcomepage' component={WelcomePage}/>

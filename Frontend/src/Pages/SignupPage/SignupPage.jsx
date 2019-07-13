@@ -60,7 +60,7 @@ class SignupPage extends React.Component {
 
         // redirect to home if already logged in
         if (authenticationService.currentUserValue) {
-            this.props.history.push('/');
+            this.props.history.push('/dashboard');
         }
     }
 
@@ -88,7 +88,7 @@ class SignupPage extends React.Component {
                         authenticationService.register(email, username, password, radioGroup)
                             .then(
                                 user => {
-                                    const { from } = this.props.location.state || { from: { pathname: "/" } };
+                                    const { from } = this.props.location.state || { from: { pathname: "/dashboard" } };
                                     this.props.history.push(from);
                                 }
                             ).catch(error => {
