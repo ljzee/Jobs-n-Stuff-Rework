@@ -60,3 +60,11 @@
 .aboutme-helper-message{
   opacity: 0.6;
 }
+
+.date-label{
+  width: 100px;
+}
+
+.duration{
+  text-align: center;
+}

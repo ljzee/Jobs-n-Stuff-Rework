@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Field, ErrorMessage, Form as FForm } from 'formik';
-import {Navbar, Nav, NavDropdown, Form, FormControl, Button, Dropdown, DropdownButton, Table, Modal} from 'react-bootstrap';
+import {Spinner, Navbar, Nav, NavDropdown, Form, FormControl, Button, Dropdown, DropdownButton, Table, Modal} from 'react-bootstrap';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import './Documents.css';
@@ -74,7 +74,7 @@ class Document extends React.Component {
         <td>{this.props.documentNo}</td>
           {this.state.editFile
             ? <td className="document-name document-name-input"><FormControl name="fileName" type="text" value={this.state.fileName} onChange={this.handleChange}/></td>
-            : <td className="document-name" ><Button variant="link" className="card-button" onClick={()=>{
+            : <td className="document-name" ><Button variant="link" className="document-download-button" onClick={()=>{
                 fileService.downloadFile(this.props.fileId)
                            .then((res) => {
                              const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -139,7 +139,8 @@ class DocumentsPage extends React.Component {
           documentFilter: "All",
           documentSearch: "",
           showFileUploadModal: false,
-          documents: []
+          documents: [],
+          isLoading: true
         }
 
         this.toggleShowFileUploadModal = this.toggleShowFileUploadModal.bind(this);
@@ -154,7 +155,8 @@ class DocumentsPage extends React.Component {
                  .then(data=>{
                    this.setState(prevState => ({
                      ...prevState,
-                     documents: data
+                     documents: data,
+                     isLoading: false
                    }))
                  })
                  .catch(error=>console.log(error));
@@ -220,6 +222,18 @@ class DocumentsPage extends React.Component {
     }
 
     render() {
+
+        if(this.state.isLoading) {
+          return (
+            <div className="documents-page mx-auto">
+              <h2 className="documents-page-title">My Documents</h2>
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            </div>
+          )
+        }
+
         return (
           <div className="documents-page mx-auto">
           <Button variant="primary float-right" onClick={this.toggleShowFileUploadModal}>Upload Document</Button>

@@ -10,7 +10,8 @@ export const userService = {
     createProfile,
     getProfile,
     addExperience,
-    deleteExperience
+    deleteExperience,
+    updateProfile
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -40,12 +41,22 @@ function getProfile(){
 
 }
 
-function addExperience(company, title, location, duration, description){
+function updateProfile(bio, phoneNumber, personalWebsite, github){
+  const user = authenticationService.currentUserValue;
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.put(`${config.apiUrl}/users/profile/${user.id}`, {'bio': bio, 'phoneNumber': phoneNumber, 'personalWebsite': personalWebsite, 'github':github} ,configOptions)
+              .then()
+              .catch((error) => Promise.reject(error.response.data.message))
+}
+
+function addExperience(company, title, location, startDate, endDate, description){
   const configOptions = {
       headers: authHeader()
   };
 
-  return axios.post(`${config.apiUrl}/users/addexperience`, { 'company': company, 'title': title, 'location': location, 'duration': duration, 'description': description}, configOptions)
+  return axios.post(`${config.apiUrl}/users/addexperience`, { 'company': company, 'title': title, 'location': location, 'startDate': startDate, 'endDate': endDate, 'description': description}, configOptions)
       .then()
       .catch((error)=>Promise.reject(error.response.data.message));
 }

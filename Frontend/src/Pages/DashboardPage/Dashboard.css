@@ -1,0 +1,19 @@
+.dashboard-page{
+  width: 90%;
+}
+
+.dashboard-page-title{
+  margin-bottom: 25px;
+}
+
+.dashboard-page .row{
+  margin-bottom: 20px;
+}
+
+.notification-container{
+  height: 91%;
+}
+
+.dashboard-page .alert{
+  margin-bottom: 5px;
+}

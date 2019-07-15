@@ -13,6 +13,7 @@ import { ProfilePage } from '@/Pages/ProfilePage';
 import { WelcomePage} from '@/Pages/WelcomePage';
 import { CreateProfilePage} from '@/Pages/CreateProfilePage';
 import { DocumentsPage} from '@/Pages/DocumentsPage';
+import { DashboardPage} from '@/Pages/DashboardPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class App extends React.Component {
                               <Route exact path="/" component={WelcomePage} />
                               <Route path="/login" component={LoginPage} />
                               <Route path='/signup' component={SignupPage} />
-                              <PrivateRoute exact path="/dashboard" component={HomePage} />
+                              <PrivateRoute exact path="/dashboard" component={DashboardPage} />
                               <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                               <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
                               <PrivateRoute path='/documents' component={DocumentsPage}/>

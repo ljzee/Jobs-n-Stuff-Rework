@@ -4,6 +4,7 @@ const userService = require('./user.service');
 const authorize = require('_helpers/authorize')
 const Role = require('_helpers/role');
 const{check, validationResult} = require('express-validator');
+var path = require('path');
 
 // routes
 router.post('/authenticate', authenticate);
@@ -18,11 +19,13 @@ router.post('/addexperience',
              check('company').not().isEmpty().withMessage('Company name cannot be empty'),
              check('title').not().isEmpty().withMessage('Title cannot be empty'),
              check('location').not().isEmpty().withMessage('Location cannot be empty'),
-             check('duration').not().isEmpty().withMessage('Duration cannot be empty'),
+             check('startDate').not().isEmpty().withMessage('Duration cannot be empty'),
              authorize(),
              addExperience);
 router.post('/deleteexperience/:id', authorize(), deleteExperience);
-router.get('/profile/:id', getProfileById)
+router.get('/profile/:id', getProfileById);
+router.get('/profile/profile-image/:name', getProfileImage);
+router.put('/profile/:id', authorize(), updateProfile);
 router.get('/', authorize(Role.Admin), getAll); // admin only
 router.get('/:id', authorize(), getById);       // all authenticated users
 module.exports = router;
@@ -83,6 +86,7 @@ async function addExperience(req, res, next){
   let errorMessages = errors.map(error => error.msg);
   if(errorMessages.length) {
     res.status(400).json({errors: errorMessages});
+    console.log(errorMessages)
     return;
   }
 
@@ -124,6 +128,34 @@ async function getProfileById(req, res, next){
   }
 }
 
+async function getProfileImage(req, res, next){
+  try{
+    var options = {
+      root: path.join(__dirname, '../public/profileimages')
+    }
+
+    res.status(200);
+    res.sendFile(req.params.name, options, function(err){
+      if(err){
+        console.log(err);
+        res.sendStatus(400);
+      }
+    })
+  }catch(error){
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
+
+async function updateProfile(req, res, next){
+  try{
+    await userService.updateProfile(req.user.sub, req.body);
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
 
 /*
 userService.getByUsernameOrEmail(req.body, (err,res)=>{

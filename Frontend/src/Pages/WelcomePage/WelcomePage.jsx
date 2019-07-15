@@ -35,8 +35,8 @@ class WelcomePage extends React.Component {
                         alt="First slide"
                       />
                       <Carousel.Caption>
-                        <h4 className="JumbotronMessage">The best time to start was yesterday, the next best time is now.</h4>
-                        <Button className="JumbotronButton" href="/signup">Start Here</Button>
+                        <h4 className="carousel-message">The best time to start was yesterday, the next best time is now.</h4>
+                        <Button className="carousel-button"><Link to="signup">Start Here</Link></Button>
                       </Carousel.Caption>
                     </Carousel.Item>
                     <Carousel.Item>
@@ -47,8 +47,8 @@ class WelcomePage extends React.Component {
                       />
 
                       <Carousel.Caption>
-                        <h4 className="JumbotronMessage">The best time to start was yesterday, the next best time is now.</h4>
-                        <Button className="JumbotronButton" href="/signup">Start Here</Button>
+                        <h4 className="carousel-message">The best time to start was yesterday, the next best time is now.</h4>
+                        <Button className="carousel-button" ><Link to="signup">Start Here</Link></Button>
                       </Carousel.Caption>
                     </Carousel.Item>
                   </Carousel>
@@ -57,25 +57,27 @@ class WelcomePage extends React.Component {
               </Row>
 
               <Row>
-                <Col>
+                <Col sm={12} md={6}>
                   <Card>
-                    <Button variant="light">
+                    <Button variant="light" className="welcomepage-main-button">
                       <Nav.Link as={Link} to="signup">
                         <Card.Body>
                         <img className="welcome-page-icon" src={require('../../Images/suitcase.png')} alt="work-briefcase"/>
-                        <Card.Text>Looking for work?</Card.Text>
+                        <Card.Title>Looking for work?</Card.Title>
+                        <Card.Text>Our simple and intuitive design will allow you to search job postings, customize your profile and more...</Card.Text>
                         </Card.Body>
                       </Nav.Link>
                     </Button>
                   </Card>
                 </Col>
-                <Col>
-                <Card>
-                  <Button variant="light">
+                <Col sm={12} md={6}>
+                <Card >
+                  <Button variant="light" className="welcomepage-main-button">
                     <Nav.Link as={Link} to="signup">
                       <Card.Body>
                       <img className="welcome-page-icon" src={require('../../Images/team.png')} alt="people"/>
-                      <Card.Text>Looking for talent?</Card.Text>
+                      <Card.Title>Looking for talent?</Card.Title>
+                      <Card.Text>Post your openings and be able to view your applicants in a card-like display. You will find the perfect match in no time...</Card.Text>
                       </Card.Body>
                     </Nav.Link>
                   </Button>
@@ -83,22 +85,22 @@ class WelcomePage extends React.Component {
                 </Col>
               </Row>
 
-              <Row>
-                <Col>
+              <Row className="last-row">
+                <Col sm={12} md={4}>
                   <Card>
                     <Card.Body>
                     <CountUp className='number' end={512} duration={2}/><br/>Jobs Available
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col>
+                <Col sm={12} md={4}>
                 <Card>
                   <Card.Body>
                   <CountUp className='number' end={315} duration={2}/><br/>Applicants Contacted
                   </Card.Body>
                 </Card>
                 </Col>
-                <Col>
+                <Col sm={12} md={4}>
                 <Card>
                   <Card.Body>
                   <CountUp className='number' end={15} duration={2}/><br/>New Companies

@@ -1,11 +1,14 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {Card, Button, Row, Col, Form, ListGroup, ListGroupItem, Modal} from 'react-bootstrap';
+import {Spinner, Card, Button, Row, Col, Form, ListGroup, ListGroupItem, Modal} from 'react-bootstrap';
 import { Formik, Field, ErrorMessage, Form as FForm } from 'formik';
 import * as Yup from 'yup';
 import profileicon from '../../Images/profile-icon.png'
 import {ExperienceCard} from './ExperienceCard';
 import { ImagePicker } from 'react-file-picker';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css"
+import config from 'config';
 
 import './Profile.css';
 
@@ -42,10 +45,14 @@ const experiences = [
 class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
+
+        let currentUser = authenticationService.currentUserValue;
+
         this.state = {
           showModal: false,
           editAboutMe: false,
           editContactInformation: false,
+          id: currentUser.id,
           firstName: '',
           lastName: '',
           aboutMe: '',
@@ -54,7 +61,9 @@ class ProfilePage extends React.Component {
           personalWebsite: '',
           githubLink: '',
           experiences: [],
-          education: []
+          education: [],
+          profileImageName: '',
+          isLoading: true
         }
 
         this.toggleEditAboutMe = this.toggleEditAboutMe.bind(this);
@@ -62,13 +71,12 @@ class ProfilePage extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleFileSelect = this.handleFileSelect.bind(this);
         this.toggleShowModal = this.toggleShowModal.bind(this);
-        this.updateProfile = this.updateProfile.bind(this);
+        this.refreshProfile = this.refreshProfile.bind(this);
     }
 
     componentDidMount(){
       userService.getProfile()
       .then(profile =>{
-        //console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,
@@ -78,7 +86,9 @@ class ProfilePage extends React.Component {
           phoneNumber: profile.phone_number,
           personalWebsite: profile.personal_website,
           githubLink: profile.github_link,
-          experiences: profile.experiences
+          experiences: profile.experiences,
+          profileImageName: profile.profile_image_name,
+          isLoading:false
         }))
       })
     }
@@ -120,10 +130,9 @@ class ProfilePage extends React.Component {
       console.log(event.target.files[0]);
     }
 
-    updateProfile(){
+    refreshProfile(){
       userService.getProfile()
       .then(profile =>{
-        console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,
@@ -141,6 +150,21 @@ class ProfilePage extends React.Component {
 
 
     render() {
+
+        if(this.state.isLoading) return(
+
+          <div className="profile-page mx-auto">
+            <Row>
+              <Col xs={12} sm={12} md={{span: 7, offset: 5}} lg={{span: 9, offset: 3}} style={{marginBottom: 0}}>
+                <h2 className="profile-page-title">My Profile</h2>
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              </Col>
+            </Row>
+          </div>
+        )
+
         return (
           <div className="profile-page mx-auto">
             <Row>
@@ -155,7 +179,8 @@ class ProfilePage extends React.Component {
                   <Card.Header>Profile Picture</Card.Header>
                   <Card.Body>
                     <h6>Welcome back, {this.state.firstName}!</h6>
-                    <Card.Img className="profile-image" variant="top" src={profileicon}/>
+                    {this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={`${config.apiUrl}/users/profile/profile-image/${this.state.profileImageName}`}/>}
+                    {!this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={profileicon}/>}
                     <ImagePicker
                       extensions={['jpg', 'jpeg', 'png']}
                       dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
@@ -200,7 +225,15 @@ class ProfilePage extends React.Component {
                           </Form.Group>
                         </Form>
                         <Button variant="secondary" className="edit-button float-right" onClick={this.toggleEditAboutMe}>Cancel</Button>
-                        <Button variant="primary" className="edit-button float-right" onClick={this.toggleEditAboutMe}>Save</Button>
+                        <Button variant="primary" className="edit-button float-right" onClick={()=>{
+                          userService.updateProfile(this.state.aboutMe, this.state.phoneNumber, this.state.personalWebsite, this.state.githubLink)
+                                     .then(()=>{
+                                       this.toggleEditAboutMe();
+                                       this.refreshProfile();
+                                     })
+                                     .catch(error=>console.log(error))
+                        }
+                        }>Save</Button>
                       </Card.Body>
                     }
                 </Card>
@@ -210,7 +243,7 @@ class ProfilePage extends React.Component {
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
-                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description} updateProfile={this.updateProfile}/>)}
+                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description} startDate={experience.start_date} endDate={experience.end_date} refreshProfile={this.refreshProfile}/>)}
                   </ListGroup>
                 </Card>
 
@@ -245,10 +278,6 @@ class ProfilePage extends React.Component {
                     <Card.Body>
                       <Form>
                         <Form.Group>
-                          <Form.Label><b>Email:</b> </Form.Label>
-                          <Form.Control type="email" value={this.state.email} name='email' onChange={this.handleChange} />
-                        </Form.Group>
-                        <Form.Group>
                           <Form.Label><b>Phone Number:</b> </Form.Label>
                           <Form.Control type="text" value={this.state.phoneNumber} name='phoneNumber' onChange={this.handleChange} />
                         </Form.Group>
@@ -262,7 +291,14 @@ class ProfilePage extends React.Component {
                         </Form.Group>
                       </Form>
                       <Button variant="secondary" className="edit-button float-right" onClick={this.toggleEditContactInformation}>Cancel</Button>
-                      <Button variant="primary" className="edit-button float-right" onClick={this.toggleEditContactInformation}>Save</Button>
+                      <Button variant="primary" className="edit-button float-right" onClick={()=>{
+                        userService.updateProfile(this.state.aboutMe, this.state.phoneNumber, this.state.personalWebsite, this.state.githubLink)
+                                   .then(()=>{
+                                     this.toggleEditContactInformation();
+                                     this.refreshProfile();
+                                   })
+                                   .catch(error=>console.log(error))
+                      }}>Save</Button>
                     </Card.Body>
                   }
                 </Card>
@@ -280,23 +316,25 @@ class ProfilePage extends React.Component {
                       company: '',
                       title: '',
                       location: '',
-                      duration: '',
-                      description: ''
+                      description: '',
+                      startDate: '',
+                      endDate: ''
                     }}
                     validationSchema={Yup.object().shape({
                         company: Yup.string().required('Company is required'),
                         title: Yup.string().required('Title is required'),
                         location: Yup.string().required('Location is required'),
-                        duration: Yup.string().required('Duration is required'),
-                        description: Yup.string()
+                        description: Yup.string(),
+                        startDate: Yup.string().required('Start date is required'),
+                        endDate: Yup.string()
                     })}
-                    onSubmit={({company, title, location, duration, description}, { setStatus, setSubmitting }) => {
-                      userService.addExperience(company, title, location, duration, description).then(()=>{
-                        this.updateProfile();
+                    onSubmit={({company, title, location, description, startDate, endDate}, { setStatus, setSubmitting }) => {
+                      userService.addExperience(company, title, location, startDate, endDate, description).then(()=>{
+                        this.refreshProfile();
                         this.toggleShowModal();
                       })
                     }}
-                    render={({ values, errors, status, touched, isSubmitting }) => (
+                    render={({ values, errors, status, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
                         <FForm>
                             <div className="form-group">
                                 <label htmlFor="company"><b>Company:</b></label>
@@ -314,9 +352,28 @@ class ProfilePage extends React.Component {
                                 <ErrorMessage name="location" component="div" className="invalid-feedback" />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="duration"><b>Duration:</b></label>
-                                <Field name="duration" type="text" className={'form-control' + (errors.duration && touched.duration ? ' is-invalid' : '')} />
-                                <ErrorMessage name="duration" component="div" className="invalid-feedback" />
+                                <label className="date-label" htmlFor="startDate"><b>Start Date:</b></label>
+                                <DatePicker name="startDate" value={values.startDate}
+                                  onChange={(date) =>{
+                                    setFieldValue("startDate",date.toISOString().split("T")[0])
+                                  }}
+                                  onBlur={()=>setFieldTouched('startDate', true)}
+                                />
+                                {errors.startDate && touched.startDate && (
+                                  <div
+                                    style={{ color: "#dc3545", marginTop: ".10rem", fontSize:"80%" }}
+                                  >
+                                    {errors.startDate}
+                                  </div>
+                                )}
+                            </div>
+                            <div className="form-group">
+                                <label className="date-label" htmlFor="endDate"><b>End Date:</b></label>
+                                <DatePicker name="endDate" value={values.endDate}
+                                  onChange={(date) =>{
+                                    setFieldValue("endDate",date.toISOString().split("T")[0])
+                                  }}
+                                />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="description"><b>Description:</b></label>

@@ -71,7 +71,6 @@ function downloadFile(fileId){
   };
   return axios.get(`${config.apiUrl}/files/${fileId}`, configOptions)
           .then(res=>{
-            console.log(res)
             return res
           })
           .catch((error) => Promise.reject(error));

@@ -86,15 +86,17 @@
   width: 65px !important;
   padding-left: 0;
   padding-right: 0;
+  margin-left: 10px;
+}
+
+.document-download-button{
+  padding: 0 !important;
 }
 
 .document-name-input, .document-save-button{
   padding: 0.35rem !important;
 }
 
-.btn{
-  margin-left: 10px;
-}
 
 @media all and (max-width: 750px){
   .col_4, .col_5{

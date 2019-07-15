@@ -19,7 +19,8 @@ module.exports = {
     getUserProfile,
     addUserProfile,
     addExperience,
-    deleteExperience
+    deleteExperience,
+    updateProfile
 };
 
 async function authenticate({ username, password }) {
@@ -82,10 +83,11 @@ async function addUserProfile(id, {firstname, lastname, phonenumber, personalweb
   }
 }
 
-async function addExperience(id, {company, title, location, duration, description}){
+async function addExperience(id, {company, title, location, startDate, endDate, description}){
+  if(endDate === '') endDate = null;
   let results;
   try{
-    results = await pool.query('INSERT INTO user_experience(experience_id, id, company_name, title, location, duration, description) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6)', [id, company, title, location, duration, description]);
+    results = await pool.query('INSERT INTO user_experience(experience_id, id, company_name, title, location, start_date, end_date, description) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7)', [id, company, title, location, startDate, endDate, description]);
   }catch(error){
     throw error;
   }
@@ -125,11 +127,11 @@ async function getByUsernameOrEmail({username, email}, cb){
 }
 
 async function getUserProfile({id}){
-  console.log(id)
+  //console.log(id)
   let profile, experiences;
   try{
     profile = await pool.query('SELECT email, user_profile.* FROM user_profile, users WHERE user_profile.id = users.id AND user_profile.id = $1', [id]);
-    experiences = await pool.query('SELECT * FROM user_experience WHERE id = $1', [id]);
+    experiences = await pool.query('SELECT * FROM user_experience WHERE id = $1 ORDER BY end_date DESC', [id]);
   }catch(error){
     throw error;
   }
@@ -139,7 +141,13 @@ async function getUserProfile({id}){
   return profile.rows;
 }
 
-
+async function updateProfile(id, {bio, phoneNumber, personalWebsite, github}){
+  try{
+    await pool.query('UPDATE user_profile SET bio = $1, phone_number = $2, personal_website = $3, github_link = $4 WHERE id = $5', [bio, phoneNumber, personalWebsite, github, id]);
+  }catch(error){
+    throw error;
+  }
+}
 /*
 db.query('SELECT NOW()', (err,res)=>{
   if(err.error)

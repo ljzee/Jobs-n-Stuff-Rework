@@ -42,20 +42,22 @@ class ExperienceCard extends React.Component {
   }
 
   render(){
+    const startDateSplit = this.props.startDate.split('-');
+    const endDateSplit = (this.props.endDate === null ? null : this.props.endDate.split('-'));
     return(
       <ListGroupItem>
         {!this.state.isEditting &&
         <div>
           <Button variant="link" className="card-button float-right" onClick={()=>{
             userService.deleteExperience(this.props.experience_id)
-              .then(this.props.updateProfile);
+              .then(this.props.refreshProfile);
           }}>Delete</Button>
           <Button variant="link" className="card-button float-right" onClick={this.toggleEdit}>Edit</Button>
           <Row>
-            <Col xs={12} s={12} md={12} lg={2}>
-              <div>Present</div>
+            <Col className="duration" xs={12} s={12} md={12} lg={2}>
+              <div>{(this.props.endDate === null ? 'Present' : `${endDateSplit[0]}/${endDateSplit[1]}`)}</div>
               <div>-</div>
-              <div>2015</div>
+              <div>{`${startDateSplit[0]}/${startDateSplit[1]}`}</div>
             </Col>
             <Col xs={12} s={12} md={12} lg={10}>
               <p><b>{this.state.company}</b> - {this.state.title}</p>

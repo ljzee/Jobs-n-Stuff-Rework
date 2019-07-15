@@ -90,7 +90,7 @@ async function downloadFile(req, res, next){
     if(file){
       res.download(file.file_path, file.file_name, function(err){
         if(err){
-          console.log(err)
+          res.status(500).json(err);
         }
       });
     }else{

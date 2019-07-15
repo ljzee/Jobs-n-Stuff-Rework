@@ -15,7 +15,7 @@ async function addFile(id, file, fileType, fileRename){
       if (fileRename !== ""){
         let extension = file.originalname.split(/\.(?=[^\.]+$)/);
         let newFileName = `${fileRename}.${extension[1]}`;
-        console.log(Math.round(file.size/1000));
+        //console.log(Math.round(file.size/1000));
         results = await pool.query('INSERT INTO user_documents(id, file_id, file_path, file_name, file_type, file_size, date_uploaded) VALUES ($1, DEFAULT, $2, $3, $4, $5, DEFAULT)', [id, file.path, newFileName, fileType, Math.round(file.size/1000)]);
       }else{
         results = await pool.query('INSERT INTO user_documents(id, file_id, file_path, file_name, file_type, file_size, date_uploaded) VALUES ($1, DEFAULT, $2, $3, $4, $5, DEFAULT)', [id, file.path, file.originalname, fileType, Math.round(file.size/1000)]);
@@ -38,7 +38,7 @@ async function addFile(id, file, fileType, fileRename){
 async function deleteFile(userId, fileId){
   try{
     await pool.query('DELETE FROM user_documents WHERE id = $1 AND file_id = $2', [userId, fileId]);
-    console.log(userId + ' ' + fileId);
+    //console.log(userId + ' ' + fileId);
   }catch(error){
     throw error;
   }
