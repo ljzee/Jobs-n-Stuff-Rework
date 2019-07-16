@@ -14,6 +14,7 @@ import { WelcomePage} from '@/Pages/WelcomePage';
 import { CreateProfilePage} from '@/Pages/CreateProfilePage';
 import { DocumentsPage} from '@/Pages/DocumentsPage';
 import { DashboardPage} from '@/Pages/DashboardPage';
+import { PageNotFound} from '@/Pages/PageNotFound';
 
 class App extends React.Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class App extends React.Component {
                               <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
                               <PrivateRoute path='/documents' component={DocumentsPage}/>
                               <PrivateRoute path='/myprofile'component={ProfilePage}/>
-                              <Route path='/welcomepage' component={WelcomePage}/>
+                              <Route component={PageNotFound}/>
                           </Switch>
                       </div>
                     </div>

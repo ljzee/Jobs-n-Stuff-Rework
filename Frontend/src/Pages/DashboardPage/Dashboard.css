@@ -17,3 +17,41 @@
 .dashboard-page .alert{
   margin-bottom: 5px;
 }
+
+.notification-box{
+  height: 292px;
+  overflow-y: scroll
+}
+
+.dashboard-page .icon{
+  height: 30px;
+  width: 30px;
+  float: right
+}
+
+.dashboard-card-title{
+  height: 30px;
+  display: inline-block;
+  line-height: 30px;
+  margin-bottom: 0
+}
+
+.clickable-cell{
+  padding: 0 !important;
+  width: inherit;
+}
+
+.clickable-cell a{
+  margin-left: 12px;
+  height: 50px;
+  line-height: 50px;
+  width: 100%;
+  display: block;
+  color:#007bff;
+  font-size: 15px;
+}
+
+.unsave-button{
+  font-size: 0.825rem;
+  padding: .250rem .50rem
+}

@@ -340,7 +340,7 @@ class DocumentsPage extends React.Component {
                         <span className="modal-label">Rename:</span>
                         <Field name="fileRename" type="text" className={'filter-select modal-select '+'form-control'} placeholder='Optional' />
                       </div>
-                      <Button variant="secondary" className="float-right" onClick={this.toggleShowFileUploadModal}>
+                      <Button variant="secondary" className="document-button float-right" onClick={this.toggleShowFileUploadModal}>
                         Close
                       </Button>
                       <Button variant="primary" className="float-right" type="submit">
