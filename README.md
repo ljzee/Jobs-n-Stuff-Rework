@@ -2,7 +2,7 @@
 ##WIP Screenshots
 
 *Welcome Page*\
-![](WIP Screenshots/welcome.png)
+![](WIPScreenshots/welcome.png)
 \
 *Login*\
 ![](screenshots/login.png)
