@@ -1,26 +1,20 @@
 # EmployMee
-##WIP Screenshots
+## WIP Screenshots
 
 *Welcome Page*\
 ![](WIPScreenshots/welcome.png)
 \
-*Login*\
-![](screenshots/login.png)
+*Post-Signup Page*\
+![](WIPScreenshots/postsignup.png)
 \
 *User Dashboard*\
-![](screenshots/userdashboard.png)
+![](WIPScreenshots/dashboard.png)
 \
-*User Perspective of Job Posting*\
-![](screenshots/jobposting.png)
+*User Profile Page*\
+![](WIPScreenshots/profile.png)
 \
-*Pick Documents For Application*\
-![](screenshots/pickdocuments.png)
+*Documents Page*\
+![](WIPScreenshots/documents.png)
 \
-*Business's Current Openings*\
-![](screenshots/businessmanage.png)
-\
-*Business Profile*\
-![](screenshots/businessprofile.png)
-\
-*Admin Perspective*\
-![](screenshots/admin.png)
+*Documents Upload Modal*\
+![](WIPScreenshots/documentsupload.png)
