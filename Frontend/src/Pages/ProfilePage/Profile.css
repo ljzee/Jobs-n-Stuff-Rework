@@ -68,3 +68,10 @@
 .duration{
   text-align: center;
 }
+
+.setting-button{
+  padding:0;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  display:block;
+}

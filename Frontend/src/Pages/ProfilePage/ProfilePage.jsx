@@ -77,6 +77,7 @@ class ProfilePage extends React.Component {
     componentDidMount(){
       userService.getProfile()
       .then(profile =>{
+        console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,
@@ -176,7 +177,7 @@ class ProfilePage extends React.Component {
             <Row >
               <Col xs={12} sm={12} md={5} lg={3}>
                 <Card >
-                  <Card.Header>Profile Picture</Card.Header>
+                  <Card.Header>Personal</Card.Header>
                   <Card.Body>
                     <h6>Welcome back, {this.state.firstName}!</h6>
                     {this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={`${config.apiUrl}/users/profile/profile-image/${this.state.profileImageName}`}/>}
@@ -200,6 +201,14 @@ class ProfilePage extends React.Component {
                       <p><b>Website:</b><br/><a href=''>{this.state.personalWebsite}</a></p>
                       <p><b>Github:</b><br/><a href=''>{this.state.githubLink}</a></p>
                     </div>
+                  </Card.Body>
+                </Card>
+
+                <Card>
+                  <Card.Header>Account Settings</Card.Header>
+                  <Card.Body>
+                    <Button className="setting-button" variant="link">Change Password</Button>
+                    <Button className="setting-button" variant="link">Delete Account</Button>
                   </Card.Body>
                 </Card>
               </Col>
@@ -243,7 +252,7 @@ class ProfilePage extends React.Component {
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
-                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} duration={experience.duration} description={experience.description} startDate={experience.start_date} endDate={experience.end_date} refreshProfile={this.refreshProfile}/>)}
+                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} description={experience.description} startDate={experience.start_date} endDate={experience.end_date} refreshProfile={this.refreshProfile}/>)}
                   </ListGroup>
                 </Card>
 

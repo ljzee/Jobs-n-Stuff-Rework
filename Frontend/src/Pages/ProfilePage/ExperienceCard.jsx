@@ -4,6 +4,7 @@ import {Card, Button, Row, Col, ListGroup, ListGroupItem, Modal} from 'react-boo
 import { Formik, Field, ErrorMessage, Form } from 'formik';
 import * as Yup from 'yup';
 import profileicon from '../../Images/profile-icon.png'
+import DatePicker from 'react-datepicker';
 
 import './Profile.css';
 
@@ -14,11 +15,6 @@ class ExperienceCard extends React.Component {
     super(props);
       this.state = {
         isEditting: false,
-        company: this.props.company,
-        title: this.props.title,
-        location: this.props.location,
-        duration: this.props.duration,
-        description: this.props.description
       }
       this.toggleEdit = this.toggleEdit.bind(this);
       this.handleChange = this.handleChange.bind(this);
@@ -60,9 +56,9 @@ class ExperienceCard extends React.Component {
               <div>{`${startDateSplit[0]}/${startDateSplit[1]}`}</div>
             </Col>
             <Col xs={12} s={12} md={12} lg={10}>
-              <p><b>{this.state.company}</b> - {this.state.title}</p>
-              <p>{this.state.location}</p>
-              <p><b>Description: </b>{this.state.description}</p>
+              <p><b>{this.props.company}</b> - {this.props.title}</p>
+              <p>{this.props.location}</p>
+              <p><b>Description: </b>{this.props.description}</p>
             </Col>
           </Row>
         </div>
@@ -75,21 +71,23 @@ class ExperienceCard extends React.Component {
               company: this.props.company,
               title: this.props.title,
               location: this.props.location,
-              duration: this.props.duration,
+              startDate: this.props.startDate,
+              endDate: this.props.endDate,
               description: this.props.description
             }}
             validationSchema={Yup.object().shape({
                 company: Yup.string().required('Company is required'),
                 title: Yup.string().required('Company is required'),
                 location: Yup.string().required('Company is required'),
-                duration: Yup.string().required('Company is required'),
+                startDate: Yup.string().required('Start date is required'),
+                endDate: Yup.string(),
                 description: Yup.string()
             })}
             onSubmit={({company, title, location, duration, description}, { setStatus, setSubmitting }) => {
 
               this.toggleEdit();
             }}
-            render={({ values, errors, status, touched, isSubmitting }) => (
+            render={({ values, errors, status, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
                 <Form>
                     <div className="form-group">
                         <label htmlFor="company"><b>Company:</b></label>
@@ -107,9 +105,28 @@ class ExperienceCard extends React.Component {
                         <ErrorMessage name="location" component="div" className="invalid-feedback" />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="duration"><b>Duration:</b></label>
-                        <Field name="duration" type="text" className={'form-control' + (errors.duration && touched.duration ? ' is-invalid' : '')} />
-                        <ErrorMessage name="duration" component="div" className="invalid-feedback" />
+                        <label className="date-label" htmlFor="startDate"><b>Start Date:</b></label>
+                        <DatePicker name="startDate" value={values.startDate}
+                          onChange={(date) =>{
+                            setFieldValue("startDate",date.toISOString().split("T")[0])
+                          }}
+                          onBlur={()=>setFieldTouched('startDate', true)}
+                        />
+                        {errors.startDate && touched.startDate && (
+                          <div
+                            style={{ color: "#dc3545", marginTop: ".10rem", fontSize:"80%" }}
+                          >
+                            {errors.startDate}
+                          </div>
+                        )}
+                    </div>
+                    <div className="form-group">
+                        <label className="date-label" htmlFor="endDate"><b>End Date:</b></label>
+                        <DatePicker name="endDate" value={values.endDate}
+                          onChange={(date) =>{
+                            setFieldValue("endDate",date.toISOString().split("T")[0])
+                          }}
+                        />
                     </div>
                     <div className="form-group">
                         <label htmlFor="description"><b>Description:</b></label>
