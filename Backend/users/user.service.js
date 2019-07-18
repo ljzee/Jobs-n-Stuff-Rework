@@ -32,9 +32,12 @@ async function authenticate({ username, password }) {
         const correctPass = await bcrypt.compare(password, results.rows[0].passhash);
         if(correctPass){
           token = jwt.sign({sub: results.rows[0].id, role: results.rows[0].role}, config.secret);
-          let userProfile
+          let profile;
           if(results.rows[0].role === 'USER'){
-            userProfile = await pool.query('SELECT * FROM user_profile WHERE id = $1', [results.rows[0].id]);
+            profile = await pool.query('SELECT * FROM user_profile WHERE id = $1', [results.rows[0].id]);
+          }
+          if(results.rows[0].role === 'BUSINESS'){
+            profile = await pool.query('SELECT * FROM business_profile WHERE id = $1', [results.rows[0].id]);
           }
           return{
             id: results.rows[0].id,
@@ -42,7 +45,7 @@ async function authenticate({ username, password }) {
             email: results.rows[0].email,
             role: results.rows[0].role,
             token: token,
-            hasProfile: Boolean(userProfile.rowCount)
+            hasProfile: Boolean(profile.rowCount)
           }
         }
       }

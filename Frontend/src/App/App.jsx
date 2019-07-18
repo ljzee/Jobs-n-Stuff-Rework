@@ -22,28 +22,21 @@ class App extends React.Component {
 
         this.state = {
             currentUser: null,
-            isAdmin: false
         };
     }
 
     componentDidMount() {
         authenticationService.currentUser.subscribe(x => this.setState({
             currentUser: x,
-            isAdmin: x && x.role === Role.Admin
         }));
     }
 
-    logout() {
-        authenticationService.logout();
-        history.push('/login');
-    }
-
     render() {
-        const { currentUser, isAdmin } = this.state;
+        const { currentUser } = this.state;
         return (
             <Router history={history}>
                 <div>
-                    <Header/>
+                    <Header currentUser={currentUser}/>
                     <div className="body">
                       <div className="container">
                           <Switch>
@@ -51,7 +44,6 @@ class App extends React.Component {
                               <Route path="/login" component={LoginPage} />
                               <Route path='/signup' component={SignupPage} />
                               <PrivateRoute exact path="/dashboard" component={DashboardPage} />
-                              <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                               <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
                               <PrivateRoute path='/documents' component={DocumentsPage}/>
                               <PrivateRoute path='/myprofile'component={ProfilePage}/>
@@ -64,5 +56,7 @@ class App extends React.Component {
         );
     }
 }
+
+//<PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
 
 export { App };

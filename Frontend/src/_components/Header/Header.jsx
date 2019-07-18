@@ -6,22 +6,30 @@ import { authenticationService } from '@/_services';
 
 import {Navbar, Nav, Container} from 'react-bootstrap';
 
+/*
+const NavContent = props => {
+  return (
+    <React.Fragment>
+      {props.navOptions.map((option, i)=>{
+        return(
+          <Nav.Item>
+
+          </Nav.Item>
+        )
+      })}
+    </React.Fragment>
+  )
+}
+*/
+
 class Header extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentUser: null,
-            isAdmin: false
+            currentUser: props.currentUser,
         };
 
-    }
-
-    componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.setState({
-            currentUser: x,
-            isAdmin: x && x.role === Role.Admin
-        }));
     }
 
     logout() {
@@ -30,45 +38,39 @@ class Header extends React.Component {
     }
 
     render() {
-        const { currentUser, isAdmin } = this.state;
+        const { currentUser } = this.props;
 
         let navItems = null;
-        //console.log(currentUser);
+
         if(!currentUser){
           navItems = <React.Fragment>
                       <Nav.Link as={Link} to="login">Login</Nav.Link>
                       <Nav.Link as={Link} to="signup">Sign Up</Nav.Link>
                      </React.Fragment>;
-        }else{
-          if(currentUser.role === Role.User){
-            navItems = <React.Fragment>
-                        <Nav.Item>
-                        <Nav.Link>Job Postings</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Link>Applications</Nav.Link>
-                        <Nav.Link>Documents</Nav.Link>
-                        <Nav.Link>Profile</Nav.Link>
-                        <Nav.Item onClick={this.logout}><Nav.Link>Logout</Nav.Link></Nav.Item>
-                       </React.Fragment>;
-          }
+        }
 
-          if(currentUser.role === Role.Admin){
+        if(currentUser && !currentUser.hasProfile){
             navItems = <React.Fragment>
-                        <Nav.Item>
-                        <Nav.Link as={Link} to="manage_users">Manage Users</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Link>Job Postings</Nav.Link>
-                        <Nav.Item onClick={this.logout}><Nav.Link>Logout</Nav.Link></Nav.Item>
-                       </React.Fragment>;
-          }
+                        <Nav.Link onClick={this.logout}>Logout</Nav.Link>
+                       </React.Fragment>
+        }
 
-          if(currentUser.role === Role.Business){
+        if(currentUser && currentUser.hasProfile && currentUser.role === Role.User){
             navItems = <React.Fragment>
-                         <Nav.Link>Manage Postings</Nav.Link>
-                         <Nav.Link>Profile</Nav.Link>
-                         <Nav.Item onClick={this.logout}>Logout</Nav.Item>
+                        <Nav.Link as={Link} to="jobpostings">Job Postings</Nav.Link>
+                        <Nav.Link as={Link} to="applications">Applications</Nav.Link>
+                        <Nav.Link as={Link} to="documents">Documents</Nav.Link>
+                        <Nav.Link as={Link} to="myprofile">Profile</Nav.Link>
+                        <Nav.Link onClick={this.logout}>Logout</Nav.Link>
                        </React.Fragment>;
-          }
+        }
+
+        if(currentUser && currentUser.hasProfile && currentUser.role === Role.Business){
+          navItems = <React.Fragment>
+                       <Nav.Link as={Link} to="managepostings">Manage Postings</Nav.Link>
+                       <Nav.Link as={Link} to="myprofile">Profile</Nav.Link>
+                       <Nav.Link onClick={this.logout}>Logout</Nav.Link>
+                     </React.Fragment>;
         }
 
         return (

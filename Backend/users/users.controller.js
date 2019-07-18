@@ -52,7 +52,7 @@ async function register(req, res, next){
     const user = await userService.getByUsernameOrEmail(req.body);
     let newUser;
     if(user.length){
-      res.status(400).json({errors: 'Username or email is already taken'});
+      res.status(400).json({errors: ['Username or email is already taken']});
       return;
     }else{
       try{

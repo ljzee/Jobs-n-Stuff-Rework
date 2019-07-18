@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
+import { Role } from '@/_helpers';
 
 import { authenticationService } from '@/_services';
 
@@ -93,7 +94,7 @@ class SignupPage extends React.Component {
                                 }
                             ).catch(error => {
                                   setSubmitting(false);
-                                  setStatus([error]);
+                                  setStatus(error);
                             })
 
 
@@ -125,13 +126,13 @@ class SignupPage extends React.Component {
                               <Field
                                 component={RadioButton}
                                 name="radioGroup"
-                                id="USER"
+                                id={Role.User}
                                 label="Personal Account"
                               />
                               <Field
                                 component={RadioButton}
                                 name="radioGroup"
-                                id="BUSINESS"
+                                id={Role.Business}
                                 label="Business Account"
                               />
                               <ErrorMessage name="radioGroup" component="div" className="invalid-feedback d-block"/>

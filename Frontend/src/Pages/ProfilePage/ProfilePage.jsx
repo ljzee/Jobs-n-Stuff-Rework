@@ -77,7 +77,7 @@ class ProfilePage extends React.Component {
     componentDidMount(){
       userService.getProfile()
       .then(profile =>{
-        console.log(profile)
+        //console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,

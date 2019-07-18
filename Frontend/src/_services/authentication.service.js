@@ -32,7 +32,9 @@ function register(email, username, password, usertype) {
 
             return user.data;
         })
-        .catch((error)=>Promise.reject(error.response.data.message));
+        .catch((error)=>{
+          return Promise.reject(error.response.data.errors)
+        });
 }
 
 function login(username, password) {
@@ -43,7 +45,7 @@ function login(username, password) {
     return axios.post(`${config.apiUrl}/users/authenticate`, { 'username': username, 'password': password }, configOptions)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            console.log(user);
+            //console.log(user);
             localStorage.setItem('currentUser', JSON.stringify(user.data));
             currentUserSubject.next(user.data);
 
