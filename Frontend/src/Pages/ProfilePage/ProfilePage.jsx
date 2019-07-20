@@ -14,34 +14,6 @@ import './Profile.css';
 
 import { authenticationService, userService } from '@/_services';
 
-const experiences = [
-  {
-    id: "111",
-    company: "London Drugs",
-    title: "Team Leader",
-    location: "Burnaby, BC",
-    duration: "5 Years",
-    description: "Devised and prioritized work plan for team members taking into account present challenges and individual ability Maintained consistent communication with management to ensure company goals are met"
-  },
-  {
-    id: "9",
-    company: "London Drugs",
-    title: "Team Leader",
-    location: "Burnaby, BC",
-    duration: "5 Years",
-    description: "Devised and prioritized work plan for team members taking into account present challenges and individual ability Maintained consistent communication with management to ensure company goals are met"
-  },
-  {
-    id: "55",
-    company: "London Drugs",
-    title: "Team Leader",
-    location: "Burnaby, BC",
-    duration: "5 Years",
-    description: "Devised and prioritized work plan for team members taking into account present challenges and individual ability Maintained consistent communication with management to ensure company goals are met"
-  }
-];
-
-
 class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
@@ -341,7 +313,10 @@ class ProfilePage extends React.Component {
                       userService.addExperience(company, title, location, startDate, endDate, description).then(()=>{
                         this.refreshProfile();
                         this.toggleShowModal();
-                      })
+                      }).catch(error =>{
+                        setSubmitting(false);
+                        setStatus(error);
+                      });
                     }}
                     render={({ values, errors, status, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
                         <FForm>
@@ -390,11 +365,11 @@ class ProfilePage extends React.Component {
                                 <ErrorMessage name="description" component="div" className="invalid-feedback" />
                             </div>
                             <br />
-                            <div className="form-group">
-                              <Button variant="secondary" className="edit-button float-right" onClick={this.toggleShowModal}>
+                            <div className="form-group" style={{textAlign: "right"}}>
+                              <Button variant="secondary" className="edit-button" onClick={this.toggleShowModal}>
                                 Close
                               </Button>
-                              <Button variant="primary" className="edit-button float-right" type="submit">
+                              <Button variant="primary" className="edit-button" type="submit">
                                 Add Experience
                               </Button>
                             </div>

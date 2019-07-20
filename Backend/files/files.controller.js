@@ -9,11 +9,11 @@ var fs = require('fs');
 
 //const upload = multer({ dest: `public/` });
 
-router.post('/', authorize(), uploadFile);
+router.post('/', authorize(Role.User), uploadFile);
 //router.get('/download', authorize(), downloadFile);
 router.get('/', authorize(), getAllUserFiles);
-router.delete('/:id', authorize(), deleteFile);
-router.put('/:id', authorize(), updateFile);
+router.delete('/:id', authorize(Role.User), deleteFile);
+router.put('/:id', authorize(Role.User), updateFile);
 router.get('/:id', authorize(), downloadFile);
 module.exports = router;
 

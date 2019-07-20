@@ -18,7 +18,9 @@ app.use(function(req, res, next) {
 
 
 // api routes
+app.use('/authentication', require('./authentication/authentication.controller'))
 app.use('/users', require('./users/users.controller'));
+app.use('/business', require('./business/business.controller'));
 app.use('/files', require('./files/files.controller'));
 
 // global error handler

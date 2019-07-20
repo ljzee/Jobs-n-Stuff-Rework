@@ -76,12 +76,14 @@ class SignupPage extends React.Component {
                         email: '',
                         username: '',
                         password: '',
+                        passwordConfirm: '',
                         radioGroup: ''
                     }}
                     validationSchema={Yup.object().shape({
                         email: Yup.string().email('Invalid email').required('Email is required'),
                         username: Yup.string().required('Username is required').min(8),
                         password: Yup.string().required('Password is required').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {message: 'Minimum eight characters, at least one uppercase letter, one lowercase letter and one number'}),
+                        passwordConfirm: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('You must confirm your password'),
                         radioGroup: Yup.string().required("You must select an account type")
                     })}
                     onSubmit={({ email, username, password, radioGroup }, { setStatus, setSubmitting }) => {
@@ -115,6 +117,11 @@ class SignupPage extends React.Component {
                                 <label htmlFor="password">Password</label>
                                 <Field name="password" type="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
                                 <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="passwordConfirm">Confirm Password</label>
+                                <Field name="passwordConfirm" type="password" className={'form-control' + (errors.passwordConfirm && touched.passwordConfirm ? ' is-invalid' : '')} />
+                                <ErrorMessage name="passwordConfirm" component="div" className="invalid-feedback" />
                             </div>
                             <RadioButtonGroup
                               id="radioGroup"

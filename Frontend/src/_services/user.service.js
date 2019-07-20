@@ -19,15 +19,14 @@ function createProfile(firstname, lastname, phonenumber, personalwebsite, github
       headers: authHeader()
   };
 
-  return axios.post(`${config.apiUrl}/users/createprofile`, { 'firstname': firstname, 'lastname': lastname, 'phonenumber': phonenumber, 'personalwebsite': personalwebsite, 'githublink': githublink, 'bio': bio}, configOptions)
+  return axios.post(`${config.apiUrl}/users/profile`, { 'firstname': firstname, 'lastname': lastname, 'phonenumber': phonenumber, 'personalwebsite': personalwebsite, 'githublink': githublink, 'bio': bio}, configOptions)
       .then(response => {
         let currentUser = authenticationService.currentUserValue;
-        console.log(currentUser);
         currentUser.hasProfile = true;
         authenticationService.newCurrentUserValue = currentUser;
 
       })
-      .catch((error)=>Promise.reject(error.response.data.message));
+      .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
 function getProfile(){
@@ -37,7 +36,7 @@ function getProfile(){
   };
   return axios.get(`${config.apiUrl}/users/profile/${user.id}`, {headers: authHeader()})
               .then(result => result.data)
-              .catch((error) => Promise.reject(error.response.data.message))
+              .catch((error) => Promise.reject(error.response.data.errors))
 
 }
 
@@ -48,7 +47,7 @@ function updateProfile(bio, phoneNumber, personalWebsite, github){
   };
   return axios.put(`${config.apiUrl}/users/profile/${user.id}`, {'bio': bio, 'phoneNumber': phoneNumber, 'personalWebsite': personalWebsite, 'github':github} ,configOptions)
               .then()
-              .catch((error) => Promise.reject(error.response.data.message))
+              .catch((error) => Promise.reject(error.response.data.errors))
 }
 
 function addExperience(company, title, location, startDate, endDate, description){
@@ -56,18 +55,18 @@ function addExperience(company, title, location, startDate, endDate, description
       headers: authHeader()
   };
 
-  return axios.post(`${config.apiUrl}/users/addexperience`, { 'company': company, 'title': title, 'location': location, 'startDate': startDate, 'endDate': endDate, 'description': description}, configOptions)
+  return axios.post(`${config.apiUrl}/users/experience`, { 'company': company, 'title': title, 'location': location, 'startDate': startDate, 'endDate': endDate, 'description': description}, configOptions)
       .then()
-      .catch((error)=>Promise.reject(error.response.data.message));
+      .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
 function deleteExperience(id){
   const configOptions = {
       headers: authHeader()
   };
-  return axios.post(`${config.apiUrl}/users/deleteexperience/${id}`, {}, configOptions)
+  return axios.delete(`${config.apiUrl}/users/experience/${id}`, configOptions)
       .then()
-      .catch((error)=>Promise.reject(error.response.data.message));
+      .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
 function getAll() {

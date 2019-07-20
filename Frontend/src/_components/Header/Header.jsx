@@ -6,21 +6,6 @@ import { authenticationService } from '@/_services';
 
 import {Navbar, Nav, Container} from 'react-bootstrap';
 
-/*
-const NavContent = props => {
-  return (
-    <React.Fragment>
-      {props.navOptions.map((option, i)=>{
-        return(
-          <Nav.Item>
-
-          </Nav.Item>
-        )
-      })}
-    </React.Fragment>
-  )
-}
-*/
 
 class Header extends React.Component {
     constructor(props) {
@@ -76,7 +61,7 @@ class Header extends React.Component {
         return (
             <Navbar bg="dark" variant="dark" expand="md">
               <Container>
-                <Navbar.Brand>EmployMee</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">EmployMee</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                   <Nav className="ml-auto">

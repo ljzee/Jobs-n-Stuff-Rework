@@ -18,7 +18,7 @@
   margin-bottom: 5px;
 }
 
-.notification-box{
+.notifications-box{
   height: 292px;
   overflow-y: scroll
 }
@@ -52,6 +52,30 @@
 }
 
 .unsave-button{
-  font-size: 0.825rem;
-  padding: .250rem .50rem
+  font-size: 0.7rem;
+  padding: .250rem .50rem;
+}
+
+.notifications-table a{
+  color:#007bff;
+}
+
+.notifications-timestamp{
+  font-size: 0.8rem;
+  color: gray;
+}
+
+.notifications-cell-content{
+  width: 80%;
+  padding-left: 30px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notifications-cell-button{
+  width: 20%;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  text-align:center;
 }

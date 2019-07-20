@@ -23,7 +23,7 @@ function register(email, username, password, usertype) {
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return axios.post(`${config.apiUrl}/users/register`, { 'email': email, 'username': username, 'password': password, 'usertype': usertype}, configOptions)
+    return axios.post(`${config.apiUrl}/authentication/register`, { 'email': email, 'username': username, 'password': password, 'usertype': usertype}, configOptions)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
 
@@ -33,7 +33,11 @@ function register(email, username, password, usertype) {
             return user.data;
         })
         .catch((error)=>{
-          return Promise.reject(error.response.data.errors)
+          if(!error.response) {
+            return Promise.reject(["Cannot reach the server, try again later."])
+          }else{
+            return Promise.reject(error.response.data.errors)
+          }
         });
 }
 
@@ -42,16 +46,21 @@ function login(username, password) {
         headers: { 'Content-Type': 'application/json' },
     };
 
-    return axios.post(`${config.apiUrl}/users/authenticate`, { 'username': username, 'password': password }, configOptions)
+    return axios.post(`${config.apiUrl}/authentication/authenticate`, { 'username': username, 'password': password }, configOptions)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            //console.log(user);
             localStorage.setItem('currentUser', JSON.stringify(user.data));
             currentUserSubject.next(user.data);
 
             return user.data;
         })
-        .catch((error)=>Promise.reject(error.response.data.message));
+        .catch((error)=>{
+          if(!error.response) {
+            return Promise.reject(["Cannot reach the server, try again later."])
+          }else{
+            return Promise.reject(error.response.data.errors)
+          }
+        });
 }
 
 function logout() {
