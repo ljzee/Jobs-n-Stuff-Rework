@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "country-state-city": "^1.0.0",
     "file-loader": "^4.0.0",
     "formik": "^1.4.2",
     "history": "^4.7.2",
@@ -24,6 +25,7 @@
     "react-file-picker": "0.0.6",
     "react-router-dom": "^4.1.2",
     "react-select": "^3.0.4",
+    "react-table": "^6.10.0",
     "rxjs": "^6.3.3",
     "url-loader": "^2.0.1",
     "yup": "^0.26.10"

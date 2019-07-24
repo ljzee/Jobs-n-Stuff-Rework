@@ -3,57 +3,12 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
 import { Role } from '@/_helpers';
-
+import {RadioButton, RadioButtonGroup} from '@/_components';
 import { authenticationService } from '@/_services';
 
 import './Signup.css';
 
 
-    // Radio input
-const RadioButton = ({
-  field: { name, value, onChange, onBlur },
-  id,
-  label,
-  className,
-  ...props
-}) => {
-  return (
-    <div className='radio-button'>
-      <input
-        name={name}
-        id={id}
-        type="radio"
-        value={id} // could be something else for output?
-        checked={id === value}
-        onChange={onChange}
-        onBlur={onBlur}
-        className={"radio-button"}
-        {...props}
-      />
-      <label htmlFor={id}>{label}</label>
-    </div>
-  );
-};
-
-// Radio group
-const RadioButtonGroup = ({
-  value,
-  error,
-  touched,
-  id,
-  label,
-  className,
-  children
-}) => {
-  return (
-    <div className="radio-group">
-      <fieldset>
-        <legend>{label}</legend>
-        {children}
-      </fieldset>
-    </div>
-  );
-};
 
 class SignupPage extends React.Component {
     constructor(props) {

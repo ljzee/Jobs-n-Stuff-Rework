@@ -17,6 +17,23 @@ router.post('/profile',
             createProfile);
 router.get('/profile/:id', getProfileById);
 
+router.post('/jobpost',
+            check('jobTitle').not().isEmpty().withMessage('Job title cannot be empty'),
+            check('duration').not().isEmpty().withMessage('Duration cannot be empty'),
+            check('positionType').not().isEmpty().withMessage('Position type cannot be empty'),
+            check('location').not().isEmpty().withMessage('Location cannot be empty'),
+            check('openings').not().isEmpty().withMessage('Number of openings cannot be empty'),
+            check('resumeRequired').not().isEmpty().withMessage('Resume required cannot be empty'),
+            check('coverletterRequired').not().isEmpty().withMessage('Cover letter required cannot be empty'),
+            check('otherRequired').not().isEmpty().withMessage('Other required cannot be empty'),
+            check('status').not().isEmpty().withMessage('Posting type cannot be empty'),
+            authorize(Role.Business),
+            addJobPost);
+
+router.get('/jobpost',
+            authorize(Role.Business),
+            getAllBusinessJobPost)
+
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
   let errorMessages = errors.map(error => error.msg);
@@ -27,7 +44,7 @@ async function createProfile(req, res, next){
 
   try{
     const profile = await businessService.getBusinessProfile({id: req.user.sub});
-    if(profile.length){
+    if(profile){
       res.status(400).json({errors: ['A profile has already been created for this user']});
       return;
     }else{
@@ -44,13 +61,40 @@ async function createProfile(req, res, next){
 async function getProfileById(req, res, next){
   try{
     const profile = await businessService.getBusinessProfile(req.params);
-    if(profile.length){
-      res.json(profile[0]);
+    if(profile){
+      res.json(profile);
     }else{
       res.status(400).json({errors: 'Profile does not exist'});
     }
   }catch(error){
     res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error)
+  }
+}
+
+async function addJobPost(req, res, next){
+  const {errors} = validationResult(req);
+  let errorMessages = errors.map(error => error.msg);
+  if(errorMessages.length) {
+    res.status(400).json({errors: errorMessages});
+    return;
+  }
+  try{
+    await businessService.addJobPost(req.user.sub, req.body);
+    res.sendStatus(200);
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
+  }
+}
+
+async function getAllBusinessJobPost(req, res, next){
+  try{
+    let businessJobPosts = await businessService.getAllBusinessJobPost(req.user.sub);
+    res.json(businessJobPosts);
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
   }
 }
 
