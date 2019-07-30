@@ -7,6 +7,7 @@ const{check, validationResult} = require('express-validator');
 var path = require('path');
 
 // routes
+router.get('/profile/:id', getProfileById);
 router.post('/profile',
              check('firstname').not().isEmpty().withMessage('First name cannot be empty'),
              check('lastname').not().isEmpty().withMessage('Last name cannot be empty'),
@@ -20,11 +21,10 @@ router.post('/experience',
              authorize(Role.User),
              addExperience);
 router.delete('/experience/:id', authorize(Role.User), deleteExperience);
-router.get('/profile/:id', getProfileById);
 router.get('/profile/profile-image/:name', getProfileImage);
 router.put('/profile/:id', authorize(Role.User), updateProfile);
-router.get('/', authorize(Role.Admin), getAll); // admin only
-router.get('/:id', authorize(), getById);       // all authenticated users
+//router.get('/', authorize(Role.Admin), getAll); // admin only
+//router.get('/:id', authorize(), getById);       // all authenticated users
 module.exports = router;
 
 
@@ -129,20 +129,8 @@ async function updateProfile(req, res, next){
   }
 }
 
-/*
-userService.getByUsernameOrEmail(req.body, (err,res)=>{
-  if(err.error) {
-     console.log(err);
-  }
-  if(res.length){
-    console.log('Username is taken');
-  }else{
-    console.log('Preparing to add user into db');
-  }
-});
-*/
-
 //demo functions
+/*
 function getAll(req, res, next) {
     userService.getAll()
         .then(users => res.json(users))
@@ -162,3 +150,4 @@ function getById(req, res, next) {
         .then(user => user ? res.json(user) : res.sendStatus(404))
         .catch(err => next(err));
 }
+*/

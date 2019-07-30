@@ -15,17 +15,22 @@ class ManagePostingsPage extends React.Component{
       data: [],
       loading: true
     }
+    this.fetchPostings = this.fetchPostings.bind(this);
   }
 
-  componentDidMount(){
+  fetchPostings(){
     businessService.getAllBusinessJobPost()
                    .then(posts => {
                      this.setState({
-                       data: posts.map(post => ({position: post.title, location: `${post.city}, ${post.state}`, deadline: post.deadline, applicantsquantity: 5, status: post.status})),
+                       data: posts.map(post => ({position: post.title, location: `${post.city}, ${post.state}`, deadline: post.deadline, applicantsquantity: 5, status: post.status, id: post.id})),
                        loading: false
                      })
                    })
                    .catch(error => {console.log(error)})
+  }
+
+  componentDidMount(){
+    this.fetchPostings();
   }
 
   render(){
@@ -43,8 +48,9 @@ class ManagePostingsPage extends React.Component{
       Header: 'Position',
       width: 275,
       Cell: props => {
+        let formattedJobTitle = props.original.position.replace(/\s+/g, '-').toLowerCase();
         return(
-          <Link style={{color: "#007bff"}} to='/'>{props.original.position}</Link>
+          <Link style={{color: "#007bff"}} to={{pathname: `/managepostings/${formattedJobTitle}`, state: {id: props.original.id, edit: false}}}>{props.original.position}</Link>
         )
       },
       style:{
@@ -80,13 +86,23 @@ class ManagePostingsPage extends React.Component{
     },{
       Header: 'Actions',
       accessor: 'actions',
-      Cell: props => (
-        <div className="action-button-group">
-          {props.original.status === 'OPEN' && <button className="action-applicant-button"><img src={require('../../Images/applicant.png')}/></button>}
-          <button className="action-edit-button"><img src={require('../../Images/edit.png')}/></button>
-          <button className="action-delete-button"><img src={require('../../Images/bin.png')}/></button>
-        </div>
-      ),
+      Cell: props => {
+
+        return(
+          <div className="action-button-group">
+            {props.original.status === 'OPEN' && <button className="action-applicant-button"><img src={require('../../Images/applicant.png')}/></button>}
+            <button onClick={()=>{
+               let formattedJobTitle = props.original.position.replace(/\s+/g, '-').toLowerCase();
+               this.props.history.push(`/managepostings/${formattedJobTitle}`, {id: props.original.id, edit: true})
+            }} className="action-edit-button"><img src={require('../../Images/edit.png')}/></button>
+            <button onClick={()=>{
+              businessService.deleteJobPost(props.original.id)
+                             .then(()=>{this.fetchPostings()})
+                             .catch(error => {console.log(error)});
+            }} className="action-delete-button"><img src={require('../../Images/bin.png')}/></button>
+          </div>
+        )
+      },
       sortable: false
     }]
 

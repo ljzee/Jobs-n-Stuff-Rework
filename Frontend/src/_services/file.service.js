@@ -24,9 +24,6 @@ function uploadFile(file, fileType, fileRename){
   data.append('fileType', fileType);
   data.append('fileRename', fileRename);
   return axios.post(`${config.apiUrl}/files`, data, configOptions)
-              .then(res=>{
-                //console.log(res.statusText)
-              })
               .catch((error) => Promise.reject(error))
 }
 
@@ -35,9 +32,6 @@ function editFile(fileId, fileRename){
       headers: authHeader()
   };
   return axios.put(`${config.apiUrl}/files/${fileId}`, {fileRename: fileRename}, configOptions)
-              .then(res=>{
-
-              })
               .catch((error) => Promise.reject(error))
 }
 
@@ -47,10 +41,7 @@ function deleteFile(fileId){
   };
 
   return axios.delete(`${config.apiUrl}/files/${fileId}`, configOptions)
-          .then(res=>{
-
-          })
-          .catch((error) => Promise.reject(error));
+              .catch((error) => Promise.reject(error));
 }
 
 function getAllUserFiles(){
@@ -70,8 +61,6 @@ function downloadFile(fileId){
       responseType: 'blob'
   };
   return axios.get(`${config.apiUrl}/files/${fileId}`, configOptions)
-          .then(res=>{
-            return res
-          })
+          .then(res=>(res))
           .catch((error) => Promise.reject(error));
 }

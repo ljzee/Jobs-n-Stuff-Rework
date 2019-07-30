@@ -46,7 +46,7 @@ class ExperienceCard extends React.Component {
         <div>
           <Button variant="link" className="card-button float-right" onClick={()=>{
             userService.deleteExperience(this.props.experience_id)
-              .then(this.props.refreshProfile);
+              .then(this.props.fetchProfile());
           }}>Delete</Button>
           <Button variant="link" className="card-button float-right" onClick={this.toggleEdit}>Edit</Button>
           <Row>

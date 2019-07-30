@@ -8,7 +8,10 @@ export const businessService = {
     createProfile,
     getProfile,
     addJobPost,
-    getAllBusinessJobPost
+    getAllBusinessJobPost,
+    getJobPost,
+    updateJobPost,
+    deleteJobPost
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -41,7 +44,7 @@ function getProfile(){
   const configOptions = {
       headers: authHeader()
   };
-  return axios.get(`${config.apiUrl}/business/profile/${user.id}`, {headers: authHeader()})
+  return axios.get(`${config.apiUrl}/business/profile/${user.id}`, configOptions)
               .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
 
@@ -52,7 +55,6 @@ function addJobPost(jobTitle, duration, positionType, location, openings, jobDes
       headers: authHeader()
   };
   return axios.post(`${config.apiUrl}/business/jobpost`, {jobTitle: jobTitle, duration: duration, positionType: positionType, location: location, openings: openings, jobDescription: jobDescription, salary: salary, deadline: deadline, resumeRequired: resumeRequired, coverletterRequired: coverletterRequired, otherRequired: otherRequired, status: status}, configOptions)
-              .then()
               .catch((error) => Promise.reject(error.response.data.errors))
 }
 
@@ -62,5 +64,30 @@ function getAllBusinessJobPost(){
   };
   return axios.get(`${config.apiUrl}/business/jobpost`, configOptions)
               .then(result => result.data)
+              .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+function getJobPost(jobPostId){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.get(`${config.apiUrl}/business/jobpost/${jobPostId}`, configOptions)
+              .then(result => result.data)
+              .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+function updateJobPost(jobPostId, jobTitle, duration, positionType, location, openings, jobDescription, salary, deadline, resumeRequired, coverletterRequired, otherRequired){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.put(`${config.apiUrl}/business/jobpost/${jobPostId}`, {jobTitle: jobTitle, duration: duration, positionType: positionType, location: location, openings: openings, jobDescription: jobDescription, salary: salary, deadline: deadline, resumeRequired: resumeRequired, coverletterRequired: coverletterRequired, otherRequired: otherRequired}, configOptions)
+              .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+function deleteJobPost(jobPostId){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.delete(`${config.apiUrl}/business/jobpost/${jobPostId}`, configOptions)
               .catch((error) => Promise.reject(error.response.data.errors))
 }

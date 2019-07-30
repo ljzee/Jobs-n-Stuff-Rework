@@ -43,13 +43,12 @@ class ProfilePage extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleFileSelect = this.handleFileSelect.bind(this);
         this.toggleShowModal = this.toggleShowModal.bind(this);
-        this.refreshProfile = this.refreshProfile.bind(this);
+        this.fetchProfile = this.fetchProfile.bind(this);
     }
 
-    componentDidMount(){
+    fetchProfile(){
       userService.getProfile()
       .then(profile =>{
-        //console.log(profile)
         this.setState(prevState => ({
           ...prevState,
           firstName: profile.first_name,
@@ -64,6 +63,10 @@ class ProfilePage extends React.Component {
           isLoading:false
         }))
       })
+    }
+
+    componentDidMount(){
+      this.fetchProfile();
     }
 
     toggleShowModal(){
@@ -102,25 +105,6 @@ class ProfilePage extends React.Component {
     handleFileSelect(event){
       console.log(event.target.files[0]);
     }
-
-    refreshProfile(){
-      userService.getProfile()
-      .then(profile =>{
-        this.setState(prevState => ({
-          ...prevState,
-          firstName: profile.first_name,
-          lastName: profile.last_name,
-          aboutMe: profile.bio,
-          email: profile.email,
-          phoneNumber: profile.phone_number,
-          personalWebsite: profile.personal_website,
-          githubLink: profile.github_link,
-          experiences: profile.experiences
-        }))
-      })
-    }
-
-
 
     render() {
 
@@ -210,7 +194,7 @@ class ProfilePage extends React.Component {
                           userService.updateProfile(this.state.aboutMe, this.state.phoneNumber, this.state.personalWebsite, this.state.githubLink)
                                      .then(()=>{
                                        this.toggleEditAboutMe();
-                                       this.refreshProfile();
+                                       this.fetchProfile();
                                      })
                                      .catch(error=>console.log(error))
                         }
@@ -224,7 +208,7 @@ class ProfilePage extends React.Component {
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
-                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} description={experience.description} startDate={experience.start_date} endDate={experience.end_date} refreshProfile={this.refreshProfile}/>)}
+                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} description={experience.description} startDate={experience.start_date} endDate={experience.end_date} fetchProfile={this.fetchProfile}/>)}
                   </ListGroup>
                 </Card>
 
@@ -276,7 +260,7 @@ class ProfilePage extends React.Component {
                         userService.updateProfile(this.state.aboutMe, this.state.phoneNumber, this.state.personalWebsite, this.state.githubLink)
                                    .then(()=>{
                                      this.toggleEditContactInformation();
-                                     this.refreshProfile();
+                                     this.fetchProfile();
                                    })
                                    .catch(error=>console.log(error))
                       }}>Save</Button>
@@ -311,7 +295,7 @@ class ProfilePage extends React.Component {
                     })}
                     onSubmit={({company, title, location, description, startDate, endDate}, { setStatus, setSubmitting }) => {
                       userService.addExperience(company, title, location, startDate, endDate, description).then(()=>{
-                        this.refreshProfile();
+                        this.fetchProfile();
                         this.toggleShowModal();
                       }).catch(error =>{
                         setSubmitting(false);

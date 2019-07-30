@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const businessService = require('./business.service');
-const authorize = require('_helpers/authorize')
+const jobPostService = require('../otherservices/jobpost.service');
+const authorize = require('_helpers/authorize');
 const Role = require('_helpers/role');
 const{check, validationResult} = require('express-validator');
 var path = require('path');
@@ -33,6 +34,23 @@ router.post('/jobpost',
 router.get('/jobpost',
             authorize(Role.Business),
             getAllBusinessJobPost)
+router.get('/jobpost/:id',
+            authorize(Role.Business),
+            getJobPostById)
+router.put('/jobpost/:id',
+            check('jobTitle').not().isEmpty().withMessage('Job title cannot be empty'),
+            check('duration').not().isEmpty().withMessage('Duration cannot be empty'),
+            check('positionType').not().isEmpty().withMessage('Position type cannot be empty'),
+            check('location').not().isEmpty().withMessage('Location cannot be empty'),
+            check('openings').not().isEmpty().withMessage('Number of openings cannot be empty'),
+            check('resumeRequired').not().isEmpty().withMessage('Resume required cannot be empty'),
+            check('coverletterRequired').not().isEmpty().withMessage('Cover letter required cannot be empty'),
+            check('otherRequired').not().isEmpty().withMessage('Other required cannot be empty'),
+            authorize(Role.Business),
+            updateJobPost)
+router.delete('/jobpost/:id',
+              authorize(Role.Business),
+              deleteJobPost)
 
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
@@ -64,7 +82,7 @@ async function getProfileById(req, res, next){
     if(profile){
       res.json(profile);
     }else{
-      res.status(400).json({errors: 'Profile does not exist'});
+      res.status(400).json({errors: ['Profile does not exist']});
     }
   }catch(error){
     res.status(500).json({errors: ['Internal Server Error']});
@@ -80,7 +98,7 @@ async function addJobPost(req, res, next){
     return;
   }
   try{
-    await businessService.addJobPost(req.user.sub, req.body);
+    await jobPostService.addJobPost(req.user.sub, req.body);
     res.sendStatus(200);
   }catch(error){
     res.status(500).json({errors: ['Internal Server Error']});
@@ -90,8 +108,51 @@ async function addJobPost(req, res, next){
 
 async function getAllBusinessJobPost(req, res, next){
   try{
-    let businessJobPosts = await businessService.getAllBusinessJobPost(req.user.sub);
+    let businessJobPosts = await jobPostService.getAllBusinessJobPost(req.user.sub);
     res.json(businessJobPosts);
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
+  }
+}
+
+async function getJobPostById(req, res, next){
+  try{
+    let businessJobPost = await jobPostService.getJobPost(req.params.id);
+    res.json(businessJobPost);
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
+  }
+}
+
+async function updateJobPost(req, res, next){
+  const {errors} = validationResult(req);
+  let errorMessages = errors.map(error => error.msg);
+  if(errorMessages.length) {
+    res.status(400).json({errors: errorMessages});
+    return;
+  }
+  try{
+    //CHECK AUTHORIZATION/OWNERSHIP PRIOR TO MODIFYING A JOB POST
+    let hasJobPost = jobPostService.checkHasJobPost(req.user.sub, req.params.id);
+    if(hasJobPost){
+      await jobPostService.updateJobPost(req.user.sub, req.params.id, req.body);
+      res.sendStatus(200);
+    }else{
+      res.status(401).json({errors: ['Unauthorized']});
+    }
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
+  }
+
+}
+
+async function deleteJobPost(req, res, next){
+  try{
+    await jobPostService.deleteJobPost(req.user.sub, req.params.id);
+    res.sendStatus(200);
   }catch(error){
     res.status(500).json({errors: ['Internal Server Error']});
     console.log(error);

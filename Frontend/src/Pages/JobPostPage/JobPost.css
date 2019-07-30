@@ -1,0 +1,32 @@
+.jobpostpage{
+  width: 80%;
+}
+
+.jobpostpage-header{
+  margin-bottom: 20px;
+}
+
+.jobpostpage-header h2{
+  margin-bottom: 15px;
+}
+
+.jobpostpage-header a, .jobpostpage-header-location, .jobpostpage-timestamp{
+  color: gray;
+  font-size: 15px;
+}
+
+.jobpostpage-header img{
+  margin-right: 5px;
+
+}
+
+.jobpostpage-header-location{
+  display: block;
+  float: left; 
+  clear: left;
+  margin-bottom: 10px;
+}
+
+.jobdetails-container div + div{
+  margin-top: 8px;
+}

@@ -5,8 +5,6 @@ import {authenticationService} from './authentication.service';
 import axios from 'axios';
 
 export const userService = {
-    getAll,
-    getById,
     createProfile,
     getProfile,
     addExperience,
@@ -34,7 +32,7 @@ function getProfile(){
   const configOptions = {
       headers: authHeader()
   };
-  return axios.get(`${config.apiUrl}/users/profile/${user.id}`, {headers: authHeader()})
+  return axios.get(`${config.apiUrl}/users/profile/${user.id}`, configOptions)
               .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
 
@@ -46,7 +44,6 @@ function updateProfile(bio, phoneNumber, personalWebsite, github){
       headers: authHeader()
   };
   return axios.put(`${config.apiUrl}/users/profile/${user.id}`, {'bio': bio, 'phoneNumber': phoneNumber, 'personalWebsite': personalWebsite, 'github':github} ,configOptions)
-              .then()
               .catch((error) => Promise.reject(error.response.data.errors))
 }
 
@@ -56,8 +53,7 @@ function addExperience(company, title, location, startDate, endDate, description
   };
 
   return axios.post(`${config.apiUrl}/users/experience`, { 'company': company, 'title': title, 'location': location, 'startDate': startDate, 'endDate': endDate, 'description': description}, configOptions)
-      .then()
-      .catch((error)=>Promise.reject(error.response.data.errors));
+              .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
 function deleteExperience(id){
@@ -65,10 +61,10 @@ function deleteExperience(id){
       headers: authHeader()
   };
   return axios.delete(`${config.apiUrl}/users/experience/${id}`, configOptions)
-      .then()
-      .catch((error)=>Promise.reject(error.response.data.errors));
+              .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
+/*
 function getAll() {
     return axios.get(`${config.apiUrl}/users`, {headers: authHeader()}).then(result => result.data);
 }
@@ -79,3 +75,5 @@ function getById(id) {
   return result.data;
 });
 }
+
+*/
