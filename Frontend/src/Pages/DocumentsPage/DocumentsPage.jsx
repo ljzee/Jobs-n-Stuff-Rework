@@ -226,7 +226,7 @@ class DocumentsPage extends React.Component {
         if(this.state.isLoading) {
           return (
             <div className="documents-page mx-auto">
-              <h2 className="documents-page-title">My Documents</h2>
+              <h3 className="documents-page-title">My Documents</h3>
               <Spinner animation="border" role="status">
                 <span className="sr-only">Loading...</span>
               </Spinner>
@@ -237,7 +237,7 @@ class DocumentsPage extends React.Component {
         return (
           <div className="documents-page mx-auto">
           <Button variant="primary float-right" onClick={this.toggleShowFileUploadModal}>Upload Document</Button>
-            <h2 className="documents-page-title">My Documents</h2>
+            <h3 className="documents-page-title">My Documents</h3>
             <Navbar bg="white">
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">

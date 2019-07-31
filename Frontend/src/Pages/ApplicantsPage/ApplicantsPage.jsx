@@ -30,7 +30,7 @@ class ApplicantsPage extends React.Component{
     const link = <Link style={{color: "#007bff"}} to={{pathname: `/managepostings/${formattedJobTitle}`, state: {id: this.props.location.state.id, edit: false}}}>{this.props.location.state.title}</Link>
     return (
       <div>
-        <h2 className="applicantspage-title"><Link style={{color: "black"}} to={{pathname: `/managepostings/${formattedJobTitle}`, state: {id: this.props.location.state.id, edit: false}}}>{this.props.location.state.title}</Link> - Applicants</h2>
+        <h3 className="applicantspage-title"><Link style={{color: "black"}} to={{pathname: `/managepostings/${formattedJobTitle}`, state: {id: this.props.location.state.id, edit: false}}}>{this.props.location.state.title}</Link> - Applicants</h3>
         <div className="applicantspage-toggle">
           <FormControl
             placeholder="Search by name"
@@ -42,7 +42,7 @@ class ApplicantsPage extends React.Component{
 
         {(this.state.filters.includes('New') || !this.state.filters.length) &&
           <div>
-            <h4 className="candidates-title">New Applicants</h4>
+            <h5 className="candidates-title">New Applicants</h5>
             <div className="candidates-container">
               <Card className="candidate-card">
               <div className="candidate-card-upper">
@@ -81,7 +81,7 @@ class ApplicantsPage extends React.Component{
 
         {(this.state.filters.includes('Accepted') || !this.state.filters.length) &&
           <div>
-            <h4 className="candidates-title">Accepted Applicants</h4>
+            <h5 className="candidates-title">Accepted Applicants</h5>
             <div className="candidates-container">
             </div>
           </div>
@@ -89,7 +89,7 @@ class ApplicantsPage extends React.Component{
 
         {(this.state.filters.includes('Saved') || !this.state.filters.length) &&
           <div>
-            <h4 className="candidates-title">Saved Applicants</h4>
+            <h5 className="candidates-title">Saved Applicants</h5>
             <div className="candidates-container">
             </div>
           </div>
@@ -97,7 +97,7 @@ class ApplicantsPage extends React.Component{
 
         {(this.state.filters.includes('Rejected') || !this.state.filters.length) &&
           <div>
-            <h4 className="candidates-title">Rejected Applicants</h4>
+            <h5 className="candidates-title">Rejected Applicants</h5>
             <div className="candidates-container">
             </div>
           </div>

@@ -41,7 +41,7 @@ class AddPostingPage extends React.Component{
 
     return(
       <div className="addposting-page mx-auto">
-        <h2 className="addposting-page-title">Add a new job posting...</h2>
+        <h3 className="addposting-page-title">Add a new job posting...</h3>
         <Card>
           <Card.Body>
             <Formik

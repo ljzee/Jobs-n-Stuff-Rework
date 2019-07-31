@@ -249,7 +249,7 @@ class CreateProfilePage extends React.Component {
 
         return (
             <div className="create-profile-page">
-              <h2 className="title">Tell us more before you start...</h2>
+              <h3 className="title">Tell us more before you start...</h3>
                 {currentUser.role === 'USER' && userForm}
                 {currentUser.role === 'BUSINESS' && businessForm}
             </div>

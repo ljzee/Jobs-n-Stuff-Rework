@@ -113,7 +113,7 @@ class ProfilePage extends React.Component {
           <div className="profile-page mx-auto">
             <Row>
               <Col xs={12} sm={12} md={{span: 7, offset: 5}} lg={{span: 9, offset: 3}} style={{marginBottom: 0}}>
-                <h2 className="profile-page-title">My Profile</h2>
+                <h3 className="profile-page-title">My Profile</h3>
                 <Spinner animation="border" role="status">
                   <span className="sr-only">Loading...</span>
                 </Spinner>
@@ -126,7 +126,7 @@ class ProfilePage extends React.Component {
           <div className="profile-page mx-auto">
             <Row>
               <Col xs={12} sm={12} md={{span: 7, offset: 5}} lg={{span: 9, offset: 3}} style={{marginBottom: 0}}>
-                <h2 className="profile-page-title">My Profile</h2>
+                <h3 className="profile-page-title">My Profile</h3>
               </Col>
             </Row>
 
@@ -135,7 +135,7 @@ class ProfilePage extends React.Component {
                 <Card >
                   <Card.Header>Personal</Card.Header>
                   <Card.Body>
-                    <h6>Welcome back, {this.state.firstName}!</h6>
+                    <div className="welcome-message">Welcome back, {this.state.firstName}!</div>
                     {this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={`${config.apiUrl}/users/profile/profile-image/${this.state.profileImageName}`}/>}
                     {!this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={profileicon}/>}
                     <ImagePicker
@@ -151,7 +151,7 @@ class ProfilePage extends React.Component {
                       <Button variant="link" className="image-picker">Upload a photo</Button>
                     </ImagePicker>
                     <div className="contact-info">
-                      <h5 className="contact-info-title">Contact Info</h5>
+                      <div className="contact-info-title">Contact Info</div>
                       <p><b>Email:</b><br/>{this.state.email}</p>
                       <p><b>Phone Number:</b><br/>{this.state.phoneNumber}</p>
                       <p><b>Website:</b><br/><a href=''>{this.state.personalWebsite}</a></p>

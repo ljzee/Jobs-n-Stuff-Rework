@@ -86,11 +86,11 @@ class UserDashboard extends React.Component{
               <Table style={{marginBottom: 0, overflow: "hidden", tableLayout: "fixed"}} responsive>
               <tbody>
                 <tr>
-                  <td style={{width: "75%", height:"45px"}}><Link to="/dashboard">Junior Software Developer<br/></Link><Link to="/dashboard">(Awesome Software)</Link></td>
+                  <td style={{width: "75%", height:"42px"}}><Link to="/dashboard">Junior Software Developer<br/></Link><Link to="/dashboard">(Awesome Software)</Link></td>
                   <td style={{width: "25%", padding: 0, verticalAlign:"middle"}}><Button className="unsave-button">Unsave</Button></td>
                 </tr>
                 <tr>
-                  <td style={{width: "75%", height:"45px"}}><Link to="/dashboard">Associate Developer<br/></Link><Link to="/dashboard">(Pie Software)</Link></td>
+                  <td style={{width: "75%", height:"42px"}}><Link to="/dashboard">Associate Developer<br/></Link><Link to="/dashboard">(Pie Software)</Link></td>
                   <td style={{width: "25%", padding: 0, verticalAlign:"middle"}}><Button className="unsave-button">Unsave</Button></td>
                 </tr>
               </tbody>

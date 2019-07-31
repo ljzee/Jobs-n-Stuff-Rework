@@ -10,7 +10,7 @@ class PageNotFound extends React.Component{
   render(){
     return (
       <div>
-          <h2 style={{marginBottom: "25px"}}>Page Not Found</h2>
+          <h3 style={{marginBottom: "25px"}}>Page Not Found</h3>
           <p>We can't seem to find the page you are looking for. <Link to="/">Here are directions back to the front page.</Link></p>
       </div>
     );

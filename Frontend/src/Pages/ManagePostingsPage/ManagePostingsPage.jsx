@@ -38,7 +38,7 @@ class ManagePostingsPage extends React.Component{
 
     const columns = [{
       Header: '#',
-      width: 50,
+      width: 40,
       Cell: (row) => {
         return <div>{row.index+1}</div>
       },
@@ -66,7 +66,7 @@ class ManagePostingsPage extends React.Component{
       }
     },{
       Header: 'Deadline',
-      width: 125,
+      width: 115,
       style:{
           textAlign: "center"
       },
@@ -80,7 +80,7 @@ class ManagePostingsPage extends React.Component{
     },{
       Header: 'No. of Apps',
       accessor: 'applicantsquantity',
-      width: 125,
+      width: 100,
       style:{
           textAlign: "center"
       }
@@ -116,7 +116,7 @@ class ManagePostingsPage extends React.Component{
     return(
       <div className="managepostings-page mx-auto">
         <Button variant="primary float-right" onClick={()=>{this.props.history.push('/addposting')}}>Create New Posting</Button>
-        <h2 className="managepostings-page-title">Manage Postings</h2>
+        <h3 className="managepostings-page-title">Manage Postings</h3>
         <Tab.Container defaultActiveKey="active" transition={false}>
           <Card>
             <Card.Header>

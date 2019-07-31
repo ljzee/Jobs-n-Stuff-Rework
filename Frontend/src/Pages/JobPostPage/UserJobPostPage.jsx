@@ -27,7 +27,7 @@ class JobPostPage extends React.Component{
                 <Dropdown.Item onClick={()=>{console.log('view applicants')}}>View Applicants</Dropdown.Item>
                 <Dropdown.Item onClick={()=>{console.log('delete posting')}}>Delete Posting</Dropdown.Item>
               </DropdownButton>
-              <h2>UX/UI Designer</h2>
+              <h3>UX/UI Designer</h3>
               <Link to="/"><img height="22" width="22" src={require('../../Images/building.png')}/>Awesome Software</Link>
               <span className="jobpostpage-header-location"><img height="22" width="22" src={require('../../Images/location.png')}/>Vancouver, British Columbia</span>
             </div>

@@ -1,10 +1,10 @@
 .documents-page{
-  width: 85%;
+  width: 80%;
 
 }
 
 .documents-page-title{
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
 
 .filter-select{
@@ -16,8 +16,8 @@
 
 .modal-label{
   display: inline-block;
-  margin-right: 15px;
-  font-weight: 600;
+  margin-right: 13px;
+  font-weight: 500;
   width: 80px;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .files-table{
-  margin-top: 25px;
+  margin-top: 22px;
   background-color: white;
   text-align: center;
 }
@@ -86,6 +86,8 @@
   width: 65px !important;
   padding-left: 0;
   padding-right: 0;
+  padding-top: .300rem;
+  padding-bottom: .300rem;
   margin-left: 10px;
 }
 

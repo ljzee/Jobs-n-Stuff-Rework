@@ -20,7 +20,7 @@ class DashboardPage extends React.Component {
        const {currentUser} = this.state;
         return (
             <div className="dashboard-page mx-auto">
-              <h2 className="dashboard-page-title">Dashboard</h2>
+              <h3 className="dashboard-page-title">Dashboard</h3>
               {currentUser.role === Role.User && <UserDashboard/>}
               {currentUser.role === Role.Business && <BusinessDashboard/>}
             </div>

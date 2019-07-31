@@ -23,15 +23,15 @@ class BusinessDashboard extends React.Component{
                 <tbody>
                   <tr>
                     <td className="notifications-cell-content"><Link to="/">Janet Smith</Link> has applied for <Link to="/">Junior Software Developer (Vancouve - British Columbia)</Link><div className="notifications-timestamp">5 minutes ago</div></td>
-                    <td className="notifications-cell-button"><Button className="unsave-button">View Application</Button></td>
+                    <td className="notifications-cell-button"><Button className="unsave-button">View</Button></td>
                   </tr>
                   <tr>
                     <td className="notifications-cell-content"><Link to="/">Peter Chao</Link> has applied for <Link to="/">Intermediate QA Analyst (Coquitlam - British Columbia)</Link><div className="notifications-timestamp">2 hours ago</div></td>
-                    <td className="notifications-cell-button"><Button className="unsave-button">View Application</Button></td>
+                    <td className="notifications-cell-button"><Button className="unsave-button">View</Button></td>
                   </tr>
                   <tr>
                     <td className="notifications-cell-content"><Link to="/">Joan Winters</Link> has applied for <Link to="/">Database Analyst (Burnaby - British Columbia)</Link><div className="notifications-timestamp">Tuesday</div></td>
-                    <td className="notifications-cell-button"><Button className="unsave-button">View Application</Button></td>
+                    <td className="notifications-cell-button"><Button className="unsave-button">View</Button></td>
                   </tr>
                 </tbody>
               </Table>

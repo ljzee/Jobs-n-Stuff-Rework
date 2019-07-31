@@ -6,7 +6,6 @@ import { history, Role } from '@/_helpers';
 import { authenticationService } from '@/_services';
 import { PrivateRoute, Header } from '@/_components';
 import { HomePage } from '@/Pages/HomePage';
-import { AdminPage } from '@/Pages/AdminPage';
 import { LoginPage } from '@/Pages/LoginPage';
 import { SignupPage } from '@/Pages/SignupPage';
 import { ProfilePage } from '@/Pages/ProfilePage';

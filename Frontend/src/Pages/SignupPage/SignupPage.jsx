@@ -25,7 +25,7 @@ class SignupPage extends React.Component {
         return (
           <div className="row">
             <div className="col-md-6 offset-md-3">
-                <h2>Sign Up</h2>
+                <h3>Sign Up</h3>
                 <Formik
                     initialValues={{
                         email: '',

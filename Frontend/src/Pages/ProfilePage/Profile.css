@@ -1,9 +1,9 @@
 .profile-page{
-  width: 85%;
+  width: 80%;
 }
 
 .profile-page-title{
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
 
 .profile-image{
@@ -25,7 +25,6 @@
 }
 
 .profile-page-card{
-  margin-bottom: 20px;
   border-style: none;
 }
 
@@ -35,17 +34,23 @@
 }
 
 .add-button{
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   padding: 0;
 }
 
+.welcome-message, .contact-info-title{
+  font-weight: 600;
+}
+
 .contact-info{
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .contact-info-title{
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid lightgrey;
 }
 
 .edit-field{
@@ -71,7 +76,6 @@
 
 .setting-button{
   padding:0;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
+  margin-bottom: 8px;
   display:block;
 }

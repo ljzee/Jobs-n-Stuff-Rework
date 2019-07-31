@@ -1,9 +1,9 @@
 .applicantspage-title{
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
 
 .applicantspage-toggle{
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
 
 .applicantspage-toggle .btn{
@@ -39,7 +39,7 @@
 .candidate-card{
   margin: 10px;
   height: 21rem;
-  width: 15.5rem;
+  width: 15.3rem;
   padding: 10px;
 }
 
@@ -74,7 +74,6 @@
 .candidate-card-contact{
   text-align: center;
   color: #9E9E9E;
-  font-size: 14px;
   padding-bottom: 5px;
   margin-bottom: 5px;
   border-bottom: 1px solid #EEEEEE;

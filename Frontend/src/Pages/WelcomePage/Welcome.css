@@ -1,5 +1,5 @@
 .welcome-page{
-  width: 80%;
+  width: 75%;
   margin: 0 auto;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .welcome-page .card p{
-  font-size: 14px;
+  font-size: 0.9rem;
 }
 
 
@@ -25,7 +25,7 @@
 }
 
 .welcome-page .row{
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .last-row{
@@ -33,7 +33,7 @@
 }
 
 .number{
-  font-size: 40px;
+  font-size: 36px;
 }
 
 .carousel-button {
@@ -52,7 +52,7 @@
   font-weight: lighter;
   color: white;
   width: 60%;
-  margin-bottom: 75px !important;
+  margin-bottom: 67px !important;
 }
 
 

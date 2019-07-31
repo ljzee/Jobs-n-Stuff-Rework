@@ -1,9 +1,9 @@
 .managepostings-page{
-  width: 95%;
+  width: 90%;
 }
 
 .addposting-page{
-  width: 80%
+  width: 70%
 }
 
 .managepostings-page-title, .addposting-page-title{
@@ -27,8 +27,8 @@
 }
 
 .action-button-group button{
-  height: 30px;
-  width: 30px;
+  height: 26px;
+  width: 26px;
   padding: 0;
   border-radius: 0.25rem;
   padding-bottom: 0.3rem !important;
@@ -39,8 +39,8 @@
 }
 
 .action-button-group button img{
-  max-width: 70%;
-  max-height: 70%;
+  max-width: 80%;
+  max-height: 80%;
 
 }
 

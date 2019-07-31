@@ -138,7 +138,7 @@ class JobPostPage extends React.Component{
                         <Col md={9}>
                           <div className="jobpostpage-header">
                             {this.getActionButton()}
-                            <h2>{this.state.jobTitle} {this.state.status === 'DRAFT' && <span>[Draft]</span>}{this.state.status === 'CLOSED' && <span>[Closed]</span>}</h2>
+                            <h3>{this.state.jobTitle} {this.state.status === 'DRAFT' && <span>[Draft]</span>}{this.state.status === 'CLOSED' && <span>[Closed]</span>}</h3>
                             <Link className="jobpostpage-header-location" to="/"><img height="22" width="22" src={require('../../Images/building.png')}/>{this.state.companyName}</Link>
                             <span className="jobpostpage-header-location"><img height="22" width="22" src={require('../../Images/location.png')}/>{`${this.state.jobAddress.city}, ${this.state.jobAddress.state}`}</span>
                           </div>
@@ -262,7 +262,7 @@ class JobPostPage extends React.Component{
                                   </Col>
 
                                   <Col md={9}>
-                                      <h2 className="jobpostpage-header">Edit Job Posting</h2>
+                                      <h3 className="jobpostpage-header">Edit Job Posting</h3>
                                       <Card>
                                         <Card.Header>Job Title</Card.Header>
                                         <Card.Body>
