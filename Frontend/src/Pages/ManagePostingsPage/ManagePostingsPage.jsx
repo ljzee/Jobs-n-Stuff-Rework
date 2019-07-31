@@ -7,6 +7,7 @@ import 'react-table/react-table.css';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import {businessService} from '@/_services';
+import {JobPostType} from '@/_helpers';
 
 class ManagePostingsPage extends React.Component{
   constructor(props){
@@ -48,7 +49,7 @@ class ManagePostingsPage extends React.Component{
       Header: 'Position',
       width: 275,
       Cell: props => {
-        let formattedJobTitle = props.original.position.replace(/\s+/g, '-').toLowerCase();
+        let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
         return(
           <Link style={{color: "#007bff"}} to={{pathname: `/managepostings/${formattedJobTitle}`, state: {id: props.original.id, edit: false}}}>{props.original.position}</Link>
         )
@@ -87,12 +88,16 @@ class ManagePostingsPage extends React.Component{
       Header: 'Actions',
       accessor: 'actions',
       Cell: props => {
-
         return(
           <div className="action-button-group">
-            {props.original.status === 'OPEN' && <button className="action-applicant-button"><img src={require('../../Images/applicant.png')}/></button>}
+            {props.original.status === 'OPEN' &&
+             <button onClick={()=>{
+               let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
+               this.props.history.push(`/managepostings/${formattedJobTitle}/applicants`, {id: props.original.id, title: props.original.position});
+             }}className="action-applicant-button"><img src={require('../../Images/applicant.png')}/></button>
+            }
             <button onClick={()=>{
-               let formattedJobTitle = props.original.position.replace(/\s+/g, '-').toLowerCase();
+               let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
                this.props.history.push(`/managepostings/${formattedJobTitle}`, {id: props.original.id, edit: true})
             }} className="action-edit-button"><img src={require('../../Images/edit.png')}/></button>
             <button onClick={()=>{
@@ -132,7 +137,7 @@ class ManagePostingsPage extends React.Component{
                 <Tab.Pane eventKey="active">
                   <ReactTable columns={columns}
                               data={this.state.data}
-                              resolveData={data => data.filter(jobpost => jobpost.status === 'OPEN')}
+                              resolveData={data => data.filter(jobpost => jobpost.status === JobPostType.Open)}
                               showPagination={false}
                               noDataText={"No job postings found"}
                               style={{
@@ -145,7 +150,7 @@ class ManagePostingsPage extends React.Component{
                 <Tab.Pane eventKey="drafts">
                   <ReactTable columns={columns}
                               data={this.state.data}
-                              resolveData={data => data.filter(jobpost => jobpost.status === 'DRAFT')}
+                              resolveData={data => data.filter(jobpost => jobpost.status === JobPostType.Draft)}
                               showPagination={false}
                               noDataText={"No job postings found"}
                               style={{
@@ -155,7 +160,19 @@ class ManagePostingsPage extends React.Component{
                               loading={this.state.loading}
                               />
                 </Tab.Pane>
-                <Tab.Pane eventKey="past">past table goes here</Tab.Pane>
+                <Tab.Pane eventKey="past">
+                  <ReactTable columns={columns}
+                              data={this.state.data}
+                              resolveData={data => data.filter(jobpost => jobpost.status === JobPostType.Closed)}
+                              showPagination={false}
+                              noDataText={"No job postings found"}
+                              style={{
+                                height: "450px" // This will force the table body to overflow and scroll, since there is not enough room
+                              }}
+                              className="-striped"
+                              loading={this.state.loading}
+                              />
+                </Tab.Pane>
               </Tab.Content>
             </Card.Body>
           </Card>

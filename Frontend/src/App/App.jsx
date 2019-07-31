@@ -16,6 +16,7 @@ import { DocumentsPage} from '@/Pages/DocumentsPage';
 import { DashboardPage} from '@/Pages/DashboardPage';
 import { ManagePostingsPage, AddPostingPage} from '@/Pages/ManagePostingsPage';
 import { JobPostPage } from '@/Pages/JobPostPage';
+import { ApplicantsPage } from '@/Pages/ApplicantsPage';
 import { PageNotFound} from '@/Pages/PageNotFound';
 
 
@@ -51,7 +52,8 @@ class App extends React.Component {
                               <PrivateRoute path='/documents' component={DocumentsPage}/>
                               <PrivateRoute path='/myprofile'component={ProfilePage}/>
                               <PrivateRoute exact path="/managepostings" roles={[Role.Business]} component={ManagePostingsPage}/>
-                              <PrivateRoute path="/managepostings/:jobtitle" roles={[Role.Business]} component={JobPostPage}/>
+                              <PrivateRoute exact path="/managepostings/:jobtitle" roles={[Role.Business]} component={JobPostPage}/>
+                              <PrivateRoute exact path="/managepostings/:jobtitle/applicants" roles={[Role.Business]} component={ApplicantsPage}/>
                               <PrivateRoute path="/addposting" roles={[Role.Business]} component={AddPostingPage}/>
                               <Route component={PageNotFound}/>
                           </Switch>

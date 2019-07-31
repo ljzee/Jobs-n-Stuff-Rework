@@ -2,6 +2,11 @@
   width: 80%;
 }
 
+.jobpostpage-backlink{
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 .jobpostpage-header{
   margin-bottom: 20px;
 }
@@ -22,7 +27,7 @@
 
 .jobpostpage-header-location{
   display: block;
-  float: left; 
+  float: left;
   clear: left;
   margin-bottom: 10px;
 }

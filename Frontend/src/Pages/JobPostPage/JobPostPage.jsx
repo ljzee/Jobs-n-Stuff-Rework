@@ -39,7 +39,6 @@ class JobPostPage extends React.Component{
     this.toggleEdit = this.toggleEdit.bind(this);
     this.getStatusBadge = this.getStatusBadge.bind(this);
     this.fetchJobPost = this.fetchJobPost.bind(this);
-    console.log(this.props.history)
   }
 
   componentDidMount(){
@@ -98,7 +97,7 @@ class JobPostPage extends React.Component{
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
                       <Dropdown.Item onClick={this.toggleEdit}>Edit</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{console.log('stop application')}}>Stop Accepting Applicants</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{console.log('view applicants')}}>View Applicants</Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{this.props.history.push(`${this.props.location.pathname}/applicants`, {id: this.props.location.state.id, title: this.state.jobTitle})}}>View Applicants</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{
                         businessService.deleteJobPost(this.props.location.state.id)
                                        .then(()=>{this.props.history.push('/managepostings')})
@@ -133,7 +132,7 @@ class JobPostPage extends React.Component{
     const jobPost = <div className="jobpostpage mx-auto">
                       <Row>
                         <Col md={3} style={{padding: 0}}>
-                          <Button as={Link} to="/managepostings" variant="link">Back to my postings</Button>
+                          <Link className="jobpostpage-backlink" to="/managepostings">Back to my postings</Link>
                         </Col>
 
                         <Col md={9}>
