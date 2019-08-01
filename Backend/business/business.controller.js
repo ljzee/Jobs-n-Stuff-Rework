@@ -52,6 +52,8 @@ router.delete('/jobpost/:id',
               authorize(Role.Business),
               deleteJobPost)
 
+router.get('/jobpost/:id/applicants', authorize(Role.Business), getAllJobApplicants)
+
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
   let errorMessages = errors.map(error => error.msg);
@@ -135,7 +137,7 @@ async function updateJobPost(req, res, next){
   }
   try{
     //CHECK AUTHORIZATION/OWNERSHIP PRIOR TO MODIFYING A JOB POST
-    let hasJobPost = jobPostService.checkHasJobPost(req.user.sub, req.params.id);
+    let hasJobPost = await jobPostService.checkHasJobPost(req.user.sub, req.params.id);
     if(hasJobPost){
       await jobPostService.updateJobPost(req.user.sub, req.params.id, req.body);
       res.sendStatus(200);
@@ -156,6 +158,20 @@ async function deleteJobPost(req, res, next){
   }catch(error){
     res.status(500).json({errors: ['Internal Server Error']});
     console.log(error);
+  }
+}
+
+async function getAllJobApplicants(req, res, next){
+  try{
+    let hasJobPost = await jobPostService.checkHasJobPost(req.user.sub, req.params.id);
+    if(hasJobPost){
+      let applicants = await jobPostService.getAllJobApplicants(req.params.id);
+      res.json({applicants: applicants})
+    }else{
+      res.status(400).json({errors: ['Job post does not exist']})
+    }
+  }catch(error){
+
   }
 }
 

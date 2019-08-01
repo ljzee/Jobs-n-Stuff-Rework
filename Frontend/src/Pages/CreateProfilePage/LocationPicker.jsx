@@ -23,7 +23,6 @@ class LocationPicker extends React.Component{
   handleChange(option, event){
 
     if(event.name === "country"){
-      console.log(option.label)
       this.props.setFieldValue("country", option.label);
       this.setState({
         country: option,

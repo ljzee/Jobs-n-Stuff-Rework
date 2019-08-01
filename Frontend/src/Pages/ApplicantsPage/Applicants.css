@@ -53,7 +53,6 @@
   height: 5rem;
   border-radius: 50%;
   vertical-align: middle;
-  border: 5px solid  #00BCD4;
 
 }
 
@@ -77,6 +76,7 @@
   padding-bottom: 5px;
   margin-bottom: 5px;
   border-bottom: 1px solid #EEEEEE;
+  font-size: 0.8rem;
 }
 
 .candidate-card-contact div:first-child{
@@ -84,8 +84,8 @@
 }
 
 .candidate-card-contact img{
-  width:20px;
-  height: 20px;
+  width:17px;
+  height: 17px;
   margin-right: 10px;
 }
 

@@ -258,7 +258,7 @@ class JobPostPage extends React.Component{
                               <div className="jobpostpage mx-auto">
                                 <Row>
                                   <Col md={3}>
-                                    <Button as={Link} to="/managepostings" variant="link" style={{padding: 0}}>Back to my postings</Button>
+                                    <Link to="/managepostings" >Back to my postings</Link>
                                   </Col>
 
                                   <Col md={9}>

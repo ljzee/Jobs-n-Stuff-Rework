@@ -5,3 +5,4 @@ export * from './history';
 export * from './role';
 export * from './positiontype';
 export * from './jobposttype';
+export * from './applicationstatus';

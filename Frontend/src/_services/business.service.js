@@ -11,7 +11,8 @@ export const businessService = {
     getAllBusinessJobPost,
     getJobPost,
     updateJobPost,
-    deleteJobPost
+    deleteJobPost,
+    getJobApplicants
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -89,5 +90,15 @@ function deleteJobPost(jobPostId){
       headers: authHeader()
   };
   return axios.delete(`${config.apiUrl}/business/jobpost/${jobPostId}`, configOptions)
+              .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+
+function getJobApplicants(jobPostId){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.get(`${config.apiUrl}/business/jobpost/${jobPostId}/applicants`, configOptions)
+              .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
 }

@@ -10,7 +10,8 @@ module.exports = {
     deleteJobPost,
     checkHasJobPost,
     updateJobPost,
-    getJobPost
+    getJobPost,
+    getAllJobApplicants
 };
 
 async function addJobPost(id, {
@@ -100,6 +101,16 @@ async function addJobPost(id, {
     try{
       await pool.query('UPDATE job_post SET status = $1 WHERE id = $2', ['CLOSED', jobPostId]);
       await pool.query('DELETE FROM business_jobs WHERE b_id = $1 AND j_id = $2', [userId, jobPostId]);
+    }catch(error){
+      throw error;
+    }
+  }
+
+  async function getAllJobApplicants(jobPostId){
+    try{
+      let jobPostApplicantsQueryResults = await pool.query('SELECT user_profile.id, user_profile.first_name, user_profile.last_name, user_profile.phone_number, users.email, applications.status FROM users, user_profile, user_applications, job_applications, applications WHERE users.id = user_profile.id AND user_profile.id = user_applications.u_id AND user_applications.a_id = job_applications.a_id AND job_applications.a_id = applications.id AND job_applications.j_id = $1',
+                                                [jobPostId]);
+      return jobPostApplicantsQueryResults.rows;
     }catch(error){
       throw error;
     }
