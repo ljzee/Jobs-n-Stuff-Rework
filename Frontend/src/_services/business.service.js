@@ -12,7 +12,8 @@ export const businessService = {
     getJobPost,
     updateJobPost,
     deleteJobPost,
-    getJobApplicants
+    getJobApplicants,
+    getApplicantFiles
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -101,4 +102,15 @@ function getJobApplicants(jobPostId){
   return axios.get(`${config.apiUrl}/business/jobpost/${jobPostId}/applicants`, configOptions)
               .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+function getApplicantFiles(jobPostId, applicantId){
+  const configOptions = {
+      headers: authHeader(),
+      responseType: 'blob'
+  };
+  return axios.get(`${config.apiUrl}/business/jobpost/${jobPostId}/applicants/${applicantId}`, configOptions)
+              .then(res=>(res))
+              .catch((error) => Promise.reject(error));
+
 }

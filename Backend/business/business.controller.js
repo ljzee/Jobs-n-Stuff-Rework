@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const businessService = require('./business.service');
 const jobPostService = require('../otherservices/jobpost.service');
+const fileService = require('../files/files.service');
 const authorize = require('_helpers/authorize');
 const Role = require('_helpers/role');
 const{check, validationResult} = require('express-validator');
 var path = require('path');
+var zip = require('express-zip');
 
 router.post('/profile',
             check('companyName').not().isEmpty().withMessage('Company name cannot be empty'),
@@ -53,6 +55,7 @@ router.delete('/jobpost/:id',
               deleteJobPost)
 
 router.get('/jobpost/:id/applicants', authorize(Role.Business), getAllJobApplicants)
+router.get('/jobpost/:id/applicants/:applicationid', authorize(Role.Business), getApplicationFiles)
 
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
@@ -172,6 +175,21 @@ async function getAllJobApplicants(req, res, next){
     }
   }catch(error){
 
+  }
+}
+
+async function getApplicationFiles(req, res, next){
+  let hasJobPost = await jobPostService.checkHasJobPost(req.user.sub, req.params.id);
+  if(hasJobPost){
+    let applicationFiles = await fileService.getApplicationFiles(req.params.applicationid);
+    let packageName = await fileService.getApplicationFilesPackageName(req.params.applicationid, req.params.id);
+    res.zip(applicationFiles.map(file=>({path: file.file_path, name: file.file_name})), packageName, function(err){
+      if(err){
+        res.status(500).json({errors: [err]});
+      }
+    })
+  }else{
+    res.status(400).json({errors: ['Unauthorized']})
   }
 }
 

@@ -71,7 +71,7 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.New)
-                                   .map(applicant => <ApplicantCard key={applicant.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
             }
             </div>
           </div>
@@ -83,7 +83,7 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.Accepted)
-                                   .map(applicant => <ApplicantCard key={applicant.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
             }
             </div>
           </div>
@@ -95,7 +95,7 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.Saved)
-                                   .map(applicant => <ApplicantCard key={applicant.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
             }
             </div>
           </div>
@@ -107,7 +107,7 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.Rejected)
-                                   .map(applicant => <ApplicantCard key={applicant.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
             }
             </div>
           </div>
