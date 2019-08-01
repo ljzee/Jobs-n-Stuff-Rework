@@ -98,10 +98,6 @@ class JobPostPage extends React.Component{
                       <Dropdown.Item onClick={this.toggleEdit}>Edit</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{console.log('stop application')}}>Stop Accepting Applicants</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{this.props.history.push(`${this.props.location.pathname}/applicants`, {id: this.props.location.state.id, title: this.state.jobTitle})}}>View Applicants</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{
-                        businessService.deleteJobPost(this.props.location.state.id)
-                                       .then(()=>{this.props.history.push('/managepostings')})
-                      }}>Delete Posting</Dropdown.Item>
                      </DropdownButton>
     }else if(this.state.status === 'DRAFT'){
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
@@ -117,10 +113,6 @@ class JobPostPage extends React.Component{
                       <Dropdown.Item onClick={this.toggleEdit}>Edit</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{console.log('republish')}}>Republish Posting</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{console.log('view applicants')}}>View Applicants</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{
-                        businessService.deleteJobPost(this.props.location.state.id)
-                                       .then(()=>{this.props.history.push('/managepostings')})
-                      }}>Delete Posting</Dropdown.Item>
                      </DropdownButton>
     }
     return actionButton;

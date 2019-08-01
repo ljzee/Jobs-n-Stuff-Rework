@@ -90,7 +90,7 @@ class ManagePostingsPage extends React.Component{
       Cell: props => {
         return(
           <div className="action-button-group">
-            {props.original.status === 'OPEN' &&
+            {props.original.status === JobPostType.Open &&
              <button onClick={()=>{
                let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
                this.props.history.push(`/managepostings/${formattedJobTitle}/applicants`, {id: props.original.id, title: props.original.position});
@@ -100,11 +100,12 @@ class ManagePostingsPage extends React.Component{
                let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
                this.props.history.push(`/managepostings/${formattedJobTitle}`, {id: props.original.id, edit: true})
             }} className="action-edit-button"><img src={require('../../Images/edit.png')}/></button>
-            <button onClick={()=>{
+            {props.original.status === JobPostType.Draft && <button onClick={()=>{
               businessService.deleteJobPost(props.original.id)
                              .then(()=>{this.fetchPostings()})
                              .catch(error => {console.log(error)});
             }} className="action-delete-button"><img src={require('../../Images/bin.png')}/></button>
+            }
           </div>
         )
       },
