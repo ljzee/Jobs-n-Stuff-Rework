@@ -13,7 +13,8 @@ export const businessService = {
     updateJobPost,
     deleteJobPost,
     getJobApplicants,
-    getApplicantFiles
+    getApplicantFiles,
+    updateApplicationStatus
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -113,4 +114,12 @@ function getApplicantFiles(jobPostId, applicantId){
               .then(res=>(res))
               .catch((error) => Promise.reject(error));
 
+}
+
+function updateApplicationStatus(jobPostId, applicantId, status){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/business/jobpost/${jobPostId}/applicants/${applicantId}`, {status: status}, configOptions)
+              .catch((error) => Promise.reject(error));
 }

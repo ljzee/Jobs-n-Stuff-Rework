@@ -97,7 +97,7 @@
 }
 
 .candidate-card-buttons .btn{
-  font-size: 14px;
+  font-size: 13px;
   width: 50%;
   height: 100%;
   padding: .1rem .75rem;
@@ -115,4 +115,12 @@
 .candidate-card-options .btn{
   width: 32%;
   font-size: 13px;
+}
+
+.candidate-card-date{
+  text-align:center;
+  font-size: 0.8rem;
+  color: #9E9E9E;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #EEEEEE;
 }

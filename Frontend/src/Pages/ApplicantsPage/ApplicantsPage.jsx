@@ -16,20 +16,26 @@ class ApplicantsPage extends React.Component{
     this.state = {
       filters: [],
       applicants: [],
-      loading: true
+      loading: true,
+      applicantSearch: ''
     }
 
     this.toggleFilter = this.toggleFilter.bind(this);
     this.createFilterButtons = this.createFilterButtons.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.fetchApplicants = this.fetchApplicants.bind(this);
   }
 
-  componentDidMount(){
+  fetchApplicants(){
     businessService.getJobApplicants(this.props.location.state.id)
                    .then(data => {
                      data.applicants.forEach(applicant => {applicant.color = randomColor(); return applicant})
                      this.setState({applicants: data.applicants, loading: false})})
-                   .catch(errpr => console.log(error))
+                   .catch(errrr => console.log(error))
+  }
 
+  componentDidMount(){
+    this.fetchApplicants();
   }
 
   toggleFilter(filter){
@@ -39,6 +45,14 @@ class ApplicantsPage extends React.Component{
   createFilterButtons(){
     return applicantsFilter.map((filter, index) => <ToggleButton key={index} variant="light" value={filter}>{filter}</ToggleButton>)
   }
+
+  handleChange(e){
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+  //TODO: REFACTOR CANDIDATES CONTAINER INTO OWN COMPONENT WITH FILTERS
 
   render(){
     let formattedJobTitle = this.props.location.state.title.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
@@ -58,7 +72,7 @@ class ApplicantsPage extends React.Component{
         <h3 className="applicantspage-title"><Link style={{color: "black"}} to={{pathname: `/managepostings/${formattedJobTitle}`, state: {id: this.props.location.state.id, edit: false}}}>{this.props.location.state.title}</Link> - Applicants</h3>
         <div className="applicantspage-toggle">
           <FormControl
-            placeholder="Search by name"
+            placeholder="Search by name" value={this.state.applicantSearch} onChange={this.handleChange} name='applicantSearch'
           />
           <ToggleButtonGroup type="checkbox" onChange={this.toggleFilter}>
             {this.createFilterButtons()}
@@ -71,7 +85,22 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.New)
-                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .filter(applicant => {
+                                     let fullName = `${applicant.first_name} ${applicant.last_name}`.toLowerCase()
+                                     return fullName.includes(this.state.applicantSearch.toLowerCase());
+                                   })
+                                   .map(applicant => <ApplicantCard key={applicant.id}
+                                                                    aId={applicant.a_id}
+                                                                    jobId={this.props.location.state.id}
+                                                                    id={applicant.id}
+                                                                    firstName={applicant.first_name}
+                                                                    lastName={applicant.last_name}
+                                                                    phoneNumber={applicant.phone_number}
+                                                                    email={applicant.email}
+                                                                    color={applicant.color}
+                                                                    dateProcessed={applicant.date_processed}
+                                                                    status={applicant.status}
+                                                                    fetchApplicants={this.fetchApplicants}/>)
             }
             </div>
           </div>
@@ -83,7 +112,22 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.Accepted)
-                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .filter(applicant => {
+                                     let fullName = `${applicant.first_name} ${applicant.last_name}`.toLowerCase()
+                                     return fullName.includes(this.state.applicantSearch.toLowerCase());
+                                   })
+                                   .map(applicant => <ApplicantCard key={applicant.id}
+                                                                    aId={applicant.a_id}
+                                                                    jobId={this.props.location.state.id}
+                                                                    id={applicant.id}
+                                                                    firstName={applicant.first_name}
+                                                                    lastName={applicant.last_name}
+                                                                    phoneNumber={applicant.phone_number}
+                                                                    email={applicant.email}
+                                                                    color={applicant.color}
+                                                                    dateProcessed={applicant.date_processed}
+                                                                    status={applicant.status}
+                                                                    fetchApplicants={this.fetchApplicants}/>)
             }
             </div>
           </div>
@@ -95,7 +139,22 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.Saved)
-                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .filter(applicant => {
+                                     let fullName = `${applicant.first_name} ${applicant.last_name}`.toLowerCase()
+                                     return fullName.includes(this.state.applicantSearch.toLowerCase());
+                                   })
+                                   .map(applicant => <ApplicantCard key={applicant.id}
+                                                                    aId={applicant.a_id}
+                                                                    jobId={this.props.location.state.id}
+                                                                    id={applicant.id}
+                                                                    firstName={applicant.first_name}
+                                                                    lastName={applicant.last_name}
+                                                                    phoneNumber={applicant.phone_number}
+                                                                    email={applicant.email}
+                                                                    color={applicant.color}
+                                                                    dateProcessed={applicant.date_processed}
+                                                                    status={applicant.status}
+                                                                    fetchApplicants={this.fetchApplicants}/>)
             }
             </div>
           </div>
@@ -107,7 +166,22 @@ class ApplicantsPage extends React.Component{
             <div className="candidates-container">
             {
               this.state.applicants.filter(applicant => applicant.status == ApplicationStatus.Rejected)
-                                   .map(applicant => <ApplicantCard key={applicant.id} aId={applicant.a_id} jobId={this.props.location.state.id} id={applicant.id} firstName={applicant.first_name} lastName={applicant.last_name} phoneNumber={applicant.phone_number} email={applicant.email} color={applicant.color}/>)
+                                   .filter(applicant => {
+                                     let fullName = `${applicant.first_name} ${applicant.last_name}`.toLowerCase()
+                                     return fullName.includes(this.state.applicantSearch.toLowerCase());
+                                   })
+                                   .map(applicant => <ApplicantCard key={applicant.id}
+                                                                    aId={applicant.a_id}
+                                                                    jobId={this.props.location.state.id}
+                                                                    id={applicant.id}
+                                                                    firstName={applicant.first_name}
+                                                                    lastName={applicant.last_name}
+                                                                    phoneNumber={applicant.phone_number}
+                                                                    email={applicant.email}
+                                                                    color={applicant.color}
+                                                                    dateProcessed={applicant.date_processed}
+                                                                    status={applicant.status}
+                                                                    fetchApplicants={this.fetchApplicants}/>)
             }
             </div>
           </div>

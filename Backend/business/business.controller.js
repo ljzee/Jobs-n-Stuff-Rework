@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const businessService = require('./business.service');
 const jobPostService = require('../otherservices/jobpost.service');
+const applicationService = require('../otherservices/application.service');
 const fileService = require('../files/files.service');
 const authorize = require('_helpers/authorize');
 const Role = require('_helpers/role');
@@ -56,6 +57,10 @@ router.delete('/jobpost/:id',
 
 router.get('/jobpost/:id/applicants', authorize(Role.Business), getAllJobApplicants)
 router.get('/jobpost/:id/applicants/:applicationid', authorize(Role.Business), getApplicationFiles)
+router.post('/jobpost/:id/applicants/:applicationid',
+            check('status').not().isEmpty().withMessage('Status cannot be empty'),
+            authorize(Role.Business),
+            updateApplicationStatus)
 
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
@@ -188,6 +193,23 @@ async function getApplicationFiles(req, res, next){
         res.status(500).json({errors: [err]});
       }
     })
+  }else{
+    res.status(400).json({errors: ['Unauthorized']})
+  }
+}
+
+async function updateApplicationStatus(req, res, next){
+  const {errors} = validationResult(req);
+  let errorMessages = errors.map(error => error.msg);
+  if(errorMessages.length) {
+    res.status(400).json({errors: errorMessages});
+    return;
+  }
+
+  let hasJobPost = await jobPostService.checkHasJobPost(req.user.sub, req.params.id);
+  if(hasJobPost){
+    await applicationService.updateApplicationStatus(req.params.applicationid, req.body.status);
+    res.sendStatus(200);
   }else{
     res.status(400).json({errors: ['Unauthorized']})
   }

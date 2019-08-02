@@ -142,7 +142,7 @@ class ProfilePage extends React.Component {
                       extensions={['jpg', 'jpeg', 'png']}
                       dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
                       onChange={image=>{
-                        console.log("image");
+                        console.log(image);
                       }}
                       onError={error=>{
                         console.log(error);
