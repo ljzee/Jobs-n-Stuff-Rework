@@ -1,17 +1,22 @@
 .profile-page{
-  width: 80%;
+  width: 78%;
 }
 
 .profile-page-title{
   margin-bottom: 22px;
 }
 
+.profile-page .card-header{
+  padding: .50rem 1.25rem
+}
+
 .profile-image{
   border-radius: 50%;
-  width: 60%;
+  height: 95px;
+  width: 95px;
   display:block;
   margin:20px auto 10px;
-
+  object-fit: cover;
 }
 
 .image-picker{
@@ -70,8 +75,18 @@
   width: 100px;
 }
 
+@media (min-width: 992px) {
+  .duration{
+    text-align: center;
+  }
+
+  .duration span{
+    display:block;
+  }
+}
+
 .duration{
-  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .setting-button{

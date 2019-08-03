@@ -8,8 +8,10 @@ export const userService = {
     createProfile,
     getProfile,
     addExperience,
+    editExperience,
     deleteExperience,
-    updateProfile
+    updateProfile,
+    uploadProfileImage
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -56,6 +58,15 @@ function addExperience(company, title, location, startDate, endDate, description
               .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
+function editExperience(experienceId, company, title, location, startDate, endDate, description){
+  const configOptions = {
+      headers: authHeader()
+  };
+
+  return axios.put(`${config.apiUrl}/users/experience/${experienceId}`, { 'company': company, 'title': title, 'location': location, 'startDate': startDate, 'endDate': endDate, 'description': description}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
 function deleteExperience(id){
   const configOptions = {
       headers: authHeader()
@@ -64,6 +75,13 @@ function deleteExperience(id){
               .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
+function uploadProfileImage(encodedString){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/users/profile/profile-image`, {encodedString: encodedString}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
 /*
 function getAll() {
     return axios.get(`${config.apiUrl}/users`, {headers: authHeader()}).then(result => result.data);

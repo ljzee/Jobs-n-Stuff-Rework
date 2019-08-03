@@ -100,7 +100,8 @@ class ApplicantsPage extends React.Component{
                                                                     color={applicant.color}
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
-                                                                    fetchApplicants={this.fetchApplicants}/>)
+                                                                    fetchApplicants={this.fetchApplicants}
+                                                                    profileImage={applicant.profile_image_name}/>)
             }
             </div>
           </div>
@@ -127,7 +128,8 @@ class ApplicantsPage extends React.Component{
                                                                     color={applicant.color}
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
-                                                                    fetchApplicants={this.fetchApplicants}/>)
+                                                                    fetchApplicants={this.fetchApplicants}
+                                                                    profileImage={applicant.profile_image_name}/>)
             }
             </div>
           </div>
@@ -154,7 +156,8 @@ class ApplicantsPage extends React.Component{
                                                                     color={applicant.color}
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
-                                                                    fetchApplicants={this.fetchApplicants}/>)
+                                                                    fetchApplicants={this.fetchApplicants}
+                                                                    profileImage={applicant.profile_image_name}/>)
             }
             </div>
           </div>
@@ -181,7 +184,8 @@ class ApplicantsPage extends React.Component{
                                                                     color={applicant.color}
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
-                                                                    fetchApplicants={this.fetchApplicants}/>)
+                                                                    fetchApplicants={this.fetchApplicants}
+                                                                    profileImage={applicant.profile_image_name}/>)
             }
             </div>
           </div>

@@ -53,7 +53,7 @@
   height: 5rem;
   border-radius: 50%;
   vertical-align: middle;
-
+  object-fit: cover;
 }
 
 .candidate-card-upper-helper{

@@ -5,7 +5,7 @@ import { Formik, Field, ErrorMessage, Form as FForm } from 'formik';
 import * as Yup from 'yup';
 import profileicon from '../../Images/profile-icon.png'
 import {ExperienceCard} from './ExperienceCard';
-import { ImagePicker } from 'react-file-picker';
+import { ImagePicker, FilePicker } from 'react-file-picker';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css"
 import config from 'config';
@@ -35,6 +35,7 @@ class ProfilePage extends React.Component {
           experiences: [],
           education: [],
           profileImageName: '',
+          previewProfileImage: '',
           isLoading: true
         }
 
@@ -44,6 +45,7 @@ class ProfilePage extends React.Component {
         this.handleFileSelect = this.handleFileSelect.bind(this);
         this.toggleShowModal = this.toggleShowModal.bind(this);
         this.fetchProfile = this.fetchProfile.bind(this);
+        this.setPreviewProfileImage = this.setPreviewProfileImage.bind(this);
     }
 
     fetchProfile(){
@@ -60,7 +62,8 @@ class ProfilePage extends React.Component {
           githubLink: profile.github_link,
           experiences: profile.experiences,
           profileImageName: profile.profile_image_name,
-          isLoading:false
+          isLoading:false,
+          previewProfileImage: ''
         }))
       })
     }
@@ -88,6 +91,12 @@ class ProfilePage extends React.Component {
         ...prevState,
         editContactInformation: !prevState.editContactInformation
       }))
+    }
+
+    setPreviewProfileImage(image){
+      this.setState({
+        previewProfileImage: image
+      })
     }
 
     //Since react recycle events, event will be nullified before calling the asynchronous method this.setState(), must use event.persist
@@ -136,20 +145,29 @@ class ProfilePage extends React.Component {
                   <Card.Header>Personal</Card.Header>
                   <Card.Body>
                     <div className="welcome-message">Welcome back, {this.state.firstName}!</div>
-                    {this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={`${config.apiUrl}/users/profile/profile-image/${this.state.profileImageName}`}/>}
-                    {!this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={profileicon}/>}
+                    {this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={(this.state.previewProfileImage === '' ? this.state.profileImageName : this.state.previewProfileImage)}/>}
+                    {!this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={(this.state.previewProfileImage === '' ? profileicon : this.state.previewProfileImage)}/>}
+                    {(this.state.previewProfileImage === "") &&
                     <ImagePicker
                       extensions={['jpg', 'jpeg', 'png']}
-                      dims={{minWidth: 100, maxWidth: 500, minHeight: 100, maxHeight: 500}}
+                      dims={{minWidth: 100, maxWidth: 1000, minHeight: 100, maxHeight: 1000}}
                       onChange={image=>{
-                        console.log(image);
+                        this.setPreviewProfileImage(image);
                       }}
                       onError={error=>{
                         console.log(error);
                       }}
                     >
                       <Button variant="link" className="image-picker">Upload a photo</Button>
-                    </ImagePicker>
+                    </ImagePicker>}
+                    {(this.state.previewProfileImage !== "") &&
+                      <Button variant="link" className="image-picker" onClick={() => {
+                        userService.uploadProfileImage(this.state.previewProfileImage)
+                                   .then(()=>{this.fetchProfile()})
+                      }}>
+                        Upload
+                      </Button>
+                    }
                     <div className="contact-info">
                       <div className="contact-info-title">Contact Info</div>
                       <p><b>Email:</b><br/>{this.state.email}</p>
@@ -204,7 +222,8 @@ class ProfilePage extends React.Component {
                 </Card>
 
                 <Card className="profile-page-card">
-                  <Card.Header>Experience
+                  <Card.Header>
+                    Experience
                     <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
@@ -214,15 +233,28 @@ class ProfilePage extends React.Component {
 
                 <Card className="profile-page-card">
                   <Card.Header>Education
-                    <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
+                    <Button variant="outline-success" className="add-button float-right">+</Button>
                   </Card.Header>
                   <ListGroup className="list-group-flush">
                     <ListGroupItem>
-                      <Button variant="link" className="float-right" onClick={this.toggleEditAboutMe}>Edit</Button>
-                      <p><b>School Name: </b>Simon Fraser University</p>
-                      <p><b>Attained/Currently Pursuing Title: </b>Bachelors Of Science</p>
-                      <p><b>Location: </b>Burnaby, BC</p>
-                      <p><b>Duration: </b>2013 - 2019</p>
+                      <Row>
+                        <Col className="duration" xs={12} s={12} md={12} lg={2}>
+                          <span>{'2019/03'}</span>
+                          <span>-</span>
+                          <span>{'2013/09'}</span>
+                        </Col>
+                        <Col xs={12} s={12} md={12} lg={8}>
+                          <p><b>Simon Fraser University</b></p>
+                          <p>Burnaby, BC</p>
+                          <p><b>Bachelors Of Science, Computer Science</b></p>
+                          <p><b>GPA: </b>3.3</p>
+                          <p><b>Description: </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempus augue id erat dictum vehicula. Suspendisse blandit, nibh nec malesuada rutrum, nulla ipsum euismod magna, id sodales odio mi at arcu. Quisque ultrices elit blandit, euismod purus id, congue turpis.</p>
+                        </Col>
+                        <Col xs={12} s={12} md={12} lg={2} style={{padding: 0}}>
+                          <Button variant="link" className="card-button">Delete</Button>
+                          <Button variant="link" className="card-button">Edit</Button>
+                        </Col>
+                      </Row>
                     </ListGroupItem>
                   </ListGroup>
                 </Card>

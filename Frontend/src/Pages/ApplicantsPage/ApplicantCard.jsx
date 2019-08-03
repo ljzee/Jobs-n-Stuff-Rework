@@ -4,6 +4,7 @@ import {Card, Button, ToggleButtonGroup, ToggleButton, InputGroup, FormControl} 
 import {Link} from 'react-router-dom';
 import {businessService} from '@/_services';
 import {ApplicationStatus} from '@/_helpers';
+import profileicon from '../../Images/profile-icon.png';
 
 class ApplicantCard extends React.Component{
   constructor(props){
@@ -19,13 +20,13 @@ class ApplicantCard extends React.Component{
 
   render(){
 
-    const {aId, jobId, id, firstName, lastName, phoneNumber, email, color, dateProcessed, status} = this.props;
+    const {aId, jobId, id, firstName, lastName, phoneNumber, email, color, dateProcessed, status, profileImage} = this.props;
     return(
       <Card className="candidate-card">
         <div className="candidate-card-upper">
           <span className="candidate-card-upper-helper">
           </span>
-          <img style={{border: `5px solid  ${color}`}} src={require('../../Images/profile-icon.png')}/>
+          <img style={{border: `5px solid  ${color}`}} src={profileImage === '' ? profileicon : profileImage}/>
         </div>
         <div className="candidate-card-name"><span>{`${firstName} ${lastName}`}</span></div>
         <div className="candidate-card-contact">

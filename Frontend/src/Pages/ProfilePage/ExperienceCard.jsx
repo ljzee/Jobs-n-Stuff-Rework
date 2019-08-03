@@ -44,21 +44,23 @@ class ExperienceCard extends React.Component {
       <ListGroupItem>
         {!this.state.isEditting &&
         <div>
-          <Button variant="link" className="card-button float-right" onClick={()=>{
-            userService.deleteExperience(this.props.experience_id)
-              .then(this.props.fetchProfile());
-          }}>Delete</Button>
-          <Button variant="link" className="card-button float-right" onClick={this.toggleEdit}>Edit</Button>
           <Row>
             <Col className="duration" xs={12} s={12} md={12} lg={2}>
-              <div>{(this.props.endDate === null ? 'Present' : `${endDateSplit[0]}/${endDateSplit[1]}`)}</div>
-              <div>-</div>
-              <div>{`${startDateSplit[0]}/${startDateSplit[1]}`}</div>
+              <span>{(this.props.endDate === null ? 'Present' : `${endDateSplit[0]}/${endDateSplit[1]}`)}</span>
+              <span>-</span>
+              <span>{`${startDateSplit[0]}/${startDateSplit[1]}`}</span>
             </Col>
-            <Col xs={12} s={12} md={12} lg={10}>
+            <Col xs={12} s={12} md={12} lg={8}>
               <p><b>{this.props.company}</b> - {this.props.title}</p>
               <p>{this.props.location}</p>
               <p><b>Description: </b>{this.props.description}</p>
+            </Col>
+            <Col xs={12} s={12} md={12} lg={2} style={{padding: 0}}>
+              <Button variant="link" className="card-button" onClick={()=>{
+                userService.deleteExperience(this.props.experience_id)
+                  .then(()=>{this.props.fetchProfile()});
+              }}>Delete</Button>
+              <Button variant="link" className="card-button" onClick={this.toggleEdit}>Edit</Button>
             </Col>
           </Row>
         </div>
@@ -83,8 +85,11 @@ class ExperienceCard extends React.Component {
                 endDate: Yup.string(),
                 description: Yup.string()
             })}
-            onSubmit={({company, title, location, duration, description}, { setStatus, setSubmitting }) => {
-
+            onSubmit={({company, title, location, startDate, endDate, description}, { setStatus, setSubmitting }) => {
+              userService.editExperience(this.props.experience_id, company, title, location, startDate, endDate, description)
+                         .then(()=>{
+                           this.props.fetchProfile();
+                         })
               this.toggleEdit();
             }}
             render={({ values, errors, status, touched, isSubmitting, setFieldValue, setFieldTouched }) => (
