@@ -46,6 +46,8 @@
   display: block;
   color:#007bff;
   font-size: 0.9rem;
+  white-space: nowrap;
+
 }
 
 .unsave-button{

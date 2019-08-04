@@ -9,6 +9,7 @@ module.exports = {
     getUserProfile,
     addUserProfile,
     addExperience,
+    editExperience,
     deleteExperience,
     updateProfile
 };
@@ -29,6 +30,16 @@ async function addExperience(id, {company, title, location, startDate, endDate, 
   let results;
   try{
     results = await pool.query('INSERT INTO user_experience(experience_id, id, company_name, title, location, start_date, end_date, description) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7)', [id, company, title, location, startDate, endDate, description]);
+  }catch(error){
+    throw error;
+  }
+}
+
+async function editExperience(userId, experienceId, {company, title, location, startDate, endDate, description}){
+  if(endDate === '') endDate = null;
+  let results;
+  try{
+    results = await pool.query('Update user_experience SET company_name=$1, title=$2, location=$3, start_date=$4, end_date=$5, description=$6 WHERE id=$7 AND experience_id=$8', [company, title, location, startDate, endDate, description, userId, experienceId]);
   }catch(error){
     throw error;
   }

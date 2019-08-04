@@ -71,7 +71,7 @@ class UserDashboard extends React.Component{
 
           <Col md={4} >
             <span className="dashboard-card-title">Calendar</span>
-            <Calendar showDateInput={false}/>
+            <Calendar style={{marginBottom: "20px"}} showDateInput={false}/>
 
           </Col>
         </Row>
@@ -81,7 +81,7 @@ class UserDashboard extends React.Component{
             <Card>
               <Card.Header style={{padding: ".42rem 1.25rem", borderBottom: "none"}}>
                 <span className="dashboard-card-title">Bookmarked Postings</span>
-                <img className="icon"  src={require('../../Images/bookmark.png')} alt="bookmark"/>
+                <img className="icon"  src={require('../../Images/bookmark1.png')} alt="bookmark"/>
               </Card.Header>
               <Table style={{marginBottom: 0, overflow: "hidden", tableLayout: "fixed"}} responsive>
               <tbody>

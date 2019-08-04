@@ -42,7 +42,7 @@ class Header extends React.Component {
 
         if(currentUser && currentUser.hasProfile && currentUser.role === Role.User){
             navItems = <React.Fragment>
-                        <Nav.Link as={Link} to="/jobpostings">Job Postings</Nav.Link>
+                        <Nav.Link as={Link} to="/searchjobs">Jobs</Nav.Link>
                         <Nav.Link as={Link} to="/applications">Applications</Nav.Link>
                         <Nav.Link as={Link} to="/documents">Documents</Nav.Link>
                         <Nav.Link as={Link} to="/myprofile">Profile</Nav.Link>

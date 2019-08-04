@@ -108,7 +108,7 @@ async function addJobPost(id, {
 
   async function getAllJobApplicants(jobPostId){
     try{
-      let jobPostApplicantsQueryResults = await pool.query('SELECT applications.id as a_id, applications.date_processed, user_profile.id, user_profile.first_name, user_profile.last_name, user_profile.phone_number, users.email, applications.status FROM users, user_profile, user_applications, job_applications, applications WHERE users.id = user_profile.id AND user_profile.id = user_applications.u_id AND user_applications.a_id = job_applications.a_id AND job_applications.a_id = applications.id AND job_applications.j_id = $1',
+      let jobPostApplicantsQueryResults = await pool.query('SELECT applications.id as a_id, applications.date_processed, user_profile.id, user_profile.profile_image_name, user_profile.first_name, user_profile.last_name, user_profile.phone_number, users.email, applications.status FROM users, user_profile, user_applications, job_applications, applications WHERE users.id = user_profile.id AND user_profile.id = user_applications.u_id AND user_applications.a_id = job_applications.a_id AND job_applications.a_id = applications.id AND job_applications.j_id = $1',
                                                 [jobPostId]);
       return jobPostApplicantsQueryResults.rows;
     }catch(error){
