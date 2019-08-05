@@ -5,7 +5,7 @@ import { Formik, Field, ErrorMessage, Form } from 'formik';
 import * as Yup from 'yup';
 import './CreateProfile.css';
 import Select from 'react-select';
-import {LocationPicker} from './LocationPicker';
+import {LocationPicker} from '@/_components';
 
 import { authenticationService, userService, businessService } from '@/_services';
 
@@ -162,6 +162,7 @@ class CreateProfilePage extends React.Component {
                                                   options={countryOptions}
                                                   name="country"
                                                   onBlur={()=>setFieldTouched("country", true)}
+                                                  value={country}
                                                 />
                                                 {errors.country && touched.country && (
                                                   <div
@@ -179,6 +180,7 @@ class CreateProfilePage extends React.Component {
                                                   options={regionOptions}
                                                   name="region"
                                                   onBlur={()=>setFieldTouched("region", true)}
+                                                  value={region}
                                                 />
                                                 {errors.region && touched.region && (
                                                   <div
@@ -196,6 +198,7 @@ class CreateProfilePage extends React.Component {
                                                   options={cityOptions}
                                                   name="city"
                                                   onBlur={()=>setFieldTouched("city", true)}
+                                                  value={city}
                                                 />
                                                 {errors.city && touched.city && (
                                                   <div

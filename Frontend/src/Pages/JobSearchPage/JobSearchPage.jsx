@@ -3,6 +3,9 @@ import {Link} from 'react-router-dom';
 import Select from 'react-select';
 import {Form, Button, ListGroup, Card, Pagination} from 'react-bootstrap';
 import './JobSearch.css'
+import JobCard from './JobCard'
+import {LocationPicker} from '@/_components';
+import {userService} from '@/_services';
 
 const styles = {
   control: base => ({
@@ -43,14 +46,63 @@ class JobSearchPage extends React.Component{
     super(props);
     this.state = {
       quantity: 5,
+      country: '',
+      region: '',
+      city: '',
+      search: '',
+      prevSearch: '',
+      jobPosts: []
     }
     this.setQuantityOptions = this.setQuantityOptions.bind(this);
+    this.setLocationFieldValue = this.setLocationFieldValue.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.submitSearch = this.submitSearch.bind(this);
+    this.handlePaginationChange = this.handlePaginationChange.bind(this);
+  }
+
+  componentDidMount(){
+    this.submitSearch();
   }
 
   setQuantityOptions(quantity){
     this.setState({
       quantity: quantity
     })
+  }
+
+  setLocationFieldValue(selector, value){
+    if(selector === 'country'){
+      this.setState({
+        country: value,
+        region: '',
+        city: ''
+      })
+    }else if(selector === 'region'){
+      this.setState({
+        region: value,
+        city: ''
+      })
+    }else{
+      this.setState({
+        city: value
+      })
+    }
+  }
+
+  handleChange(e){
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+  submitSearch(){
+    userService.searchJobPost(this.state.search, this.state.country, this.state.region, this.state.city)
+               .then(data => {this.setState((prevState) => {return {jobPosts: data, prevSearch: prevState.search}})})
+               .catch(error=>{console.log(error)})
+  }
+
+  handlePaginationChange(e){
+    console.log(e.target.text)
   }
 
   render(){
@@ -61,26 +113,32 @@ class JobSearchPage extends React.Component{
         <h3 className="job-search-page-title">Search Jobs</h3>
         <Form className="job-search-page-search-container">
           <Form.Group>
-            <Button variant="primary">Search Jobs</Button>
-            <Form.Control type="text" placeholder="Search job title or company" />
-            <div className="location-selector-container">
-              <div className="select-wrapper">
-              <Select placeholder="Country" styles={styles}/>
+            <Button variant="primary" onClick={this.submitSearch}>Search Jobs</Button>
+            <Form.Control name="search" onChange={this.handleChange} type="text" placeholder="Search job title or company" />
+
+            <LocationPicker setFieldValue={this.setLocationFieldValue}>
+            {({countryOptions, regionOptions, cityOptions, country, region, city, handleChange}) => (
+              <div className="location-selector-container">
+                <div className="select-wrapper">
+                  <Select name="country" options={countryOptions} value={country} onChange={handleChange} placeholder="Country" styles={styles}/>
+                </div>
+                <div className="select-wrapper">
+                  <Select name="region" options={regionOptions} value={region} onChange={handleChange} placeholder="State" styles={styles}/>
+                </div>
+                <div className="select-wrapper">
+                  <Select name="city" options={cityOptions} value={city} onChange={handleChange} placeholder="City" styles={styles}/>
+                </div>
               </div>
-              <div className="select-wrapper">
-              <Select placeholder="State" styles={styles}/>
-              </div>
-              <div className="select-wrapper">
-              <Select placeholder="City" styles={styles}/>
-              </div>
-            </div>
+            )}
+            </LocationPicker>
           </Form.Group>
         </Form>
 
         <div>
           <div className="job-results">
             <span className="job-results-quantity">
-              <b>213</b> jobs found for <b>'Junior'</b>
+              {this.state.prevSearch === "" && <React.Fragment><b>{this.state.jobPosts.length}</b> total jobs</React.Fragment>}
+              {this.state.prevSearch !== "" && <React.Fragment><b>{this.state.jobPosts.length}</b> jobs found for <b>"{this.state.prevSearch}"</b></React.Fragment>}
             </span>
             <span className="job-results-quantity-select">
               Results per page: {quantityOptions.map(option => <span key={option}><a onClick={()=>{
@@ -90,31 +148,20 @@ class JobSearchPage extends React.Component{
           </div>
 
           <div className="job-container">
-            <Link className="job-card" to="">
-              <Card>
-                <Card.Body>
-                  <button onClick={()=>{console.log('bookmarked')}} className="job-card-bookmark-btn"/>
-                  <div className="job-card-title">Junior UX/UI Designer <span>(Full-time)</span></div>
-                  <div className="job-card-company-location">Awesome Software - Burnaby, British Columbia</div>
-                  <div className="job-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi elementum nunc ante, vitae euismod lectus varius nec. In hac habitasse platea dictumst. Ut lacinia a diam viverra fermentum. Nullam semper velit non ultricies lacinia. Phasellus non dolor iaculis, feugiat lectus vel, lobortis sem. Vivamus viverra, libero sit amet porttitor iaculis.</div>
-                  <div className="job-card-date-published">Published: 2019-07-24</div>
-                </Card.Body>
-              </Card>
-            </Link>
-
-            <Link className="job-card" to="">
-              <Card>
-                <Card.Body>
-                  <button className="job-card-bookmark-btn"/>
-                  <div className="job-card-title">Junior Developer <span>(Part-time)</span></div>
-                  <div className="job-card-company-location">Awesome Software - Burnaby, British Columbia</div>
-                  <div className="job-card-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi elementum nunc ante, vitae euismod lectus varius nec. In hac habitasse platea dictumst. Ut lacinia a diam viverra fermentum. Nullam semper velit non ultricies lacinia. Phasellus non dolor iaculis, feugiat lectus vel, lobortis sem. Vivamus viverra, libero sit amet porttitor iaculis.</div>
-                  <div className="job-card-date-published">Published: 2019-07-24</div>
-                </Card.Body>
-              </Card>
-            </Link>
+            {this.state.jobPosts.map(job => (<JobCard
+                                                key={job.id}
+                                                jobId={job.id}
+                                                title={job.title}
+                                                positionType={job.position_type}
+                                                companyName={job.company_name}
+                                                datePublished={job.date_published}
+                                                description={job.description}
+                                                state={job.state}
+                                                city={job.city}
+                                             />))
+            }
           </div>
-          <Pagination size="md">
+          <Pagination onClick={this.handlePaginationChange} size="md">
             <Pagination.First />
             <Pagination.Prev />
             <Pagination.Item>{1}</Pagination.Item>

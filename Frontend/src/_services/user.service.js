@@ -11,7 +11,8 @@ export const userService = {
     editExperience,
     deleteExperience,
     updateProfile,
-    uploadProfileImage
+    uploadProfileImage,
+    searchJobPost
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -80,6 +81,15 @@ function uploadProfileImage(encodedString){
       headers: authHeader()
   };
   return axios.post(`${config.apiUrl}/users/profile/profile-image`, {encodedString: encodedString}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function searchJobPost(searchField, country, state, city){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.get(`${config.apiUrl}/jobpost?searchField=${searchField}&country=${country}&state=${state}&city=${city}`, configOptions)
+              .then(result => result.data)
               .catch((error)=>Promise.reject(error.response.data.errors));
 }
 /*
