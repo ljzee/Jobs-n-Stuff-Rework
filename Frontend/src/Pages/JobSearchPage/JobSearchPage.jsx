@@ -6,33 +6,35 @@ import './JobSearch.css'
 import JobCard from './JobCard'
 import {LocationPicker} from '@/_components';
 import {userService} from '@/_services';
+import paginate from 'jw-paginate';
 
 const styles = {
   control: base => ({
     ...base,
     minHeight: 36
-}),
-dropdownIndicator: base => ({
-    ...base,
-    padding: 4
-}),
-clearIndicator: base => ({
-    ...base,
-    padding: 4
-}),
-multiValue: base => ({
-    ...base,
-    backgroundColor: variables.colorPrimaryLighter
-}),
-valueContainer: base => ({
-    ...base,
-    padding: '0px 6px'
-}),
-input: base => ({
-    ...base,
-    margin: 0,
-    padding: 0
-}),
+  }),
+  dropdownIndicator: base => ({
+      ...base,
+      padding: 4,
+      zIndex: 1
+  }),
+  clearIndicator: base => ({
+      ...base,
+      padding: 4
+  }),
+  multiValue: base => ({
+      ...base,
+      backgroundColor: variables.colorPrimaryLighter
+  }),
+  valueContainer: base => ({
+      ...base,
+      padding: '0px 6px'
+  }),
+  input: base => ({
+      ...base,
+      margin: 0,
+      padding: 0,
+  }),
   container: base => ({
     ...base,
     flex: 1
@@ -46,6 +48,7 @@ class JobSearchPage extends React.Component{
     super(props);
     this.state = {
       quantity: 5,
+      paginateObject: null,
       country: '',
       region: '',
       city: '',
@@ -65,8 +68,12 @@ class JobSearchPage extends React.Component{
   }
 
   setQuantityOptions(quantity){
-    this.setState({
-      quantity: quantity
+    this.setState((prevState) => {
+      let paginateResult = paginateResult = paginate(prevState.jobPosts.length, 1, quantity);
+      return{
+        quantity: quantity,
+        paginateObject: paginateResult
+      }
     })
   }
 
@@ -97,12 +104,43 @@ class JobSearchPage extends React.Component{
 
   submitSearch(){
     userService.searchJobPost(this.state.search, this.state.country, this.state.region, this.state.city)
-               .then(data => {this.setState((prevState) => {return {jobPosts: data, prevSearch: prevState.search}})})
+               .then(data => {
+                 this.setState((prevState) => {
+                  let paginateResult = paginate(data.length, 1, prevState.quantity);
+                   return {
+                             jobPosts: data,
+                             prevSearch: prevState.search,
+                             currentPage: 1,
+                             paginateObject: paginateResult
+                           }
+                 })
+               })
                .catch(error=>{console.log(error)})
   }
 
-  handlePaginationChange(e){
-    console.log(e.target.text)
+  handlePaginationChange(page){
+    this.setState((prevState) => {
+      let paginateResult;
+      switch(page){
+        case "first":
+          paginateResult = paginate(prevState.jobPosts.length, 1, prevState.quantity);
+          break;
+        case "prev":
+          paginateResult = paginate(prevState.jobPosts.length, prevState.paginateObject.currentPage - 1, prevState.quantity);
+          break;
+        case "next":
+          paginateResult = paginate(prevState.jobPosts.length, prevState.paginateObject.currentPage + 1, prevState.quantity);
+          break;
+        case "last":
+          paginateResult = paginate(prevState.jobPosts.length, prevState.jobPosts.length, prevState.quantity);
+          break;
+        default:
+          paginateResult = paginate(prevState.jobPosts.length, page, prevState.quantity)
+      }
+      return{
+        paginateObject: paginateResult
+      }
+    })
   }
 
   render(){
@@ -137,7 +175,7 @@ class JobSearchPage extends React.Component{
         <div>
           <div className="job-results">
             <span className="job-results-quantity">
-              {this.state.prevSearch === "" && <React.Fragment><b>{this.state.jobPosts.length}</b> total jobs</React.Fragment>}
+              {this.state.prevSearch === "" && <React.Fragment><b>{this.state.jobPosts.length}</b> available jobs</React.Fragment>}
               {this.state.prevSearch !== "" && <React.Fragment><b>{this.state.jobPosts.length}</b> jobs found for <b>"{this.state.prevSearch}"</b></React.Fragment>}
             </span>
             <span className="job-results-quantity-select">
@@ -148,35 +186,31 @@ class JobSearchPage extends React.Component{
           </div>
 
           <div className="job-container">
-            {this.state.jobPosts.map(job => (<JobCard
-                                                key={job.id}
-                                                jobId={job.id}
-                                                title={job.title}
-                                                positionType={job.position_type}
-                                                companyName={job.company_name}
-                                                datePublished={job.date_published}
-                                                description={job.description}
-                                                state={job.state}
-                                                city={job.city}
-                                             />))
+            {this.state.paginateObject !== null &&
+             this.state.jobPosts.slice(this.state.paginateObject.startIndex, this.state.paginateObject.endIndex + 1)
+                                .map(job => (<JobCard
+                                              key={job.id}
+                                              jobId={job.id}
+                                              title={job.title}
+                                              positionType={job.position_type}
+                                              companyName={job.company_name}
+                                              datePublished={job.date_published}
+                                              description={job.description}
+                                              state={job.state}
+                                              city={job.city}
+                                              />))
             }
           </div>
-          <Pagination onClick={this.handlePaginationChange} size="md">
-            <Pagination.First />
-            <Pagination.Prev />
-            <Pagination.Item>{1}</Pagination.Item>
-            <Pagination.Ellipsis />
-
-            <Pagination.Item>{10}</Pagination.Item>
-            <Pagination.Item>{11}</Pagination.Item>
-            <Pagination.Item active>{12}</Pagination.Item>
-            <Pagination.Item>{13}</Pagination.Item>
-            <Pagination.Item disabled>{14}</Pagination.Item>
-
-            <Pagination.Ellipsis />
-            <Pagination.Item>{20}</Pagination.Item>
-            <Pagination.Next />
-            <Pagination.Last />
+          <Pagination size="md">
+            <Pagination.First onClick={()=>{this.handlePaginationChange('first')}}/>
+            <Pagination.Prev onClick={()=>{this.handlePaginationChange('prev')}}/>
+            {this.state.paginateObject !== null && this.state.paginateObject.pages.map(paginateIndex => (
+              <Pagination.Item key={paginateIndex} active={paginateIndex === this.state.paginateObject.currentPage} onClick={()=>{this.handlePaginationChange(paginateIndex)}}>
+                {paginateIndex}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={()=>{this.handlePaginationChange('next')}}/>
+            <Pagination.Last onClick={()=>{this.handlePaginationChange('last')}}/>
           </Pagination>
         </div>
       </div>

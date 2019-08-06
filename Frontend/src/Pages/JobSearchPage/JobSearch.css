@@ -33,6 +33,10 @@
   width: 100%;
 }
 
+.location-selector-container input{
+  margin-bottom: 0;
+}
+
 .job-card .card{
   margin-bottom: 10px;
 }
