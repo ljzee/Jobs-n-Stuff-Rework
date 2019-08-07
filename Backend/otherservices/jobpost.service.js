@@ -118,7 +118,6 @@ async function getAllJobApplicants(jobPostId){
 }
 
 async function searchJobPost({searchField, country, state, city}){
-  console.log(searchField, country, state,city)
   try{
     let jobPostQueryResults = await pool.query(`
       (SELECT job_post.id, job_post.title, job_post.position_type, job_post.date_published, job_post.description, business_profile.company_name, addresses.city, addresses.state

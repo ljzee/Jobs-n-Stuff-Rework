@@ -9,6 +9,7 @@ import { ImagePicker, FilePicker } from 'react-file-picker';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css"
 import config from 'config';
+import {Can} from '@/_components';
 
 import './Profile.css';
 
@@ -18,13 +19,11 @@ class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
 
-        let currentUser = authenticationService.currentUserValue;
 
         this.state = {
           showModal: false,
           editAboutMe: false,
           editContactInformation: false,
-          id: currentUser.id,
           firstName: '',
           lastName: '',
           aboutMe: '',
@@ -36,7 +35,8 @@ class ProfilePage extends React.Component {
           education: [],
           profileImageName: '',
           previewProfileImage: '',
-          isLoading: true
+          isLoading: true,
+          profileOwnerId: (this.props.location.state ? this.props.location.state.id : authenticationService.currentUserValue.id)
         }
 
         this.toggleEditAboutMe = this.toggleEditAboutMe.bind(this);
@@ -49,7 +49,7 @@ class ProfilePage extends React.Component {
     }
 
     fetchProfile(){
-      userService.getProfile()
+      userService.getProfile(this.state.profileOwnerId)
       .then(profile =>{
         this.setState(prevState => ({
           ...prevState,
@@ -134,8 +134,38 @@ class ProfilePage extends React.Component {
         return (
           <div className="profile-page mx-auto">
             <Row>
-              <Col xs={12} sm={12} md={{span: 7, offset: 5}} lg={{span: 9, offset: 3}} style={{marginBottom: 0}}>
-                <h3 className="profile-page-title">My Profile</h3>
+              <Can
+                role={authenticationService.currentUserValue.role}
+                perform="user-profile-page:edit"
+                data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                yes={()=>(
+                  <Col xs={12} sm={12} md={5} lg={3}>
+                  </Col>
+                )}
+              />
+              <Can
+                role={authenticationService.currentUserValue.role}
+                perform="user-profile-page:visit"
+                data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                yes={()=>(
+                  <Col xs={12} sm={12} md={5} lg={3}>
+                    <Link to='' onClick={(e)=>{e.preventDefault; this.props.history.goBack()}}>Back to applicants</Link>
+                  </Col>
+                )}
+              />
+              <Col xs={12} sm={12} md={7} lg={9} style={{marginBottom: 0}}>
+                <Can
+                  role={authenticationService.currentUserValue.role}
+                  perform="user-profile-page:edit"
+                  data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                  yes={()=>(<h3 className="profile-page-title">My Profile</h3>)}
+                />
+                <Can
+                  role={authenticationService.currentUserValue.role}
+                  perform="user-profile-page:visit"
+                  data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                  yes={()=>(<h3 className="profile-page-title">{this.state.firstName} {this.state.lastName}'s Profile</h3>)}
+                />
               </Col>
             </Row>
 
@@ -144,30 +174,46 @@ class ProfilePage extends React.Component {
                 <Card >
                   <Card.Header>Personal</Card.Header>
                   <Card.Body>
-                    <div className="welcome-message">Welcome back, {this.state.firstName}!</div>
+                    <Can
+                      role={authenticationService.currentUserValue.role}
+                      perform="user-profile-page:edit"
+                      data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                      yes={()=>(<div className="welcome-message">Welcome back, {this.state.firstName}!</div>)}
+                    />
                     {this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={(this.state.previewProfileImage === '' ? this.state.profileImageName : this.state.previewProfileImage)}/>}
                     {!this.state.profileImageName && <Card.Img className="profile-image" variant="top" src={(this.state.previewProfileImage === '' ? profileicon : this.state.previewProfileImage)}/>}
-                    {(this.state.previewProfileImage === "") &&
-                    <ImagePicker
-                      extensions={['jpg', 'jpeg', 'png']}
-                      dims={{minWidth: 100, maxWidth: 1000, minHeight: 100, maxHeight: 1000}}
-                      onChange={image=>{
-                        this.setPreviewProfileImage(image);
-                      }}
-                      onError={error=>{
-                        console.log(error);
-                      }}
-                    >
-                      <Button variant="link" className="image-picker">Upload a photo</Button>
-                    </ImagePicker>}
-                    {(this.state.previewProfileImage !== "") &&
-                      <Button variant="link" className="image-picker" onClick={() => {
-                        userService.uploadProfileImage(this.state.previewProfileImage)
-                                   .then(()=>{this.fetchProfile()})
-                      }}>
-                        Upload
-                      </Button>
-                    }
+
+                    <Can
+                      role={authenticationService.currentUserValue.role}
+                      perform="user-profile-page:edit"
+                      data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                      yes={()=>(
+                        <React.Fragment>
+                          {(this.state.previewProfileImage === "") &&
+                          <ImagePicker
+                            extensions={['jpg', 'jpeg', 'png']}
+                            dims={{minWidth: 100, maxWidth: 1000, minHeight: 100, maxHeight: 1000}}
+                            onChange={image=>{
+                              this.setPreviewProfileImage(image);
+                            }}
+                            onError={error=>{
+                              console.log(error);
+                            }}
+                          >
+                            <Button variant="link" className="image-picker">Upload a photo</Button>
+                          </ImagePicker>}
+                          {(this.state.previewProfileImage !== "") &&
+                            <Button variant="link" className="image-picker" onClick={() => {
+                              userService.uploadProfileImage(this.state.previewProfileImage)
+                                         .then(()=>{this.fetchProfile()})
+                            }}>
+                              Upload
+                            </Button>
+                          }
+                         </React.Fragment>
+                      )}
+                    />
+
                     <div className="contact-info">
                       <div className="contact-info-title">Contact Info</div>
                       <p><b>Email:</b><br/>{this.state.email}</p>
@@ -178,13 +224,19 @@ class ProfilePage extends React.Component {
                   </Card.Body>
                 </Card>
 
-                <Card>
-                  <Card.Header>Account Settings</Card.Header>
-                  <Card.Body>
-                    <Button className="setting-button" variant="link">Change Password</Button>
-                    <Button className="setting-button" variant="link">Delete Account</Button>
-                  </Card.Body>
-                </Card>
+                <Can
+                  role={authenticationService.currentUserValue.role}
+                  perform="user-profile-page:edit"
+                  data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                  yes={()=>(<Card>
+                            <Card.Header>Account Settings</Card.Header>
+                            <Card.Body>
+                              <Button className="setting-button" variant="link">Change Password</Button>
+                              <Button className="setting-button" variant="link">Delete Account</Button>
+                            </Card.Body>
+                           </Card>)}
+                />
+
               </Col>
 
               <Col xs={12} sm={12} md={7} lg={9}>
@@ -197,7 +249,14 @@ class ProfilePage extends React.Component {
                           {!this.state.aboutMe && <span className="aboutme-helper-message">Write a bio so employers can know you better...</span>}
                           {this.state.aboutMe}
                         </Card.Text>
-                        <Button variant="link" className="float-right" onClick={this.toggleEditAboutMe}>Edit</Button>
+
+                        <Can
+                          role={authenticationService.currentUserValue.role}
+                          perform="user-profile-page:edit"
+                          data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                          yes={()=>(<Button variant="link" className="float-right" onClick={this.toggleEditAboutMe}>Edit</Button>)}
+                        />
+
                       </Card.Body>
                     }
                     {this.state.editAboutMe &&
@@ -224,16 +283,35 @@ class ProfilePage extends React.Component {
                 <Card className="profile-page-card">
                   <Card.Header>
                     Experience
-                    <Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>
+                    <Can
+                      role={authenticationService.currentUserValue.role}
+                      perform="user-profile-page:edit"
+                      data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                      yes={()=>(<Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>)}
+                    />
                   </Card.Header>
                   <ListGroup className="list-group-flush">
-                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id} experience_id={experience.experience_id} company={experience.company_name} title={experience.title} location={experience.location} description={experience.description} startDate={experience.start_date} endDate={experience.end_date} fetchProfile={this.fetchProfile}/>)}
+                    {this.state.experiences.map((experience) => <ExperienceCard key={experience.experience_id}
+                                                                                experience_id={experience.experience_id}
+                                                                                company={experience.company_name}
+                                                                                title={experience.title}
+                                                                                location={experience.location}
+                                                                                description={experience.description}
+                                                                                startDate={experience.start_date}
+                                                                                endDate={experience.end_date}
+                                                                                fetchProfile={this.fetchProfile}
+                                                                                profileOwnerId={this.state.profileOwnerId}/>)}
                   </ListGroup>
                 </Card>
 
                 <Card className="profile-page-card">
                   <Card.Header>Education
-                    <Button variant="outline-success" className="add-button float-right">+</Button>
+                  <Can
+                    role={authenticationService.currentUserValue.role}
+                    perform="user-profile-page:edit"
+                    data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                    yes={()=>(<Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>)}
+                  />
                   </Card.Header>
                   <ListGroup className="list-group-flush">
                     <ListGroupItem>
@@ -251,8 +329,17 @@ class ProfilePage extends React.Component {
                           <p><b>Description: </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempus augue id erat dictum vehicula. Suspendisse blandit, nibh nec malesuada rutrum, nulla ipsum euismod magna, id sodales odio mi at arcu. Quisque ultrices elit blandit, euismod purus id, congue turpis.</p>
                         </Col>
                         <Col xs={12} s={12} md={12} lg={2} style={{padding: 0}}>
-                          <Button variant="link" className="card-button">Delete</Button>
-                          <Button variant="link" className="card-button">Edit</Button>
+                          <Can
+                            role={authenticationService.currentUserValue.role}
+                            perform="user-profile-page:edit"
+                            data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                            yes={()=>(
+                              <React.Fragment>
+                                <Button variant="link" className="card-button">Delete</Button>
+                                <Button variant="link" className="card-button">Edit</Button>
+                              </React.Fragment>
+                            )}
+                          />
                         </Col>
                       </Row>
                     </ListGroupItem>
@@ -263,7 +350,12 @@ class ProfilePage extends React.Component {
                   <Card.Header>Contact Information</Card.Header>
                   {!this.state.editContactInformation &&
                     <Card.Body>
-                      <Button variant="link" className="float-right" onClick={this.toggleEditContactInformation}>Edit</Button>
+                      <Can
+                        role={authenticationService.currentUserValue.role}
+                        perform="user-profile-page:edit"
+                        data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                        yes={()=>(<Button variant="link" className="float-right" onClick={this.toggleEditContactInformation}>Edit</Button>)}
+                      />
                       <p><b>Email:</b> {this.state.email}</p>
                       <p><b>Phone Number:</b> {this.state.phoneNumber}</p>
                       <p><b>Personal Website:</b> <a href=''>{this.state.personalWebsite}</a></p>

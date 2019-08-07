@@ -31,7 +31,7 @@ class ApplicantsPage extends React.Component{
                    .then(data => {
                      data.applicants.forEach(applicant => {applicant.color = randomColor(); return applicant})
                      this.setState({applicants: data.applicants, loading: false})})
-                   .catch(errrr => console.log(error))
+                   .catch(error => console.log(error))
   }
 
   componentDidMount(){
@@ -101,7 +101,9 @@ class ApplicantsPage extends React.Component{
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
                                                                     fetchApplicants={this.fetchApplicants}
-                                                                    profileImage={applicant.profile_image_name}/>)
+                                                                    profileImage={applicant.profile_image_name}
+                                                                    location={this.props.location}
+                                                                    history={this.props.history}/>)
             }
             </div>
           </div>
@@ -129,7 +131,9 @@ class ApplicantsPage extends React.Component{
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
                                                                     fetchApplicants={this.fetchApplicants}
-                                                                    profileImage={applicant.profile_image_name}/>)
+                                                                    profileImage={applicant.profile_image_name}
+                                                                    location={this.props.location}
+                                                                    history={this.props.history}/>)
             }
             </div>
           </div>
@@ -157,7 +161,9 @@ class ApplicantsPage extends React.Component{
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
                                                                     fetchApplicants={this.fetchApplicants}
-                                                                    profileImage={applicant.profile_image_name}/>)
+                                                                    profileImage={applicant.profile_image_name}
+                                                                    location={this.props.location}
+                                                                    history={this.props.history}/>)
             }
             </div>
           </div>
@@ -185,7 +191,9 @@ class ApplicantsPage extends React.Component{
                                                                     dateProcessed={applicant.date_processed}
                                                                     status={applicant.status}
                                                                     fetchApplicants={this.fetchApplicants}
-                                                                    profileImage={applicant.profile_image_name}/>)
+                                                                    profileImage={applicant.profile_image_name}
+                                                                    location={this.props.location}
+                                                                    history={this.props.history}/>)
             }
             </div>
           </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Router, Route, Link, Switch } from 'react-router-dom';
 
 
-import { history, Role } from '@/_helpers';
+import { history, Role,} from '@/_helpers';
 import { authenticationService } from '@/_services';
 import { PrivateRoute, Header } from '@/_components';
 import { HomePage } from '@/Pages/HomePage';
@@ -55,6 +55,7 @@ class App extends React.Component {
                               <PrivateRoute exact path="/managepostings" roles={[Role.Business]} component={ManagePostingsPage}/>
                               <PrivateRoute exact path="/managepostings/:jobtitle" roles={[Role.Business]} component={JobPostPage}/>
                               <PrivateRoute exact path="/managepostings/:jobtitle/applicants" roles={[Role.Business]} component={ApplicantsPage}/>
+                              <PrivateRoute exact path="/managepostings/:jobtitle/applicants/:applicant" roles={[Role.Business]} component={ProfilePage}/>
                               <PrivateRoute path="/addposting" roles={[Role.Business]} component={AddPostingPage}/>
                               <Route component={PageNotFound}/>
                           </Switch>

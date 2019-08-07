@@ -30,12 +30,14 @@ function createProfile(firstname, lastname, phonenumber, personalwebsite, github
       .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
-function getProfile(){
+function getProfile(userId){
+  /*
   const user = authenticationService.currentUserValue;
   const configOptions = {
       headers: authHeader()
   };
-  return axios.get(`${config.apiUrl}/users/profile/${user.id}`, configOptions)
+  */
+  return axios.get(`${config.apiUrl}/users/profile/${userId}`, {})
               .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
 

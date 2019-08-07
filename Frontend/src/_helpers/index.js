@@ -3,6 +3,7 @@ export * from './fake-backend';
 export * from './handle-response';
 export * from './history';
 export * from './role';
+export * from './rules';
 export * from './positiontype';
 export * from './jobposttype';
 export * from './applicationstatus';

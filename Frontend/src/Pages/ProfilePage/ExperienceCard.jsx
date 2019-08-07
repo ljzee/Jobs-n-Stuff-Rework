@@ -5,6 +5,7 @@ import { Formik, Field, ErrorMessage, Form } from 'formik';
 import * as Yup from 'yup';
 import profileicon from '../../Images/profile-icon.png'
 import DatePicker from 'react-datepicker';
+import {Can} from '@/_components';
 
 import './Profile.css';
 
@@ -56,11 +57,19 @@ class ExperienceCard extends React.Component {
               <p><b>Description: </b>{this.props.description}</p>
             </Col>
             <Col xs={12} s={12} md={12} lg={2} style={{padding: 0}}>
-              <Button variant="link" className="card-button" onClick={()=>{
-                userService.deleteExperience(this.props.experience_id)
-                  .then(()=>{this.props.fetchProfile()});
-              }}>Delete</Button>
-              <Button variant="link" className="card-button" onClick={this.toggleEdit}>Edit</Button>
+              <Can
+                role={authenticationService.currentUserValue.role}
+                perform="user-profile-page:edit"
+                data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.props.profileOwnerId}}
+                yes={()=>(
+                  <React.Fragment>
+                    <Button variant="link" className="card-button" onClick={()=>{
+                    userService.deleteExperience(this.props.experience_id)
+                      .then(()=>{this.props.fetchProfile()});
+                    }}>Delete</Button>
+                    <Button variant="link" className="card-button" onClick={this.toggleEdit}>Edit</Button>
+                  </React.Fragment>)}
+                />
             </Col>
           </Row>
         </div>

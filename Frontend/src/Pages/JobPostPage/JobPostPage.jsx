@@ -39,6 +39,7 @@ class JobPostPage extends React.Component{
     this.toggleEdit = this.toggleEdit.bind(this);
     this.getStatusBadge = this.getStatusBadge.bind(this);
     this.fetchJobPost = this.fetchJobPost.bind(this);
+    this.getActionButton = this.getActionButton.bind(this)
   }
 
   componentDidMount(){

@@ -9,12 +9,12 @@ import profileicon from '../../Images/profile-icon.png';
 class ApplicantCard extends React.Component{
   constructor(props){
     super(props);
-
     this.updateApplicationStatus = this.updateApplicationStatus.bind(this);
   }
 
   updateApplicationStatus(jobId, applicationId, status){
     businessService.updateApplicationStatus(jobId, applicationId, status)
+    .then(()=>{this.props.fetchApplicants();})
     .catch(error=>{console.log(error)})
   }
 
@@ -55,21 +55,18 @@ class ApplicantCard extends React.Component{
                             })
                             .catch(error=>console.log(error))
           }}>Download Package</Button>
-          <Button variant="link">View Profile</Button>
+          <Button variant="link" onClick={()=>{this.props.history.push(`${this.props.location.pathname}/${this.props.firstName}-${this.props.lastName}`, {id: this.props.id})}}>View Profile</Button>
         </div>
         { (status === ApplicationStatus.New) &&
           <div className="candidate-card-options">
             <Button variant="success" onClick={()=>{
               this.updateApplicationStatus(jobId, aId, ApplicationStatus.Accepted);
-              this.props.fetchApplicants();
             }}>Accept</Button>
             <Button variant="warning" onClick={()=>{
               this.updateApplicationStatus(jobId, aId, ApplicationStatus.Saved);
-              this.props.fetchApplicants();
             }}>Save</Button>
             <Button variant="danger" onClick={()=>{
               this.updateApplicationStatus(jobId, aId, ApplicationStatus.Rejected);
-              this.fetchApplicants();
             }}>Reject</Button>
           </div>
         }
