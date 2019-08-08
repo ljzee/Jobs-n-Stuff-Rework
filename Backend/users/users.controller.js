@@ -161,7 +161,8 @@ async function uploadProfileImage(req, res, next){
     res.sendStatus(200);
   }catch(error){
     console.log(error);
-    res.status(500).json({errors: ['Internal Server Error']});  }
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
 }
 
 

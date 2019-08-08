@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 module.exports = {
     getBusinessProfile,
     addBusinessProfile,
+    updateProfile
 };
 
 async function getBusinessProfile({id}){
@@ -36,6 +37,14 @@ async function addBusinessProfile(id, {companyName, country, state, city, street
       await pool.query('INSERT INTO business_addresses(b_id, a_id) VALUES ($1, $2)', [businessQueryResults.rows[0].id, addressQueryResults.rows[0].id])
     }
 
+  }catch(error){
+    throw error;
+  }
+}
+
+async function updateProfile(userId, {phoneNumber, website, description}){
+  try{
+    await pool.query('UPDATE business_profile SET phone_number = $1, website = $2, description = $3 WHERE id = $4', [phoneNumber, website, description, userId]);
   }catch(error){
     throw error;
   }

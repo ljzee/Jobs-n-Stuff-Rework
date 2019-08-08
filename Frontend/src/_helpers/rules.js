@@ -19,16 +19,14 @@ export const Rules = {
       "user-profile-page:visit"
     ],
     dynamic: {
-      dynamic: {
-        "business-profile-page:edit": ({userId, profileOwnerId}) => {
-          if (!userId || !profileOwnerId) return false;
-          return userId === profileOwnerId;
-        },
-        "job-post-page:edit": ({userId, jobpostOwnerId}) => {
-          if (!userId || !jobpostOwnerId) return false;
-          return userId === jobpostOwnerId;
-        },
-      }
+      "business-profile-page:edit": ({userId, profileOwnerId}) => {
+        if (!userId || !profileOwnerId) return false;
+        return userId === profileOwnerId;
+      },
+      "job-post-page:edit": ({userId, jobpostOwnerId}) => {
+        if (!userId || !jobpostOwnerId) return false;
+        return userId === jobpostOwnerId;
+      },
     }
   }
 };

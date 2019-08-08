@@ -44,7 +44,7 @@
   padding: 0;
 }
 
-.welcome-message, .contact-info-title{
+.welcome-message, .contact-info-title, .contact-info-label{
   font-weight: 600;
 }
 

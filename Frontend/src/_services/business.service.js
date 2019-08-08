@@ -14,7 +14,9 @@ export const businessService = {
     deleteJobPost,
     getJobApplicants,
     getApplicantFiles,
-    updateApplicationStatus
+    updateApplicationStatus,
+    uploadProfileImage,
+    updateProfile
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -42,12 +44,8 @@ function createProfile(companyName, country, state, city, streetAddress, postalC
       .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
-function getProfile(){
-  const user = authenticationService.currentUserValue;
-  const configOptions = {
-      headers: authHeader()
-  };
-  return axios.get(`${config.apiUrl}/business/profile/${user.id}`, configOptions)
+function getProfile(userId){
+  return axios.get(`${config.apiUrl}/business/profile/${userId}`, {})
               .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
 
@@ -122,4 +120,22 @@ function updateApplicationStatus(jobPostId, applicantId, status){
   };
   return axios.post(`${config.apiUrl}/business/jobpost/${jobPostId}/applicants/${applicantId}`, {status: status}, configOptions)
               .catch((error) => Promise.reject(error));
+}
+
+function uploadProfileImage(encodedString){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/business/profile/profile-image`, {encodedString: encodedString}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function updateProfile(phoneNumber, website, description){
+  const user = authenticationService.currentUserValue;
+  const configOptions = {
+      headers: authHeader()
+  };
+
+  return axios.put(`${config.apiUrl}/business/profile/${user.id}`, {phoneNumber: phoneNumber, website: website, description: description}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
 }

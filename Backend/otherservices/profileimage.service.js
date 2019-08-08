@@ -13,7 +13,7 @@ async function uploadProfileImage(userId, userType, encodedString){
     if(userType === 'USER'){
       await pool.query('UPDATE user_profile SET profile_image_name = $1 WHERE id = $2', [encodedString, userId]);
     }else if(userType === 'BUSINESS'){
-      //TODO
+      await pool.query('UPDATE business_profile SET profile_image = $1 WHERE id = $2', [encodedString, userId])
     }
 
   }catch(error){

@@ -53,7 +53,7 @@ class Header extends React.Component {
         if(currentUser && currentUser.hasProfile && currentUser.role === Role.Business){
           navItems = <React.Fragment>
                        <Nav.Link as={Link} to="/managepostings">Manage Postings</Nav.Link>
-                       <Nav.Link as={Link} to="/myprofile">Profile</Nav.Link>
+                       <Nav.Link as={Link} to="/companyprofile">Profile</Nav.Link>
                        <Nav.Link onClick={this.logout}>Logout</Nav.Link>
                      </React.Fragment>;
         }

@@ -1,0 +1,329 @@
+import React from 'react';
+import {Row, Col, Card, Button, Form, ListGroup} from 'react-bootstrap';
+import {Can} from '@/_components';
+import {Link} from 'react-router-dom';
+import { ImagePicker, FilePicker } from 'react-file-picker';
+import { authenticationService, userService } from '@/_services';
+import profileicon from '../../Images/profile-icon.png'
+import {businessService} from '@/_services';
+
+import './CompanyProfile.css';
+
+class CompanyProfilePage extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      companyName: 'Awesome Software Inc.',
+      aboutUs: '',
+      profileImage: '',
+      website: '',
+      phoneNumber: '',
+      addresses: [],
+      jobs: [],
+      previewProfileImage: '',
+      companyUpdate: '',
+      profileOwnerId: (this.props.location.state ? this.props.location.state.id : authenticationService.currentUserValue.id),
+      editAboutUs: false,
+      editContactInformation: false
+    }
+
+    this.setPreviewProfileImage = this.setPreviewProfileImage.bind(this);
+    this.toggleEditAboutUs = this.toggleEditAboutUs.bind(this);
+    this.toggleEditContactInformation = this.toggleEditContactInformation.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.fetchProfile = this.fetchProfile.bind(this);
+  }
+
+  componentDidMount(){
+    this.fetchProfile();
+  }
+
+  setPreviewProfileImage(image){
+    this.setState({
+      previewProfileImage: image
+    })
+  }
+
+  toggleEditAboutUs(){
+    this.setState(prevState => ({
+      ...prevState,
+      editAboutUs: !prevState.editAboutUs
+    }))
+  }
+
+  toggleEditContactInformation(){
+    this.setState(prevState => ({
+      ...prevState,
+      editContactInformation: !prevState.editContactInformation
+    }))
+  }
+
+  handleChange(event){
+    event.persist();
+
+    this.setState(prevState => ({
+      ...prevState,
+      [event.target.name]: event.target.value
+    }))
+
+  }
+
+  fetchProfile(){
+    businessService.getProfile(this.state.profileOwnerId)
+                   .then((data)=>{
+                     console.log(data);
+                     this.setState({
+                       companyName: data.company_name,
+                       aboutUs: data.description,
+                       profileImage: data.profile_image,
+                       website: data.website,
+                       phoneNumber: data.phone_number,
+                       addresses: data.addresses,
+                       jobs: data.jobs,
+                       previewProfileImage: '',
+                       editAboutUs: false,
+                       editContactInformation: false,
+                     })
+                   })
+  }
+
+  render(){
+    return(
+      <div className="business-profile-page mx-auto">
+      <Row>
+        <Can
+          role={authenticationService.currentUserValue.role}
+          perform="business-profile-page:edit"
+          data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+          yes={()=>(
+            <Col xs={12} sm={12} md={5} lg={3}>
+            </Col>
+          )}
+        />
+        <Can
+          role={authenticationService.currentUserValue.role}
+          perform="business-profile-page:visit"
+          data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+          yes={()=>(
+            <Col xs={12} sm={12} md={5} lg={3}>
+              <Link to='' onClick={(e)=>{e.preventDefault; this.props.history.goBack()}}>Back to job posting</Link>
+            </Col>
+          )}
+        />
+        <Col xs={12} sm={12} md={7} lg={9} style={{marginBottom: 0}}>
+          <Can
+            role={authenticationService.currentUserValue.role}
+            perform="business-profile-page:edit"
+            data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+            yes={()=>(
+              <div className="business-profile-page-title">
+                <h3>{this.state.companyName}</h3>
+                {this.state.addresses[0] && <div className="business-profile-page-title-address">{`${this.state.addresses[0].street_name_no}, ${this.state.addresses[0].city}, ${this.state.addresses[0].state}, ${this.state.addresses[0].country}`}</div>}
+              </div>
+            )}
+          />
+          <Can
+            role={authenticationService.currentUserValue.role}
+            perform="business-profile-page:visit"
+            data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+            yes={()=>(
+              <div className="business-profile-page-title">
+                <h3>{this.state.companyName}</h3>
+                {this.state.addresses[0] && <div className="business-profile-page-title-address">{`${this.state.addresses[0].street_name_no}, ${this.state.addresses[0].city}, ${this.state.addresses[0].state}, ${this.state.addresses[0].country}`}</div>}
+              </div>
+            )}
+          />
+        </Col>
+      </Row>
+
+
+      <Row>
+        <Col xs={12} sm={12} md={5} lg={3}>
+          <Card >
+            <Card.Header>Company</Card.Header>
+            <Card.Body>
+              {this.state.profileImage && <Card.Img className="business-profile-image" variant="top" src={(this.state.previewProfileImage === '' ? this.state.profileImage : this.state.previewProfileImage)}/>}
+              {!this.state.profileImage && <Card.Img className="business-profile-image" variant="top" src={(this.state.previewProfileImage === '' ? profileicon : this.state.previewProfileImage)}/>}
+
+              <Can
+                role={authenticationService.currentUserValue.role}
+                perform="business-profile-page:edit"
+                data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                yes={()=>(
+                  <React.Fragment>
+                    {(this.state.previewProfileImage === "") &&
+                    <ImagePicker
+                      extensions={['jpg', 'jpeg', 'png']}
+                      dims={{minWidth: 100, maxWidth: 1000, minHeight: 100, maxHeight: 1000}}
+                      onChange={image=>{
+                        this.setPreviewProfileImage(image);
+                      }}
+                      onError={error=>{
+                        console.log(error);
+                      }}
+                    >
+                      <Button variant="link" className="image-picker">Upload a photo</Button>
+                    </ImagePicker>}
+                    {(this.state.previewProfileImage !== "") &&
+                      <Button variant="link" className="image-picker" onClick={() => {
+                        businessService.uploadProfileImage(this.state.previewProfileImage)
+                                       .then(()=>{this.fetchProfile()})
+                      }}>
+                        Upload
+                      </Button>
+                    }
+                   </React.Fragment>
+                )}
+              />
+
+              <div className="contact-info">
+                <div className="contact-info-title">Contact Info</div>
+                <p><span className="contact-info-label">Phone Number:</span><br/>{this.state.phoneNumber}</p>
+                <p><span className="contact-info-label">Website:</span><br/><a href=''>{this.state.website}</a></p>
+              </div>
+            </Card.Body>
+          </Card>
+          <Can
+            role={authenticationService.currentUserValue.role}
+            perform="business-profile-page:edit"
+            data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+            yes={()=>(<Card>
+                      <Card.Header>Account Settings</Card.Header>
+                      <Card.Body>
+                        <Button className="setting-button" variant="link">Change Password</Button>
+                        <Button className="setting-button" variant="link">Delete Account</Button>
+                      </Card.Body>
+                     </Card>)}
+          />
+        </Col>
+
+        <Col xs={12} sm={12} md={7} lg={9}>
+          <Card className="profile-page-card">
+            <Card.Header>About Us</Card.Header>
+
+              {!this.state.editAboutUs &&
+                <Card.Body>
+                  <Card.Text>
+                    {!this.state.aboutUs && <span className="aboutme-helper-message">Write a bio so applicants can know your company better...</span>}
+                    {this.state.aboutUs}
+                  </Card.Text>
+
+                  <Can
+                    role={authenticationService.currentUserValue.role}
+                    perform="business-profile-page:edit"
+                    data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                    yes={()=>(<Button variant="link" className="float-right" onClick={this.toggleEditAboutUs}>Edit</Button>)}
+                  />
+
+                </Card.Body>
+              }
+              {this.state.editAboutUs &&
+                <Card.Body>
+                  <Form>
+                    <Form.Group>
+                      <Form.Control as="textarea" value={this.state.aboutUs} name="aboutUs" onChange={this.handleChange} rows="5"/>
+                    </Form.Group>
+                  </Form>
+                  <Button variant="secondary" className="edit-button float-right" onClick={this.toggleEditAboutUs}>Cancel</Button>
+                  <Button variant="primary" className="edit-button float-right" onClick={()=>{
+                    businessService.updateProfile(this.state.phoneNumber, this.state.website, this.state.aboutUs)
+                                   .then(()=>{this.fetchProfile();})
+                                   .catch(error => {console.log(error)})
+                  }
+                  }>Save</Button>
+                </Card.Body>
+              }
+          </Card>
+
+          <Card>
+            <Card.Header>
+            Company Updates
+            <Button style={{padding: ".150rem .75rem"}} variant="primary" className="edit-button float-right" onClick={()=>{
+
+            }}>Post</Button>
+            </Card.Header>
+            <Card.Body>
+              <Form>
+                <Form.Group style={{marginBottom: 0}}>
+                  <Form.Control name="companyUpdate" placeholder="Let people know what's going on at your company!" as="textarea" value={this.state.companyUpdate}  onChange={this.handleChange} rows="4"/>
+                </Form.Group>
+              </Form>
+            </Card.Body>
+            <ListGroup className="list-group-flush">
+              <ListGroup.Item className="company-update">
+                <div>
+                  <Button variant="link" className="float-right">Delete</Button>
+                  <div className="company-update-header"><img src={(this.state.profileImage ? this.state.profileImage : profileicon)} /><span className="company-update-date">August 7, 2019</span></div>
+                  <div className="company-update-content">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vitae nisl lectus. Nullam id eros laoreet, aliquet ligula id, bibendum est. Pellentesque euismod eu est non pellentesque. Pellentesque imperdiet convallis.
+                  </div>
+                </div>
+              </ListGroup.Item>
+              <ListGroup.Item className="company-update">
+                <div>
+                  <Button variant="link" className="float-right">Delete</Button>
+                  <div className="company-update-header"><img src={(this.state.profileImage ? this.state.profileImage : profileicon)} /><span className="company-update-date">August 2, 2019</span></div>
+                  <div className="company-update-content">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum nulla est, quis placerat nunc interdum non. Sed porta auctor.
+                  </div>
+                </div>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+
+          <Card>
+          <Card.Header>Company Openings
+          <Link style={{color: '#007bff'}}className="float-right" to='managepostings'>View my jobs</Link>
+          </Card.Header>
+          <div className="business-profile-job-container">
+            {this.state.jobs.map(job=>(
+              <a key={job.id} className="business-profile-job-container-job">
+                <div className="job-title">{job.title}</div>
+                <div className="job-location">{`${job.city}, ${job.state}`}</div>
+              </a>
+            ))}
+          </div>
+          </Card>
+
+          <Card className="profile-page-card">
+            <Card.Header>Contact Information</Card.Header>
+            {!this.state.editContactInformation &&
+              <Card.Body>
+                <Can
+                  role={authenticationService.currentUserValue.role}
+                  perform="business-profile-page:edit"
+                  data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                  yes={()=>(<Button variant="link" className="float-right" onClick={this.toggleEditContactInformation}>Edit</Button>)}
+                />
+                <p><span className="contact-info-label">Phone Number:</span> {this.state.phoneNumber}</p>
+                <p><span className="contact-info-label">Website:</span> <a href=''>{this.state.website}</a></p>
+              </Card.Body>
+            }
+
+            {this.state.editContactInformation &&
+              <Card.Body>
+                <Form>
+                  <Form.Group>
+                    <Form.Label><b>Phone Number:</b> </Form.Label>
+                    <Form.Control type="text" value={this.state.phoneNumber} name='phoneNumber' onChange={this.handleChange} />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label><b>Website:</b> </Form.Label>
+                    <Form.Control type="text" value={this.state.website} name='website' onChange={this.handleChange} />
+                  </Form.Group>
+                </Form>
+                <Button variant="secondary" className="edit-button float-right" onClick={this.toggleEditContactInformation}>Cancel</Button>
+                <Button variant="primary" className="edit-button float-right" onClick={()=>{
+                }}>Save</Button>
+              </Card.Body>
+            }
+          </Card>
+        </Col>
+      </Row>
+
+      </div>
+    )
+  }
+}
+
+export {CompanyProfilePage}

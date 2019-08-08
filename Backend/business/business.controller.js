@@ -3,6 +3,7 @@ const router = express.Router();
 const businessService = require('./business.service');
 const jobPostService = require('../otherservices/jobpost.service');
 const applicationService = require('../otherservices/application.service');
+const profileImageService = require('../otherservices/profileimage.service');
 const fileService = require('../files/files.service');
 const authorize = require('_helpers/authorize');
 const Role = require('_helpers/role');
@@ -20,6 +21,8 @@ router.post('/profile',
             authorize(Role.Business),
             createProfile);
 router.get('/profile/:id', getProfileById);
+router.put('/profile/:id', authorize(Role.Business), updateProfile);
+router.post('/profile/profile-image', authorize(Role.Business), uploadProfileImage);
 
 router.post('/jobpost',
             check('jobTitle').not().isEmpty().withMessage('Job title cannot be empty'),
@@ -89,7 +92,9 @@ async function createProfile(req, res, next){
 async function getProfileById(req, res, next){
   try{
     const profile = await businessService.getBusinessProfile(req.params);
+    const jobs = await jobPostService.getAllBusinessJobPost(req.params.id);
     if(profile){
+      profile.jobs = jobs.filter(job=>(job.status==='OPEN'))
       res.json(profile);
     }else{
       res.status(400).json({errors: ['Profile does not exist']});
@@ -212,6 +217,26 @@ async function updateApplicationStatus(req, res, next){
     res.sendStatus(200);
   }else{
     res.status(400).json({errors: ['Unauthorized']})
+  }
+}
+
+async function uploadProfileImage(req, res, next){
+  try{
+    await profileImageService.uploadProfileImage(req.user.sub, req.user.role, req.body.encodedString);
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
+
+async function updateProfile(req, res,next){
+  try{
+    await businessService.updateProfile(req.user.sub, req.body)
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
   }
 }
 

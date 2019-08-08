@@ -216,10 +216,10 @@ class ProfilePage extends React.Component {
 
                     <div className="contact-info">
                       <div className="contact-info-title">Contact Info</div>
-                      <p><b>Email:</b><br/>{this.state.email}</p>
-                      <p><b>Phone Number:</b><br/>{this.state.phoneNumber}</p>
-                      <p><b>Website:</b><br/><a href=''>{this.state.personalWebsite}</a></p>
-                      <p><b>Github:</b><br/><a href=''>{this.state.githubLink}</a></p>
+                      <p><span className="contact-info-label">Email:</span><br/>{this.state.email}</p>
+                      <p><span className="contact-info-label">Phone Number:</span><br/>{this.state.phoneNumber}</p>
+                      <p><span className="contact-info-label">Website:</span><br/><a href=''>{this.state.personalWebsite}</a></p>
+                      <p><span className="contact-info-label">Github:</span><br/><a href=''>{this.state.githubLink}</a></p>
                     </div>
                   </Card.Body>
                 </Card>
@@ -246,7 +246,18 @@ class ProfilePage extends React.Component {
                     {!this.state.editAboutMe &&
                       <Card.Body>
                         <Card.Text>
-                          {!this.state.aboutMe && <span className="aboutme-helper-message">Write a bio so employers can know you better...</span>}
+                          {!this.state.aboutMe && <Can
+                            role={authenticationService.currentUserValue.role}
+                            perform="user-profile-page:edit"
+                            data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                            yes={()=>(<span className="aboutme-helper-message">Write a bio so employers can know you better...</span>)}
+                          />}
+                          {!this.state.aboutMe && <Can
+                            role={authenticationService.currentUserValue.role}
+                            perform="user-profile-page:visit"
+                            data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
+                            yes={()=>(<span className="aboutme-helper-message">{this.state.firstName} has not written a bio yet...</span>)}
+                          />}
                           {this.state.aboutMe}
                         </Card.Text>
 
