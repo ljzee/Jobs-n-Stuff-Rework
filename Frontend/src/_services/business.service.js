@@ -16,7 +16,9 @@ export const businessService = {
     getApplicantFiles,
     updateApplicationStatus,
     uploadProfileImage,
-    updateProfile
+    updateProfile,
+    addUpdate,
+    deleteUpdate
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -137,5 +139,21 @@ function updateProfile(phoneNumber, website, description){
   };
 
   return axios.put(`${config.apiUrl}/business/profile/${user.id}`, {phoneNumber: phoneNumber, website: website, description: description}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function addUpdate(content){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/business/updates`, {content: content}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function deleteUpdate(updateId){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.delete(`${config.apiUrl}/business/updates/${updateId}`,configOptions)
               .catch((error)=>Promise.reject(error.response.data.errors));
 }

@@ -6,6 +6,8 @@ import { ImagePicker, FilePicker } from 'react-file-picker';
 import { authenticationService, userService } from '@/_services';
 import profileicon from '../../Images/profile-icon.png'
 import {businessService} from '@/_services';
+import {Formik, Form as FForm, Field, ErrorMessage} from 'formik';
+import * as Yup from 'yup';
 
 import './CompanyProfile.css';
 
@@ -20,6 +22,7 @@ class CompanyProfilePage extends React.Component{
       phoneNumber: '',
       addresses: [],
       jobs: [],
+      updates: [],
       previewProfileImage: '',
       companyUpdate: '',
       profileOwnerId: (this.props.location.state ? this.props.location.state.id : authenticationService.currentUserValue.id),
@@ -80,6 +83,7 @@ class CompanyProfilePage extends React.Component{
                        phoneNumber: data.phone_number,
                        addresses: data.addresses,
                        jobs: data.jobs,
+                       updates: data.updates,
                        previewProfileImage: '',
                        editAboutUs: false,
                        editContactInformation: false,
@@ -238,36 +242,49 @@ class CompanyProfilePage extends React.Component{
           <Card>
             <Card.Header>
             Company Updates
-            <Button style={{padding: ".150rem .75rem"}} variant="primary" className="edit-button float-right" onClick={()=>{
-
-            }}>Post</Button>
             </Card.Header>
             <Card.Body>
-              <Form>
-                <Form.Group style={{marginBottom: 0}}>
-                  <Form.Control name="companyUpdate" placeholder="Let people know what's going on at your company!" as="textarea" value={this.state.companyUpdate}  onChange={this.handleChange} rows="4"/>
-                </Form.Group>
-              </Form>
+              <Formik
+                validateOnChange={false}
+                validateOnBlur={false}
+                initialValues={{
+                  content: ''
+                }}
+                validationSchema={Yup.object().shape({
+                  content: Yup.string().required('You must write something...'),
+                })}
+                onSubmit={({content},{setStatus, setSubmitting, resetForm})=>{
+                  setStatus();
+                  businessService.addUpdate(content)
+                                 .then(()=>{resetForm();this.fetchProfile()})
+                                 .catch(error => {console.log(error)})
+                }}
+                render={({errors, status,touched, isSubmitting})=>(
+                  <FForm>
+                    <div className="form-group">
+                        <Field placeholder="Let people know what's going on at your company!" name="content" component="textarea" rows="4" className={'form-control' + (errors.content && touched.content ? ' is-invalid' : '')} />
+                        <ErrorMessage name="content" component="div" className="invalid-feedback" />
+                    </div>
+                    <Button variant="primary" type="submit" className="edit" className="edit-button float-right">Post</Button>
+                  </FForm>
+                )}
+              />
             </Card.Body>
             <ListGroup className="list-group-flush">
-              <ListGroup.Item className="company-update">
-                <div>
-                  <Button variant="link" className="float-right">Delete</Button>
-                  <div className="company-update-header"><img src={(this.state.profileImage ? this.state.profileImage : profileicon)} /><span className="company-update-date">August 7, 2019</span></div>
-                  <div className="company-update-content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vitae nisl lectus. Nullam id eros laoreet, aliquet ligula id, bibendum est. Pellentesque euismod eu est non pellentesque. Pellentesque imperdiet convallis.
+              {this.state.updates.map(update => (
+                <ListGroup.Item className="company-update" key={update.update_id}>
+                  <div>
+                    <Button variant="link" className="float-right" onClick={()=>{
+                      businessService.deleteUpdate(update.update_id)
+                                     .then(()=>{this.fetchProfile()})
+                    }}>Delete</Button>
+                    <div className="company-update-header"><img src={(this.state.profileImage ? this.state.profileImage : profileicon)} /><span className="company-update-date">{update.date_posted}</span></div>
+                    <div className="company-update-content">
+                    {update.content}
+                    </div>
                   </div>
-                </div>
-              </ListGroup.Item>
-              <ListGroup.Item className="company-update">
-                <div>
-                  <Button variant="link" className="float-right">Delete</Button>
-                  <div className="company-update-header"><img src={(this.state.profileImage ? this.state.profileImage : profileicon)} /><span className="company-update-date">August 2, 2019</span></div>
-                  <div className="company-update-content">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum nulla est, quis placerat nunc interdum non. Sed porta auctor.
-                  </div>
-                </div>
-              </ListGroup.Item>
+                </ListGroup.Item>
+              ))}
             </ListGroup>
           </Card>
 

@@ -65,6 +65,14 @@ router.post('/jobpost/:id/applicants/:applicationid',
             authorize(Role.Business),
             updateApplicationStatus)
 
+router.post('/updates',
+             check('content').not().isEmpty().withMessage('Content name cannot be empty'),
+             authorize(Role.Business),
+             addUpdate);
+router.delete('/updates/:id',
+              authorize(Role.Business),
+              deleteUpdate);
+
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
   let errorMessages = errors.map(error => error.msg);
@@ -233,6 +241,26 @@ async function uploadProfileImage(req, res, next){
 async function updateProfile(req, res,next){
   try{
     await businessService.updateProfile(req.user.sub, req.body)
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
+
+async function addUpdate(req, res, next){
+  try{
+    await businessService.addUpdate(req.user.sub, req.body)
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
+
+async function deleteUpdate(req, res, next){
+  try{
+    await businessService.deleteUpdate(req.user.sub, req.params.id);
     res.sendStatus(200);
   }catch(error){
     console.log(error);
