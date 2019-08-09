@@ -9,21 +9,6 @@ import { FilePicker } from 'react-file-picker'
 
 import { authenticationService, fileService } from '@/_services';
 
-const documents = [
-  {
-    fileName: 'LouisZhuoResume.pdf',
-    fileType: 'Resume',
-    fileSize: 256,
-    dateUploaded: '07/07/19'
-  },
-  {
-    fileName: 'LouisZhuoCoverletter.pdf',
-    fileType: 'Cover Letter',
-    fileSize: 496,
-    dateUploaded: '07/07/19'
-  }
-]
-
 const filterOptions = [
   { label: "All", value: "All"},
   { label: "Resume", value: "Resume" },
@@ -330,7 +315,7 @@ class DocumentsPage extends React.Component {
                         }} onBlur={()=>setFieldTouched('fileType', true)} />
                         {errors.fileType && touched.fileType && (
                           <div
-                            style={{ color: "#dc3545", marginTop: ".25rem", marginLeft: "25px", fontSize:"80%" }}
+                            style={{ color: "#dc3545", marginTop: ".25rem", marginLeft: "12px", fontSize:"80%" }}
                           >
                             {errors.fileType}
                           </div>
@@ -343,7 +328,7 @@ class DocumentsPage extends React.Component {
                       <Button variant="secondary" className="document-button float-right" onClick={this.toggleShowFileUploadModal}>
                         Close
                       </Button>
-                      <Button variant="primary" className="float-right" type="submit">
+                      <Button variant="primary" className="document-button float-right" type="submit">
                         Upload
                       </Button>
                     </FForm>

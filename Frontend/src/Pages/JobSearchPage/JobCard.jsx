@@ -4,8 +4,9 @@ import {Form, Button, ListGroup, Card, Pagination} from 'react-bootstrap';
 import './JobSearch.css'
 
 const JobCard = (props) => {
+  let formattedJobTitle = props.title.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
   return(
-    <Link className="job-card" to="">
+    <Link className="job-card" to={{pathname: `/searchjobs/${formattedJobTitle}`, state: {id: props.jobId}}}>
       <Card>
         <Card.Body>
           <button onClick={()=>{console.log('bookmarked')}} className="job-card-bookmark-btn"/>

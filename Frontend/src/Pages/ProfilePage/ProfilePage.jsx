@@ -321,7 +321,7 @@ class ProfilePage extends React.Component {
                     role={authenticationService.currentUserValue.role}
                     perform="user-profile-page:edit"
                     data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
-                    yes={()=>(<Button variant="outline-success" className="add-button float-right" onClick={this.toggleShowModal}>+</Button>)}
+                    yes={()=>(<Button variant="outline-success" className="add-button float-right" >+</Button>)}
                   />
                   </Card.Header>
                   <ListGroup className="list-group-flush">

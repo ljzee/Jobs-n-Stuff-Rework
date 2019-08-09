@@ -12,7 +12,8 @@ module.exports = {
     updateJobPost,
     getJobPost,
     getAllJobApplicants,
-    searchJobPost
+    searchJobPost,
+    checkUserAppliedForJob
 };
 
 async function addJobPost(id, {
@@ -143,6 +144,15 @@ async function searchJobPost({searchField, country, state, city}){
         `%${city}%`])
 
     return jobPostQueryResults.rows;
+  }catch(error){
+    throw error;
+  }
+}
+
+async function checkUserAppliedForJob(userId, jobPostId){
+  try{
+    let result = await pool.query('SELECT * FROM user_applications, job_applications WHERE user_applications.u_id = $1 AND user_applications.a_id = job_applications.a_id AND job_applications.j_id = $2', [userId, jobPostId]);
+    return result.rows.length;
   }catch(error){
     throw error;
   }

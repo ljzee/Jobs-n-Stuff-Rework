@@ -9,6 +9,7 @@ import Select from 'react-select'
 import {PositionType} from '@/_helpers';
 import {businessService} from '@/_services';
 import * as Yup from 'yup';
+import JobPost from './JobPost';
 
 import './JobPost.css'
 
@@ -121,72 +122,29 @@ class JobPostPage extends React.Component{
 
   render(){
 
+    const backButton = () => (<Link className="jobpostpage-backlink" to="/managepostings">Back to my postings</Link>);
 
-    const jobPost = <div className="jobpostpage mx-auto">
-                      <Row>
-                        <Col md={3} style={{padding: 0}}>
-                          <Link className="jobpostpage-backlink" to="/managepostings">Back to my postings</Link>
-                        </Col>
-
-                        <Col md={9}>
-                          <div className="jobpostpage-header">
-                            {this.getActionButton()}
-                            <h3>{this.state.jobTitle} {this.state.status === 'DRAFT' && <span>[Draft]</span>}{this.state.status === 'CLOSED' && <span>[Closed]</span>}</h3>
-                            <Link className="jobpostpage-header-location" to="/"><img height="22" width="22" src={require('../../Images/building.png')}/>{this.state.companyName}</Link>
-                            <span className="jobpostpage-header-location"><img height="22" width="22" src={require('../../Images/location.png')}/>{`${this.state.jobAddress.city}, ${this.state.jobAddress.state}`}</span>
-                          </div>
-                        </Col>
-                      </Row>
-
-                      <Row>
-                        <Col md={3}>
-                          <Card>
-                            <Card.Header>Application Info.</Card.Header>
-                            <Card.Body>
-                              <div style={{fontSize: "14px", marginBottom: "10px"}}><b>Documents Required</b></div>
-                              <ul>
-                                {this.state.resumeRequired && <li>Resume</li>}
-                                {this.state.coverletterRequired && <li>Cover letter</li>}
-                                {this.state.otherRequired && <li>Other</li>}
-                              </ul>
-                              <div style={{fontSize: "14px", marginBottom: "10px"}}><b>Deadline: </b>{this.state.deadline}</div>
-                              <div style={{fontSize: "14px"}}><b>Status: </b>{this.getStatusBadge()}</div>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-
-                        <Col md={9}>
-                          <Card>
-                            <Card.Header>Job Description</Card.Header>
-                            <Card.Body>
-                              <Card.Text>
-                                  {this.state.description}
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-
-                          <Card>
-                            <Card.Header>Job Details</Card.Header>
-                            <Card.Body>
-                              <Row>
-                                <Col className="jobdetails-container">
-                                  <div><b>Position Type: </b>{this.state.positionType}</div>
-                                  <div><b>Duration: </b>{this.state.duration}</div>
-                                  <div><b>Openings: </b>{this.state.openings}</div>
-                                  <div><b>Salary: </b>{this.state.salary}</div>
-                                </Col>
-                                <Col className="jobdetails-container">
-                                  <div><b>Website: </b><a style={{color: "#007bff"}}>{this.state.companyWebsite}</a></div>
-                                  <div><b>Phone Number: </b>{this.state.companyPhoneNumber}</div>
-                                </Col>
-                              </Row>
-                            </Card.Body>
-                          </Card>
-
-                          <div className="jobpostpage-timestamp" style={{textAlign: "right"}}><b>Date-Published: </b>{this.state.dateCreated}</div>
-                        </Col>
-                      </Row>
-                    </div>
+    const jobPost = <JobPost
+                      getActionButton={this.getActionButton}
+                      getStatusBadge={this.getStatusBadge}
+                      jobTitle={this.state.jobTitle}
+                      status={this.state.status}
+                      companyName={this.state.companyName}
+                      jobAddress={this.state.jobAddress}
+                      resumeRequired={this.state.resumeRequired}
+                      coverletterRequired={this.state.coverletterRequired}
+                      otherRequired={this.state.otherRequired}
+                      deadline={this.state.deadline}
+                      description={this.state.description}
+                      positionType={this.state.positionType}
+                      duration={this.state.duration}
+                      openings={this.state.openings}
+                      salary={this.state.salary}
+                      companyWebsite={this.state.companyWebsite}
+                      companyPhoneNumber={this.state.companyPhoneNumber}
+                      dateCreated={this.state.dateCreated}
+                      backButton={backButton}
+                    />
 
 
         const positionTypeOptions = [

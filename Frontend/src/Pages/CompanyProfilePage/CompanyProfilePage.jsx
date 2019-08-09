@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row, Col, Card, Button, Form, ListGroup} from 'react-bootstrap';
+import {Row, Col, Card, Button, Form, ListGroup, Spinner} from 'react-bootstrap';
 import {Can} from '@/_components';
 import {Link} from 'react-router-dom';
 import { ImagePicker, FilePicker } from 'react-file-picker';
@@ -15,7 +15,8 @@ class CompanyProfilePage extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      companyName: 'Awesome Software Inc.',
+      isLoading: true,
+      companyName: '',
       aboutUs: '',
       profileImage: '',
       website: '',
@@ -74,8 +75,8 @@ class CompanyProfilePage extends React.Component{
   fetchProfile(){
     businessService.getProfile(this.state.profileOwnerId)
                    .then((data)=>{
-                     console.log(data);
                      this.setState({
+                       isLoading: false,
                        companyName: data.company_name,
                        aboutUs: data.description,
                        profileImage: data.profile_image,
@@ -92,6 +93,20 @@ class CompanyProfilePage extends React.Component{
   }
 
   render(){
+
+    if(this.state.isLoading) return(
+
+      <div className="profile-page mx-auto">
+        <Row>
+          <Col xs={12} sm={12} md={{span: 7, offset: 5}} lg={{span: 9, offset: 3}} style={{marginBottom: 0}}>
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </Col>
+        </Row>
+      </div>
+    )
+
     return(
       <div className="business-profile-page mx-auto">
       <Row>
@@ -290,11 +305,15 @@ class CompanyProfilePage extends React.Component{
 
           <Card>
           <Card.Header>Company Openings
-          <Link style={{color: '#007bff'}}className="float-right" to='managepostings'>View my jobs</Link>
+          <Link style={{color: '#007bff'}}className="float-right" to='/managepostings'>View my jobs</Link>
           </Card.Header>
           <div className="business-profile-job-container">
             {this.state.jobs.map(job=>(
-              <a key={job.id} className="business-profile-job-container-job">
+              <a key={job.id} onClick={(e)=>{
+                e.preventDefault();
+                let formattedJobTitle = job.title.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
+                this.props.history.push(`/managepostings/${formattedJobTitle}`, {id: job.id, edit: false});
+              }} className="business-profile-job-container-job">
                 <div className="job-title">{job.title}</div>
                 <div className="job-location">{`${job.city}, ${job.state}`}</div>
               </a>
@@ -331,6 +350,9 @@ class CompanyProfilePage extends React.Component{
                 </Form>
                 <Button variant="secondary" className="edit-button float-right" onClick={this.toggleEditContactInformation}>Cancel</Button>
                 <Button variant="primary" className="edit-button float-right" onClick={()=>{
+                  businessService.updateProfile(this.state.phoneNumber, this.state.website, this.state.aboutUs)
+                                 .then(()=>{this.fetchProfile();})
+                                 .catch(error => {console.log(error)})
                 }}>Save</Button>
               </Card.Body>
             }
