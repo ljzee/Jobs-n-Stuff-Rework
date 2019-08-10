@@ -31,6 +31,7 @@ class UserJobPostPage extends React.Component{
       salary: '',
       status: '',
       jobAddress: '',
+      businessId : '',
       applied: false,
       showApplicationModal: false,
       fields: []
@@ -106,6 +107,7 @@ class UserJobPostPage extends React.Component{
                status: result[0].status,
                applied: result[0].applied,
                jobAddress: result[0].addresses.find(post => (post.id === result[0].a_id)),
+               businessId: result[0].b_id,
                showApplicationModal: false,
                fields: generatedFields
              })
@@ -187,6 +189,8 @@ class UserJobPostPage extends React.Component{
           companyWebsite={this.state.companyWebsite}
           companyPhoneNumber={this.state.companyPhoneNumber}
           dateCreated={this.state.dateCreated}
+          businessId={this.state.businessId}
+          location={this.props.location}
           backButton={backButton}
         />
         <Modal show={this.state.showApplicationModal} onHide={this.toggleShowApplyModal}>
@@ -196,7 +200,6 @@ class UserJobPostPage extends React.Component{
           <Modal.Body>
             <Formik
               onSubmit={(values)=>{
-                console.log(values);
                 let documents = [];
                 if(values.resume){
                   documents.push(values.resume);

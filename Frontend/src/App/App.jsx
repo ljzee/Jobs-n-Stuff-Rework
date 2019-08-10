@@ -52,6 +52,7 @@ class App extends React.Component {
                               <PrivateRoute path='/documents' roles={[Role.User]} component={DocumentsPage}/>
                               <PrivateRoute exact path='/searchjobs' roles={[Role.User]} component={JobSearchPage}/>
                               <PrivateRoute exact path='/searchjobs/:jobtitle' roles={[Role.User]} component={UserJobPostPage}/>
+                              <PrivateRoute exact path='/searchjobs/:jobtitle/:company' roles={[Role.User]} component={CompanyProfilePage}/>
                               <PrivateRoute path='/myprofile' roles={[Role.User]} component={ProfilePage}/>
                               <PrivateRoute path='/companyprofile' roles={[Role.Business]} component={CompanyProfilePage}/>
                               <PrivateRoute exact path="/managepostings" roles={[Role.Business]} component={ManagePostingsPage}/>

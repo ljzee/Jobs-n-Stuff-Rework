@@ -218,8 +218,8 @@ class ProfilePage extends React.Component {
                       <div className="contact-info-title">Contact Info</div>
                       <p><span className="contact-info-label">Email:</span><br/>{this.state.email}</p>
                       <p><span className="contact-info-label">Phone Number:</span><br/>{this.state.phoneNumber}</p>
-                      <p><span className="contact-info-label">Website:</span><br/><a href=''>{this.state.personalWebsite}</a></p>
-                      <p><span className="contact-info-label">Github:</span><br/><a href=''>{this.state.githubLink}</a></p>
+                      <p><span className="contact-info-label">Website:</span><br/><a style={{color: "#007BFF"}} href=''>{this.state.personalWebsite}</a></p>
+                      <p><span className="contact-info-label">Github:</span><br/><a style={{color: "#007BFF"}} href=''>{this.state.githubLink}</a></p>
                     </div>
                   </Card.Body>
                 </Card>
