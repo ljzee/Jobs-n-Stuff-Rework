@@ -12,6 +12,7 @@ import { ProfilePage } from '@/Pages/ProfilePage';
 import { WelcomePage} from '@/Pages/WelcomePage';
 import { CreateProfilePage} from '@/Pages/CreateProfilePage';
 import { DocumentsPage} from '@/Pages/DocumentsPage';
+import { ApplicationsPage } from '@/Pages/ApplicationsPage';
 import { DashboardPage} from '@/Pages/DashboardPage';
 import { ManagePostingsPage, AddPostingPage} from '@/Pages/ManagePostingsPage';
 import { JobPostPage, UserJobPostPage } from '@/Pages/JobPostPage';
@@ -50,6 +51,7 @@ class App extends React.Component {
                               <PrivateRoute exact path="/dashboard" component={DashboardPage} />
                               <PrivateRoute path='/createprofile' component={CreateProfilePage}/>
                               <PrivateRoute path='/documents' roles={[Role.User]} component={DocumentsPage}/>
+                              <PrivateRoute path='/applications' roles={[Role.User]} component={ApplicationsPage}/>
                               <PrivateRoute exact path='/searchjobs' roles={[Role.User]} component={JobSearchPage}/>
                               <PrivateRoute exact path='/searchjobs/:jobtitle' roles={[Role.User]} component={UserJobPostPage}/>
                               <PrivateRoute exact path='/searchjobs/:jobtitle/:company' roles={[Role.User]} component={CompanyProfilePage}/>

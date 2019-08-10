@@ -6,7 +6,18 @@ const authorize = require('_helpers/authorize')
 const Role = require('_helpers/role');
 const{check, validationResult} = require('express-validator');
 
+router.get('/', authorize(Role.User), getAllUserApplications)
 router.post('/', authorize(Role.User), submitApplication);
+
+async function getAllUserApplications(req, res, next){
+  try{
+    let applications = await applicationService.getAllUserApplications(req.user.sub);
+    res.json(applications);
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']})
+    console.log(error);
+  }
+}
 
 async function submitApplication(req, res, next){
   try{

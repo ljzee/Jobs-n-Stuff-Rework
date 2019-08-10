@@ -14,7 +14,8 @@ export const userService = {
     uploadProfileImage,
     searchJobPost,
     getJobPost,
-    submitApplication
+    submitApplication,
+    getAllUserApplications
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -111,6 +112,15 @@ function submitApplication(jobPostId, documents){
       headers: authHeader()
   };
   return axios.post(`${config.apiUrl}/application`, {jobPostId: jobPostId, documentIds: documents}, configOptions)
+              .then(result => result.data)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function getAllUserApplications(){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.get(`${config.apiUrl}/application`, configOptions)
               .then(result => result.data)
               .catch((error)=>Promise.reject(error.response.data.errors));
 }

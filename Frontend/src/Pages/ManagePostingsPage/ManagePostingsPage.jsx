@@ -48,6 +48,7 @@ class ManagePostingsPage extends React.Component{
     },{
       Header: 'Position',
       width: 275,
+      accessor: 'position',
       Cell: props => {
         let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
         return(
@@ -70,6 +71,7 @@ class ManagePostingsPage extends React.Component{
       style:{
           textAlign: "center"
       },
+      accessor: 'deadline',
       Cell: props => {
         return(
           <div className="datepicker-container">
