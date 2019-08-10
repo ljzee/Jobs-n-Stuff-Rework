@@ -13,7 +13,8 @@ export const userService = {
     updateProfile,
     uploadProfileImage,
     searchJobPost,
-    getJobPost
+    getJobPost,
+    submitApplication
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -101,6 +102,15 @@ function searchJobPost(searchField, country, state, city){
       headers: authHeader()
   };
   return axios.get(`${config.apiUrl}/jobpost?searchField=${searchField}&country=${country}&state=${state}&city=${city}`, configOptions)
+              .then(result => result.data)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function submitApplication(jobPostId, documents){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/application`, {jobPostId: jobPostId, documentIds: documents}, configOptions)
               .then(result => result.data)
               .catch((error)=>Promise.reject(error.response.data.errors));
 }

@@ -195,7 +195,22 @@ class UserJobPostPage extends React.Component{
           </Modal.Header>
           <Modal.Body>
             <Formik
-              onSubmit={(values)=>{console.log(values); this.toggleShowApplyModal();}}
+              onSubmit={(values)=>{
+                console.log(values);
+                let documents = [];
+                if(values.resume){
+                  documents.push(values.resume);
+                }
+                if(values.coverLetter){
+                  documents.push(values.coverLetter);
+                }
+                if(values.other){
+                  documents.push(values.other);
+                }
+                userService.submitApplication(this.props.location.state.id, documents)
+                           .then(()=>{this.fetchJobPost();})
+                           .catch(error => console.log(error));
+              }}
               initialValues={initialValues}
               validationSchema={validation}
               render={({
