@@ -13,7 +13,7 @@ const JobCard = (props) => {
           <div className="job-card-title">{props.title} <span>({props.positionType})</span></div>
           <div className="job-card-company-location">{props.companyName} - {props.city}, {props.state}</div>
           <div className="job-card-description">{props.description}</div>
-          <div className="job-card-date-published">Published: 2019-07-24</div>
+          <div className="job-card-date-published">Published: {props.datePublished}</div>
         </Card.Body>
       </Card>
     </Link>

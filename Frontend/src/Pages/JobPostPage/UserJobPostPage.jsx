@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import JobPost from './JobPost';
 import {userService, fileService} from '@/_services';
 import Select from 'react-select';
+import {JobPostType} from '@/_helpers';
 
 import './JobPost.css'
 
@@ -22,7 +23,7 @@ class UserJobPostPage extends React.Component{
       resumeRequired: false,
       coverletterRequired: false,
       otherRequired: false,
-      dateCreated: '',
+      datePublished: '',
       deadline: '',
       description: '',
       duration: '',
@@ -73,6 +74,8 @@ class UserJobPostPage extends React.Component{
     let actionButton;
     if(this.state.applied){
       actionButton = <Button variant="success" className="float-right" disabled>Applied</Button>
+    }else if(this.state.status === JobPostType.Closed){
+      actionButton = <Button variant="danger" className="float-right" disabled>Closed</Button>
     }else{
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
                       <Dropdown.Item onClick={()=>{this.toggleShowApplyModal()}}>Apply</Dropdown.Item>
@@ -97,7 +100,7 @@ class UserJobPostPage extends React.Component{
                resumeRequired: result[0].resume_required,
                coverletterRequired: result[0].coverletter_required,
                otherRequired: result[0].other_required,
-               dateCreated: result[0].date_created,
+               datePublished: result[0].date_published,
                deadline: result[0].deadline,
                description: result[0].description,
                duration: result[0].duration,
@@ -188,7 +191,7 @@ class UserJobPostPage extends React.Component{
           salary={this.state.salary}
           companyWebsite={this.state.companyWebsite}
           companyPhoneNumber={this.state.companyPhoneNumber}
-          dateCreated={this.state.dateCreated}
+          datePublished={this.state.datePublished}
           businessId={this.state.businessId}
           location={this.props.location}
           backButton={backButton}

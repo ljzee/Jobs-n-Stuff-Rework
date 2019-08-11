@@ -23,7 +23,7 @@ class ManagePostingsPage extends React.Component{
     businessService.getAllBusinessJobPost()
                    .then(posts => {
                      this.setState({
-                       data: posts.map(post => ({position: post.title, location: `${post.city}, ${post.state}`, deadline: post.deadline, applicantsquantity: 5, status: post.status, id: post.id})),
+                       data: posts.map(post => ({position: post.title, location: `${post.city}, ${post.state}`, deadline: post.deadline, applicantsquantity: post.count, status: post.status, id: post.id})),
                        loading: false
                      })
                    })
@@ -92,7 +92,7 @@ class ManagePostingsPage extends React.Component{
       Cell: props => {
         return(
           <div className="action-button-group">
-            {props.original.status === JobPostType.Open &&
+            {(props.original.status === JobPostType.Open || props.original.status === JobPostType.Closed) &&
              <button onClick={()=>{
                let formattedJobTitle = props.original.position.replace(/\s+/g, '-').replace(/\//, '-').toLowerCase();
                this.props.history.push(`/managepostings/${formattedJobTitle}/applicants`, {id: props.original.id, title: props.original.position});

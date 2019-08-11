@@ -11,6 +11,7 @@ export const businessService = {
     getAllBusinessJobPost,
     getJobPost,
     updateJobPost,
+    updateJobPostStatus,
     deleteJobPost,
     getJobApplicants,
     getApplicantFiles,
@@ -84,6 +85,14 @@ function updateJobPost(jobPostId, jobTitle, duration, positionType, location, op
       headers: authHeader()
   };
   return axios.put(`${config.apiUrl}/business/jobpost/${jobPostId}`, {jobTitle: jobTitle, duration: duration, positionType: positionType, location: location, openings: openings, jobDescription: jobDescription, salary: salary, deadline: deadline, resumeRequired: resumeRequired, coverletterRequired: coverletterRequired, otherRequired: otherRequired}, configOptions)
+              .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+function updateJobPostStatus(jobPostId, status){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.put(`${config.apiUrl}/business/jobpost/${jobPostId}/status`, {status: status}, configOptions)
               .catch((error) => Promise.reject(error.response.data.errors))
 }
 

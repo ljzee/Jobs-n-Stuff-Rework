@@ -1,6 +1,7 @@
 const config = require('config.json');
 const jwt = require('jsonwebtoken');
 const Role = require('_helpers/role');
+const JobPostStatus = require('_helpers/jobpoststatus');
 var pool = require('../database');
 const bcrypt = require('bcrypt');
 
@@ -10,6 +11,7 @@ module.exports = {
     deleteJobPost,
     checkHasJobPost,
     updateJobPost,
+    updateJobPostStatus,
     getJobPost,
     getAllJobApplicants,
     searchJobPost,
@@ -45,9 +47,28 @@ async function addJobPost(id, {
 
               }
 
+//'SELECT job_post.*, addresses.street_name_no, addresses.city, addresses.state, addresses.country, addresses.postal_code FROM business_jobs, job_post, job_addresses, addresses WHERE business_jobs.b_id = $1 AND business_jobs.j_id = job_post.id AND job_post.id = job_addresses.j_id AND job_addresses.a_id = addresses.id'
+
 async function getAllBusinessJobPost(id){
   try{
-    let jobPostQueryResults = await pool.query('SELECT job_post.*, addresses.street_name_no, addresses.city, addresses.state, addresses.country, addresses.postal_code FROM business_jobs, job_post, job_addresses, addresses WHERE business_jobs.b_id = $1 AND business_jobs.j_id = job_post.id AND job_post.id = job_addresses.j_id AND job_addresses.a_id = addresses.id', [id]);
+    let jobPostQueryResults = await pool.query(`SELECT job_post.*,
+                                                       addresses.street_name_no,
+                                                       addresses.city,
+                                                       addresses.state,
+                                                       addresses.country,
+                                                       addresses.postal_code,
+                                                       count_table.count
+                                                 FROM business_jobs,
+                                                      job_post, job_addresses,
+                                                      addresses,
+                                                      (SELECT job_post.id as j_id, COALESCE(COUNT(job_applications.a_id),0) as count
+                                                       FROM job_post LEFT OUTER JOIN job_applications ON job_post.id = job_applications.j_id
+                                                       GROUP BY job_post.id) AS count_table
+                                                 WHERE business_jobs.b_id = $1
+                                                      AND business_jobs.j_id = job_post.id
+                                                      AND job_post.id = job_addresses.j_id
+                                                      AND job_addresses.a_id = addresses.id
+                                                      AND job_post.id = count_table.j_id`, [id]);
 
     return jobPostQueryResults.rows;
   }catch(error){
@@ -98,6 +119,18 @@ async function updateJobPost(userId, jobPostId, {
                   throw error;
                 }
               }
+
+async function updateJobPostStatus(jobPostId, {status}){
+  try{
+    if(status === JobPostStatus.Open){
+      await pool.query('UPDATE job_post SET status = $1, date_published = CURRENT_DATE WHERE id = $2', [status, jobPostId]);
+    }else{
+      await pool.query('UPDATE job_post SET status = $1 WHERE id = $2', [status, jobPostId]);
+    }
+  }catch(error){
+    throw error;
+  }
+}
 
 async function deleteJobPost(userId, jobPostId){
   try{

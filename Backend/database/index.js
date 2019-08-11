@@ -43,6 +43,7 @@ module.exports = new Database();
 */
 const TYPE_DATESTAMP = 1082;
 types.setTypeParser(TYPE_DATESTAMP, date => date);
+types.setTypeParser(20, 'text', parseInt) //COUNT IN POSTGRESQL RETURNS BIGINT WHICH JAVASCRIPT DOES NOT SUPPORT, CHANGE PARSER TO RETURN JAVASCRIPT INT
 
 module.exports = new Pool({
   user: 'postgres',

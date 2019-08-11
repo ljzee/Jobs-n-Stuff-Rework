@@ -10,6 +10,7 @@ import {PositionType} from '@/_helpers';
 import {businessService} from '@/_services';
 import * as Yup from 'yup';
 import JobPost from './JobPost';
+import {JobPostType} from '@/_helpers';
 
 import './JobPost.css'
 
@@ -27,7 +28,7 @@ class JobPostPage extends React.Component{
       resumeRequired: false,
       coverletterRequired: false,
       otherRequired: false,
-      dateCreated: '',
+      datePublished: '',
       deadline: '',
       description: '',
       duration: '',
@@ -50,6 +51,7 @@ class JobPostPage extends React.Component{
   fetchJobPost() {
     businessService.getJobPost(this.props.location.state.id)
                    .then(jobPost => {
+                     console.log(jobPost)
                      this.setState({
                        loading: false,
                        jobTitle: jobPost.title,
@@ -60,7 +62,7 @@ class JobPostPage extends React.Component{
                        resumeRequired: jobPost.resume_required,
                        coverletterRequired: jobPost.coverletter_required,
                        otherRequired: jobPost.other_required,
-                       dateCreated: jobPost.date_created,
+                       datePublished: jobPost.date_published,
                        deadline: jobPost.deadline,
                        description: jobPost.description,
                        duration: jobPost.duration,
@@ -98,13 +100,19 @@ class JobPostPage extends React.Component{
     if(this.state.status === 'OPEN'){
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
                       <Dropdown.Item onClick={this.toggleEdit}>Edit</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{console.log('stop application')}}>Stop Accepting Applicants</Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{
+                        businessService.updateJobPostStatus(this.props.location.state.id, JobPostType.Closed)
+                                       .then(()=>{this.fetchJobPost()})
+                      }}>Stop Accepting Applicants</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{this.props.history.push(`${this.props.location.pathname}/applicants`, {id: this.props.location.state.id, title: this.state.jobTitle})}}>View Applicants</Dropdown.Item>
                      </DropdownButton>
     }else if(this.state.status === 'DRAFT'){
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
                       <Dropdown.Item onClick={this.toggleEdit}>Edit</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{console.log('publish')}}>Publish Posting</Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{
+                        businessService.updateJobPostStatus(this.props.location.state.id, JobPostType.Open)
+                                       .then(()=>{this.fetchJobPost()})
+                      }}>Publish Posting</Dropdown.Item>
                       <Dropdown.Item onClick={()=>{
                         businessService.deleteJobPost(this.props.location.state.id)
                                        .then(()=>{this.props.history.push('/managepostings')})
@@ -113,8 +121,11 @@ class JobPostPage extends React.Component{
     }else{
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
                       <Dropdown.Item onClick={this.toggleEdit}>Edit</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{console.log('republish')}}>Republish Posting</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{console.log('view applicants')}}>View Applicants</Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{
+                        businessService.updateJobPostStatus(this.props.location.state.id, JobPostType.Open)
+                                       .then(()=>{this.fetchJobPost()})
+                      }}>Republish Posting</Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{this.props.history.push(`${this.props.location.pathname}/applicants`, {id: this.props.location.state.id, title: this.state.jobTitle})}}>View Applicants</Dropdown.Item>
                      </DropdownButton>
     }
     return actionButton;
@@ -142,7 +153,7 @@ class JobPostPage extends React.Component{
                       salary={this.state.salary}
                       companyWebsite={this.state.companyWebsite}
                       companyPhoneNumber={this.state.companyPhoneNumber}
-                      dateCreated={this.state.dateCreated}
+                      datePublished={this.state.datePublished}
                       backButton={backButton}
                     />
 

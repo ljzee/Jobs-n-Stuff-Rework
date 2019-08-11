@@ -67,7 +67,7 @@ const JobPost = (props) => {
             </Card.Body>
           </Card>
 
-          <div className="jobpostpage-timestamp" style={{textAlign: "right"}}><b>Date-Published: </b>{props.dateCreated}</div>
+          <div className="jobpostpage-timestamp" style={{textAlign: "right"}}><b>Date-Published: </b>{props.datePublished}</div>
         </Col>
       </Row>
     </div>

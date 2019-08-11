@@ -57,6 +57,9 @@ router.put('/jobpost/:id',
 router.delete('/jobpost/:id',
               authorize(Role.Business),
               deleteJobPost)
+router.put('/jobpost/:id/status',
+            authorize(Role.Business),
+            updateJobPostStatus)
 
 router.get('/jobpost/:id/applicants', authorize(Role.Business), getAllJobApplicants)
 router.get('/jobpost/:id/applicants/:applicationid', authorize(Role.Business), getApplicationFiles)
@@ -170,6 +173,21 @@ async function updateJobPost(req, res, next){
     console.log(error);
   }
 
+}
+
+async function updateJobPostStatus(req, res, next){
+  try{
+    let hasJobPost = await jobPostService.checkHasJobPost(req.user.sub, req.params.id);
+    if(hasJobPost){
+      await jobPostService.updateJobPostStatus(req.params.id, req.body);
+      res.sendStatus(200);
+    }else{
+      res.status(401).json({errors: ['Unauthorized']});
+    }
+  }catch(error){
+    res.status(500).json({errors: ['Internal Server Error']});
+    console.log(error);
+  }
 }
 
 async function deleteJobPost(req, res, next){

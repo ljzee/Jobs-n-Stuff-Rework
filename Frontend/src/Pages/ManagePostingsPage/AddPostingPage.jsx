@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
 import {RadioButton, RadioButtonGroup} from '@/_components';
 import {PositionType, JobPostType} from '@/_helpers';
-import {businessService} from '@/_services';
+import {businessService, authenticationService} from '@/_services';
 //Yup converts types to boolean
 
 class AddPostingPage extends React.Component{
@@ -19,8 +19,9 @@ class AddPostingPage extends React.Component{
   }
 
   componentDidMount(){
-    businessService.getProfile()
+    businessService.getProfile(authenticationService.currentUserValue.id)
                    .then(profile=>{
+                     console.log(profile)
                      let options = profile.addresses.map(address => ({label: `${address.street_name_no}, ${address.city}, ${address.state}`, value: address.id}))
                      this.setState({locationOptions: options})
                    }).catch(error=>{
