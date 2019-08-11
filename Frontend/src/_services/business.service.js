@@ -16,6 +16,8 @@ export const businessService = {
     getJobApplicants,
     getApplicantFiles,
     updateApplicationStatus,
+    updateJobPostStatus,
+    updateJobPostDeadline,
     uploadProfileImage,
     updateProfile,
     addUpdate,
@@ -93,6 +95,14 @@ function updateJobPostStatus(jobPostId, status){
       headers: authHeader()
   };
   return axios.put(`${config.apiUrl}/business/jobpost/${jobPostId}/status`, {status: status}, configOptions)
+              .catch((error) => Promise.reject(error.response.data.errors))
+}
+
+function updateJobPostDeadline(jobPostId, deadline){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.put(`${config.apiUrl}/business/jobpost/${jobPostId}/deadline`, {deadline: deadline}, configOptions)
               .catch((error) => Promise.reject(error.response.data.errors))
 }
 

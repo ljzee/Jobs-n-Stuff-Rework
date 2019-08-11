@@ -12,6 +12,7 @@ module.exports = {
     checkHasJobPost,
     updateJobPost,
     updateJobPostStatus,
+    updateJobPostDeadline,
     getJobPost,
     getAllJobApplicants,
     searchJobPost,
@@ -127,6 +128,14 @@ async function updateJobPostStatus(jobPostId, {status}){
     }else{
       await pool.query('UPDATE job_post SET status = $1 WHERE id = $2', [status, jobPostId]);
     }
+  }catch(error){
+    throw error;
+  }
+}
+
+async function updateJobPostDeadline(jobPostId, {deadline}){
+  try{
+    await pool.query('UPDATE job_post SET deadline = $1 WHERE id = $2', [deadline, jobPostId]);
   }catch(error){
     throw error;
   }

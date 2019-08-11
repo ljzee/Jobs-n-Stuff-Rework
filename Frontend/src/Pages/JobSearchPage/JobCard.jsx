@@ -9,7 +9,7 @@ const JobCard = (props) => {
     <Link className="job-card" to={{pathname: `/searchjobs/${formattedJobTitle}`, state: {id: props.jobId}}}>
       <Card>
         <Card.Body>
-          <button onClick={()=>{console.log('bookmarked')}} className="job-card-bookmark-btn"/>
+          <button onClick={(e)=>{e.preventDefault(); console.log('bookmarked')}} className="job-card-bookmark-btn"/>
           <div className="job-card-title">{props.title} <span>({props.positionType})</span></div>
           <div className="job-card-company-location">{props.companyName} - {props.city}, {props.state}</div>
           <div className="job-card-description">{props.description}</div>

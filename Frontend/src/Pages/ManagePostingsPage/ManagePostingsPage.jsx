@@ -75,7 +75,10 @@ class ManagePostingsPage extends React.Component{
       Cell: props => {
         return(
           <div className="datepicker-container">
-            <DatePicker value={props.original.deadline} />
+            <DatePicker value={props.original.deadline} onChange={(date)=>{
+              businessService.updateJobPostDeadline(props.original.id, date.toISOString().split("T")[0])
+                             .then(()=>{this.fetchPostings()})
+            }}/>
           </div>
         )
       }

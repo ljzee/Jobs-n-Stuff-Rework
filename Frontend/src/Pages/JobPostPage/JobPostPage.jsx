@@ -51,7 +51,6 @@ class JobPostPage extends React.Component{
   fetchJobPost() {
     businessService.getJobPost(this.props.location.state.id)
                    .then(jobPost => {
-                     console.log(jobPost)
                      this.setState({
                        loading: false,
                        jobTitle: jobPost.title,

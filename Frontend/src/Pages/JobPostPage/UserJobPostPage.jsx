@@ -75,7 +75,7 @@ class UserJobPostPage extends React.Component{
     if(this.state.applied){
       actionButton = <Button variant="success" className="float-right" disabled>Applied</Button>
     }else if(this.state.status === JobPostType.Closed){
-      actionButton = <Button variant="danger" className="float-right" disabled>Closed</Button>
+      actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right" disabled/>
     }else{
       actionButton = <DropdownButton id="dropdown-basic-button" title="Actions" className="float-right">
                       <Dropdown.Item onClick={()=>{this.toggleShowApplyModal()}}>Apply</Dropdown.Item>
