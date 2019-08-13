@@ -221,17 +221,22 @@ class DocumentsPage extends React.Component {
 
         return (
           <div className="documents-page mx-auto">
-          <Button variant="primary float-right" onClick={this.toggleShowFileUploadModal}>Upload Document</Button>
-            <h3 className="documents-page-title">My Documents</h3>
+
+            <div className="documents-page-title">
+              <span>My Documents</span>
+              <Button variant="primary float-right" onClick={this.toggleShowFileUploadModal}>Upload Document</Button>
+            </div>
             <Navbar bg="white">
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                <Select className="filter-select" placeholder="Document type" options={ filterOptions } onChange={this.selectOption.bind(this, 'documentFilter')} />
+                  <Select className="filter-select" placeholder="Document type" options={ filterOptions } onChange={this.selectOption.bind(this, 'documentFilter')} />
                 </Nav>
-                <Form inline>
+                <Nav>
                   <FormControl name="documentSearch" type="text" placeholder="Search Documents" className="mr-sm-2" value={this.state.documentSearch} onChange={this.onChangeHandler}/>
+                </Nav>
+                <Nav>
                   <Button variant="outline-primary">Search</Button>
-                </Form>
+                </Nav>
               </Navbar.Collapse>
             </Navbar>
             <Table responsive className="files-table">

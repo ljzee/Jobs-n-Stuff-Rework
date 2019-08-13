@@ -7,6 +7,35 @@
   margin-bottom: 22px;
 }
 
+.documents-page-title span{
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@media(max-width: 768px){
+  .documents-page-title span{
+    display:block;
+    margin-bottom: 22px;
+  }
+
+  .documents-page-title .btn{
+    display:block;
+    float: none !important;
+  }
+
+  .documents-page .navbar-collapse{
+    flex-direction:  column;
+    justify-content: space-between;
+    height: 120px;
+    text-align: left;
+  }
+
+  .documents-page .navbar-collapse .navbar-nav{
+    margin-right: 0 !important;
+  }
+}
+
 .filter-select{
   width: 200px;
 }

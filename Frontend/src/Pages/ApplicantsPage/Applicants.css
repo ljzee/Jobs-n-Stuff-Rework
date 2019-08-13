@@ -10,9 +10,17 @@
   border: 1px solid lightgrey;
 }
 
-.applicantspage-toggle .btn-group-toggle{
-  padding-left: 25px;
-  border-left: 1px solid lightgrey;
+@media(min-width: 768px){
+  .applicantspage-toggle .btn-group-toggle{
+    padding-left: 25px;
+    border-left: 1px solid lightgrey;
+  }
+}
+
+@media(max-width: 768px){
+  .applicantspage-toggle .btn-group-toggle{
+    margin-top: 10px;
+  }
 }
 
 .applicantspage-toggle input{
