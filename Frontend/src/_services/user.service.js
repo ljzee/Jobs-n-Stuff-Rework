@@ -15,7 +15,10 @@ export const userService = {
     searchJobPost,
     getJobPost,
     submitApplication,
-    getAllUserApplications
+    getAllUserApplications,
+    addBookmark,
+    removeBookmark,
+    getDashboard
 };
 
 function createProfile(firstname, lastname, phonenumber, personalwebsite, githublink, bio) {
@@ -44,6 +47,16 @@ function getProfile(userId){
               .then(result => result.data)
               .catch((error) => Promise.reject(error.response.data.errors))
 
+}
+
+function getDashboard(){
+  const configOptions = {
+      headers: authHeader()
+  };
+
+  return axios.get(`${config.apiUrl}/users/dashboard`, configOptions)
+              .then(result => result.data)
+              .catch((error)=>Promise.reject(error.response.data.errors));
 }
 
 function updateProfile(bio, phoneNumber, personalWebsite, github){
@@ -122,6 +135,22 @@ function getAllUserApplications(){
   };
   return axios.get(`${config.apiUrl}/application`, configOptions)
               .then(result => result.data)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function addBookmark(jobId){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.post(`${config.apiUrl}/users/bookmark`, {jobId: jobId}, configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+function removeBookmark(jobId){
+  const configOptions = {
+      headers: authHeader()
+  };
+  return axios.delete(`${config.apiUrl}/users/bookmark/${jobId}`, configOptions)
               .catch((error)=>Promise.reject(error.response.data.errors));
 }
 /*

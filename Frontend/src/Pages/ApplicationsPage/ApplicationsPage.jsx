@@ -147,7 +147,7 @@ class ApplicationsPage extends React.Component{
     return(
       <div className="applications-page mx-auto">
         <h3 className="applications-page-title">My Applications</h3>
-        <Tab.Container defaultActiveKey="new" transition={false}>
+        <Tab.Container defaultActiveKey="accepted" transition={false}>
           <Card>
             <Card.Header>
               <Nav variant="tabs">

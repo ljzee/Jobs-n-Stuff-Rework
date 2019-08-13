@@ -79,6 +79,8 @@ router.delete('/updates/:id',
               authorize(Role.Business),
               deleteUpdate);
 
+router.get('/dashboard', authorize(Role.Business), getBusinessDashboard)
+
 async function createProfile(req, res, next){
   const {errors} = validationResult(req);
   let errorMessages = errors.map(error => error.msg);
@@ -298,6 +300,16 @@ async function deleteUpdate(req, res, next){
   try{
     await businessService.deleteUpdate(req.user.sub, req.params.id);
     res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
+
+async function getBusinessDashboard(req, res, next){
+  try{
+    const jobs = await jobPostService.getAllBusinessJobPost(req.user.sub);
+    res.json({jobs: jobs.filter(job=>(job.status==='OPEN'))});
   }catch(error){
     console.log(error);
     res.status(500).json({errors: ['Internal Server Error']});

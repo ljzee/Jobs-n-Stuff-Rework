@@ -21,7 +21,8 @@ export const businessService = {
     uploadProfileImage,
     updateProfile,
     addUpdate,
-    deleteUpdate
+    deleteUpdate,
+    getDashboard
 };
 
 function createProfile(companyName, country, state, city, streetAddress, postalCode, phoneNumber, website, description) {
@@ -174,5 +175,16 @@ function deleteUpdate(updateId){
       headers: authHeader()
   };
   return axios.delete(`${config.apiUrl}/business/updates/${updateId}`,configOptions)
+              .catch((error)=>Promise.reject(error.response.data.errors));
+}
+
+
+function getDashboard(){
+  const configOptions = {
+      headers: authHeader()
+  };
+
+  return axios.get(`${config.apiUrl}/business/dashboard`, configOptions)
+              .then(result => result.data)
               .catch((error)=>Promise.reject(error.response.data.errors));
 }

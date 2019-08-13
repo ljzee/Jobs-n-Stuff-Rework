@@ -32,6 +32,12 @@ router.put('/experience/:id',
 router.post('/profile/profile-image', authorize(Role.User), uploadProfileImage);
 //router.get('/profile/profile-image/:name', getProfileImage);
 router.put('/profile/:id', authorize(Role.User), updateProfile);
+
+router.post('/bookmark', authorize(Role.User), addBookmark)
+router.delete('/bookmark/:id', authorize(Role.User), removeBookmark)
+
+router.get('/dashboard', authorize(Role.User), getUserDashboard);
+
 //router.get('/', authorize(Role.Admin), getAll); // admin only
 //router.get('/:id', authorize(), getById);       // all authenticated users
 module.exports = router;
@@ -165,6 +171,37 @@ async function uploadProfileImage(req, res, next){
   }
 }
 
+
+async function addBookmark(req, res, next){
+  try{
+    await userService.addBookmark(req.user.sub, req.body.jobId);
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
+
+async function removeBookmark(req, res, next){
+  try{
+    await userService.removeBookmark(req.user.sub, req.params.id);
+    res.sendStatus(200);
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
+
+async function getUserDashboard(req, res, next){
+  try{
+    let bookmarkedJobs;
+    bookmarkedJobs = await userService.getUserBookmarkedJobs(req.user.sub);
+    res.json({bookmarks: bookmarkedJobs});
+  }catch(error){
+    console.log(error);
+    res.status(500).json({errors: ['Internal Server Error']});
+  }
+}
 
 //demo functions
 /*

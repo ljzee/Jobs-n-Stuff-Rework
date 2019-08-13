@@ -4,6 +4,8 @@ import Calendar from 'rc-calendar';
 import './Dashboard.css';
 import "rc-calendar/assets/index.css";
 import { Link } from 'react-router-dom'
+import {userService} from '@/_services';
+import Bookmark from './Bookmark';
 
 import CanvasJSReact from '../../Assets/canvasjs.react';
 var CanvasJS = CanvasJSReact.CanvasJS;
@@ -33,6 +35,24 @@ const options = {
 class UserDashboard extends React.Component{
   constructor(props){
     super(props)
+    this.state = {
+      bookmarks: []
+    }
+
+    this.fetchDashboard = this.fetchDashboard.bind(this);
+  }
+
+  fetchDashboard(){
+    userService.getDashboard()
+               .then(data=>{
+                 this.setState({
+                   bookmarks: data.bookmarks
+                 })
+               })
+  }
+
+  componentDidMount(){
+    this.fetchDashboard();
   }
 
   render(){
@@ -46,7 +66,7 @@ class UserDashboard extends React.Component{
                 <span className="dashboard-card-title">Notifications</span>
                 <img className="icon"  src={require('../../Images/bell.png')} alt="bell"/>
               </Card.Header>
-              <Card.Body className="notifications-box">
+              <Card.Body className="notifications-box" >
               <Alert variant={'success'} dismissible>
                 <b>Awesome Software</b> would like to get in touch with you.
               </Alert>
@@ -79,22 +99,22 @@ class UserDashboard extends React.Component{
         <Row>
           <Col sm={12} md={6} lg={4}>
             <Card>
-              <Card.Header style={{padding: ".42rem 1.25rem", borderBottom: "none"}}>
+              <Card.Header style={{padding: ".42rem 1.25rem"}}>
                 <span className="dashboard-card-title">Bookmarked Postings</span>
                 <img className="icon"  src={require('../../Images/bookmark1.png')} alt="bookmark"/>
               </Card.Header>
-              <Table style={{marginBottom: 0, overflow: "hidden", tableLayout: "fixed"}} responsive>
-              <tbody>
-                <tr>
-                  <td style={{width: "75%", height:"42px"}}><Link to="/dashboard">Junior Software Developer<br/></Link><Link to="/dashboard">(Awesome Software)</Link></td>
-                  <td style={{width: "25%", padding: 0, verticalAlign:"middle"}}><Button className="unsave-button">Unsave</Button></td>
-                </tr>
-                <tr>
-                  <td style={{width: "75%", height:"42px"}}><Link to="/dashboard">Associate Developer<br/></Link><Link to="/dashboard">(Pie Software)</Link></td>
-                  <td style={{width: "25%", padding: 0, verticalAlign:"middle"}}><Button className="unsave-button">Unsave</Button></td>
-                </tr>
-              </tbody>
-              </Table>
+              <div className="bookmark-container">
+                {this.state.bookmarks.map(bookmark => (
+                  <Bookmark
+                    key={bookmark.id}
+                    title={bookmark.title}
+                    company={bookmark.company_name}
+                    jobId={bookmark.id}
+                    businessId={bookmark.b_id}
+                    fetchDashboard={this.fetchDashboard}
+                  />
+                ))}
+              </div>
             </Card>
           </Col>
 

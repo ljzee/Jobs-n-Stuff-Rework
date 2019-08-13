@@ -11,7 +11,11 @@ module.exports = {
     addExperience,
     editExperience,
     deleteExperience,
-    updateProfile
+    updateProfile,
+    addBookmark,
+    removeBookmark,
+    getUserBookmarkedJobs,
+    getUserAppliedJobs
 };
 
 
@@ -77,6 +81,51 @@ async function updateProfile(id, {bio, phoneNumber, personalWebsite, github}){
     throw error;
   }
 }
+
+async function addBookmark(userId, jobId){
+  try{
+    await pool.query('INSERT INTO user_bookmarks (u_id, j_id) VALUES ($1, $2)', [userId, jobId]);
+  }catch(error){
+    throw error;
+  }
+}
+
+async function removeBookmark(userId, jobId){
+  try{
+    await pool.query('DELETE FROM user_bookmarks WHERE u_id = $1 AND j_id = $2', [userId, jobId]);
+  }catch(error){
+    throw error;
+  }
+}
+
+async function getUserBookmarkedJobs(userId){
+  try{
+    let bookmarkQueryResults;
+    bookmarkQueryResults = await pool.query(`SELECT job_post.id, job_post.title, business_profile.company_name, business_profile.id as b_id
+                                             FROM user_bookmarks, job_post, business_jobs, business_profile
+                                             WHERE job_post.id = user_bookmarks.j_id
+	                                                 AND job_post.id = business_jobs.j_id
+	                                                 AND business_jobs.b_id = business_profile.id
+                                                   AND user_bookmarks.u_id = $1;`, [userId]);
+    return bookmarkQueryResults.rows;
+  }catch(error){
+    throw error;
+  }
+}
+
+async function getUserAppliedJobs(userId){
+  try{
+    let jobPostQueryResults;
+    jobPostQueryResults = await pool.query(`SELECT job_applications.j_id
+                                            FROM user_applications, job_applications
+                                            WHERE user_applications.u_id = $1 AND user_applications.a_id = job_applications.a_id;`, [userId]);
+    return jobPostQueryResults.rows;
+  }catch(error){
+    throw error;
+  }
+}
+
+
 /*
 db.query('SELECT NOW()', (err,res)=>{
   if(err.error)

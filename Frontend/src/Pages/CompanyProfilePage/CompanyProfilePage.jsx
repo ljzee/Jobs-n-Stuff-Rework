@@ -126,7 +126,7 @@ class CompanyProfilePage extends React.Component{
           data={{userId: authenticationService.currentUserValue.id, profileOwnerId: this.state.profileOwnerId}}
           yes={()=>(
             <Col xs={12} sm={12} md={5} lg={3}>
-              <Link to='' onClick={(e)=>{e.preventDefault; this.props.history.goBack()}}>Back to job posting</Link>
+              <Link to='' onClick={(e)=>{e.preventDefault; this.props.history.goBack()}}>Back to previous page</Link>
             </Col>
           )}
         />

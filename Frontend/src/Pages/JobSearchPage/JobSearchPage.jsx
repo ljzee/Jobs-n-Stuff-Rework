@@ -198,6 +198,8 @@ class JobSearchPage extends React.Component{
                                               description={job.description}
                                               state={job.state}
                                               city={job.city}
+                                              bookmarked={job.bookmarked}
+                                              applied={job.applied}
                                               />))
             }
           </div>

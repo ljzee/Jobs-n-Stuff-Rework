@@ -21,8 +21,8 @@ class DashboardPage extends React.Component {
         return (
             <div className="dashboard-page mx-auto">
               <h3 className="dashboard-page-title">Dashboard</h3>
-              {currentUser.role === Role.User && <UserDashboard/>}
-              {currentUser.role === Role.Business && <BusinessDashboard/>}
+              {currentUser.role === Role.User && <UserDashboard history={this.props.history}/>}
+              {currentUser.role === Role.Business && <BusinessDashboard history={this.props.history}/>}
             </div>
         );
     }
