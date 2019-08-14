@@ -2,19 +2,19 @@
 ## WIP Screenshots
 
 *Welcome Page*\
-![](WIPScreenshots/welcome.png)
+![](Screenshots/welcome.png)
 \
 *Post-Signup Page*\
-![](WIPScreenshots/postsignup.png)
+![](Screenshots/postsignup.png)
 \
 *User Dashboard*\
-![](WIPScreenshots/dashboard.png)
+![](Screenshots/dashboard.png)
 \
 *User Profile Page*\
-![](WIPScreenshots/profile.png)
+![](Screenshots/profile.png)
 \
 *Documents Page*\
-![](WIPScreenshots/documents.png)
+![](Screenshots/documents.png)
 \
 *Documents Upload Modal*\
-![](WIPScreenshots/documentsupload.png)
+![](Screenshots/documentsupload.png)
