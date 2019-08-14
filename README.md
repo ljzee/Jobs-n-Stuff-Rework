@@ -53,7 +53,7 @@ EmployMee can be used by two types of users, namely **job seekers** and **employ
 * [Axios for communication](https://www.npmjs.com/package/axios)
 * [node-postgres for connecting to PostgreSQL](https://www.npmjs.com/package/pg)
 
-## TODO/IN-PROGRESS
+## Todo/In-progress
 
 * Deploy project to Heroku and Git
 * Integrate testing with Jest
