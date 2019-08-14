@@ -21,7 +21,6 @@ class AddPostingPage extends React.Component{
   componentDidMount(){
     businessService.getProfile(authenticationService.currentUserValue.id)
                    .then(profile=>{
-                     console.log(profile)
                      let options = profile.addresses.map(address => ({label: `${address.street_name_no}, ${address.city}, ${address.state}`, value: address.id}))
                      this.setState({locationOptions: options})
                    }).catch(error=>{
