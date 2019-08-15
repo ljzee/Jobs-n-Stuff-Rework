@@ -38,7 +38,7 @@ module.exports = {
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: ' https://boiling-sands-12792.herokuapp.com/'
+            apiUrl: ' https://boiling-sands-12792.herokuapp.com'
         })
     }
 }
