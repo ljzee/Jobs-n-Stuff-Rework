@@ -19,7 +19,7 @@ module.exports = {
             },
             {
                 test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
-                loader: 'url-loader?limit=100000' 
+                loader: 'url-loader?limit=100000'
             }
         ]
     },
@@ -38,7 +38,7 @@ module.exports = {
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'http://localhost:4000'
+            apiUrl: ' https://boiling-sands-12792.herokuapp.com/'
         })
     }
 }
