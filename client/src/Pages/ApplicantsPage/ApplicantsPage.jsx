@@ -4,7 +4,7 @@ import {Card, Button, ToggleButtonGroup, ToggleButton, InputGroup, FormControl, 
 import {Link} from 'react-router-dom';
 import {businessService} from '@/_services';
 import {ApplicantCard} from './ApplicantCard';
-import {randomColor} from 'randomColor';
+import {randomColor} from 'randomcolor';
 import {ApplicationStatus} from '@/_helpers';
 
 const applicantsFilter = ['New','Accepted','Saved','Rejected'];
