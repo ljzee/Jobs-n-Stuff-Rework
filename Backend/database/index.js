@@ -48,7 +48,7 @@ types.setTypeParser(20, 'text', parseInt) //COUNT IN POSTGRESQL RETURNS BIGINT W
 module.exports = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'jobsnstuff',
+  database: 'employmee',
   password: 'password',
   port: 5432,
 });
