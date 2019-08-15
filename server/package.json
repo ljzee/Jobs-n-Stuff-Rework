@@ -1,0 +1,30 @@
+{
+    "name": "node-role-based-authorization-api",
+    "version": "1.0.0",
+    "description": "Node.js Role Based Authorization API",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cornflourblue/node-role-based-authorization-api.git"
+    },
+    "scripts": {
+        "start": "nodemon ./server.js",
+        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    },
+    "dependencies": {
+        "bcrypt": "^3.0.6",
+        "body-parser": "^1.18.3",
+        "cors": "^2.8.5",
+        "express": "^4.16.4",
+        "express-jwt": "^5.3.1",
+        "express-validator": "^6.1.0",
+        "express-zip": "^2.0.1",
+        "jsonwebtoken": "^8.4.0",
+        "multer": "^1.4.1",
+        "pg": "^7.11.0",
+        "rootpath": "^0.1.2"
+    },
+    "devDependencies": {
+        "nodemon": "^1.18.6"
+    }
+}
