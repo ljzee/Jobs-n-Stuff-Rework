@@ -34,7 +34,7 @@ async function addJobPost(id, {
                 status
               }){
                 try{
-                  let jobPostQueryResults = await pool.query('INSERT INTO job_post(id, title, duration, position_type, openings, description, salary, deadline, coverletter_required, resume_required, other_required, date_created, status) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, DEFAULT,$11) RETURNING id',
+                  let jobPostQueryResults = await pool.query('INSERT INTO job_post(id, title, duration, position_type, openings, description, salary, deadline, coverletter_required, resume_required, other_required, date_created, status, date_published) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, DEFAULT,$11, CURRENT_DATE) RETURNING id',
                                                           [jobTitle, duration, positionType, openings, jobDescription, salary, deadline, coverletterRequired, resumeRequired, otherRequired, status])
                   if(jobPostQueryResults.rows.length){
                     let jobId = jobPostQueryResults.rows[0].id;
