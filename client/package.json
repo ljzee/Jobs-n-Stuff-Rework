@@ -11,7 +11,7 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "country-state-city": "^1.0.5",
     "file-loader": "^4.3.0",
