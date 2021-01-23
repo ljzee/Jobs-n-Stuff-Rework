@@ -1,8 +1,8 @@
 import React from 'react';
-import { Router, Route, Link, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
 
-import { history, Role,} from '@/_helpers';
+import { Role,} from '@/_helpers';
 import { authenticationService } from '@/_services';
 import { PrivateRoute, Header } from '@/_components';
 import { HomePage } from '@/Pages/HomePage';
@@ -39,7 +39,7 @@ class App extends React.Component {
     render() {
         const { currentUser } = this.state;
         return (
-            <Router history={history}>
+            <Router >
                 <div>
                     <Header currentUser={currentUser}/>
                     <div className="body">
